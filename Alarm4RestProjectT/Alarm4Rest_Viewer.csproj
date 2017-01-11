@@ -7,8 +7,8 @@
     <ProjectGuid>{882C62F5-8D1A-48E6-AF45-E6DF31873AC1}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Alarm4RestProjectT</RootNamespace>
-    <AssemblyName>Alarm4RestProjectT</AssemblyName>
+    <RootNamespace>Alarm4Rest_Viewer</RootNamespace>
+    <AssemblyName>Alarm4Rest_Viewer</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -35,8 +35,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -55,6 +66,50 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BindableBase.cs" />
+    <Compile Include="CustControl\ComboWithCheckboxes.xaml.cs">
+      <DependentUpon>ComboWithCheckboxes.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustControl\searchToolBarView.xaml.cs">
+      <DependentUpon>searchToolBarView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustControl\searchToolBarViewModel.cs" />
+    <Compile Include="Services\ExpressionBuider.cs" />
+    <Compile Include="CustControl\filterToolBarView.xaml.cs">
+      <DependentUpon>filterToolBarView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustControl\filterToolBarViewModel.cs" />
+    <Compile Include="CustomAlarmLists\CustomAlarmsListView.xaml.cs">
+      <DependentUpon>CustomAlarmsListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomAlarmLists\CustomAlarmsListViewModel.cs" />
+    <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="PropertyChangeEventBase.cs" />
+    <Compile Include="RelayCommand .cs" />
+    <Compile Include="RestorationAlarmLists\RestAlarmsListView.xaml.cs">
+      <DependentUpon>RestAlarmsListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RestorationAlarmLists\RestAlarmsListViewModel.cs" />
+    <Compile Include="Services\Item.cs" />
+    <Compile Include="Services\RestAlarmsRepo.cs" />
+    <Compile Include="Services\RestEventArgs.cs" />
+    <Compile Include="Services\ShowNotificationMessageBehavior.cs" />
+    <Page Include="CustControl\ComboWithCheckboxes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustControl\filterToolBarView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustControl\searchToolBarView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomAlarmLists\CustomAlarmsListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -67,6 +122,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="RestorationAlarmLists\RestAlarmsListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -86,6 +145,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -94,6 +154,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Alarm4RestProject\Alarm4RestData\Alarm4Rest.Data.csproj">
+      <Project>{1e3dff06-904a-44ee-a7b6-23788b715e91}</Project>
+      <Name>Alarm4Rest.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\main.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\filter.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

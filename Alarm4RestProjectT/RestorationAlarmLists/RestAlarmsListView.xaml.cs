@@ -12,20 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Alarm4Rest_Viewer.CustomAlarmLists;
 
-namespace Alarm4Rest_Viewer
+namespace Alarm4Rest_Viewer.RestorationAlarmLists
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for ResAlarmsListView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class RestAlarmsListView : UserControl
     {
-        //custView = 
-        public MainWindow()
+        public RestAlarmsListView()
         {
             InitializeComponent();
-            this.DataContext = new MainWindowViewModel();
         }
     }
 }
