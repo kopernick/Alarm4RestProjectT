@@ -18,9 +18,9 @@ namespace Alarm4Rest_Viewer.CustControl
         public static List<string> selectedStations = new List<string>();
         public static List<string> selectedPriority = new List<string>();
         public static List<string> selectedGroupDescription = new List<string>();
+        public Expression<Func<RestorationAlarmList, bool>> filterParseDeleg;
 
         public static List<Item> filters = new List<Item>();
-        public Expression<Func<RestorationAlarmList, bool>> filterParseDeleg;
 
         private HashSet<Item> mCheckedItems;
 
@@ -97,40 +97,35 @@ namespace Alarm4Rest_Viewer.CustControl
             mgroupDescItems = new ObservableCollection<Item>();
             mCheckedItems = new HashSet<Item>();
 
-            RestAlarmsListViewModel.RestAlarmChanged += OnRestAlarmChanged;
+            //Subscribe to RestAlarmChanged of the RestAlarmsListViewModel
+            RestAlarmsListViewModel.RestAlarmChanged += OnRestAlarmChanged; 
 
             mstationItems.CollectionChanged += Items_CollectionChanged;
             mpriorityItems.CollectionChanged += Items_CollectionChanged;
             mgroupDescItems.CollectionChanged += Items_CollectionChanged;
 
             RunFilterCmd = new RelayCommand(o => onFilterAlarms(), o => canFilter());
-
         }
 
-        //Auto Get Station Name
+        //Auto Get Station Name when DB has been loaded.
         private void OnRestAlarmChanged(object source, RestEventArgs arg)
         {
             if (arg.message == "hasLoaded")
             {
-                //Stations = new ObservableCollection<string>(
-                //                await RestAlarmsRepo.GetStationNameAsync());
-
+                
                 // Adding Station ComboBox items
-                //mstationItems.Add(new Item("All", "StationName"));
                 foreach (var Station in RestAlarmsRepo.StationsName)
                 {
                     mstationItems.Add(new Item(Station.ToString(), "StationName"));
                 }
 
                 // Adding Priority ComboBox items
-                //mpriorityItems.Add(new Item("All", "Priority"));
                 foreach (var Priority in RestAlarmsRepo.Priority)
                 {
                     mpriorityItems.Add(new Item(Priority.ToString(), "Priority"));
                 }
 
                 // Adding GoupDescription ComboBox items
-                //mgroupDescItems.Add(new Item("All", "GroupDescription"));
                 foreach (var GroupDescription in RestAlarmsRepo.GroupDescription)
                 {
                     mgroupDescItems.Add(new Item(GroupDescription.ToString(), "GroupDescription"));
@@ -212,7 +207,7 @@ namespace Alarm4Rest_Viewer.CustControl
                     }
 
                     //selectedStations.Add(item.Value.TrimEnd());
-                    filters.Add(item);
+                    filters.Add(item); //Add to filter parse
                 }
                 else
                 {
@@ -230,7 +225,7 @@ namespace Alarm4Rest_Viewer.CustControl
                             break;
                     }
                     //selectedStations.Remove(item.Value.TrimEnd());
-                    filters.Remove(item);
+                    filters.Remove(item); //Remove from filter parse
                 }
                 UpdateFilterParseTxt();
             }
@@ -238,7 +233,6 @@ namespace Alarm4Rest_Viewer.CustControl
 
         private void UpdateFilterParseTxt()
         {
-
             selectedStationsView = string.Join(" | ", selectedStations.ToArray());
             selectedPriorityView = string.Join(" | ", selectedPriority.ToArray());
             selectedGroupDescriptionView = string.Join(" | ", selectedGroupDescription.ToArray());
@@ -269,7 +263,6 @@ namespace Alarm4Rest_Viewer.CustControl
         }
         public RelayCommand RunFilterCmd { get; private set; }
 
-
         public bool canFilter()
         {
             return mCheckedItems.Count != 0;
@@ -284,7 +277,7 @@ namespace Alarm4Rest_Viewer.CustControl
                     from item in filters
                     group item by item.FieldName;
 
-            filterParseDeleg = ExpressionBuider.GetExpression<RestorationAlarmList>(groupFields);
+            filterParseDeleg = FilterExpressionBuilder.GetExpression<RestorationAlarmList>(groupFields);
 
             RestAlarmsRepo.filterParseDeleg = filterParseDeleg;
             RestAlarmsRepo.FilterAct();
