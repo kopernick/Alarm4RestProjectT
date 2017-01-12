@@ -74,6 +74,7 @@
       <DependentUpon>searchToolBarView.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustControl\searchToolBarViewModel.cs" />
+    <Compile Include="Services\SearchingExpressionBuilder.cs" />
     <Compile Include="Services\FilterExpressionBuilder.cs" />
     <Compile Include="CustControl\filterToolBarView.xaml.cs">
       <DependentUpon>filterToolBarView.xaml</DependentUpon>
