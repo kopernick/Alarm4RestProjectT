@@ -16,7 +16,7 @@ namespace Alarm4Rest_Viewer.Services
         
 
         /*Methode that solve Many List field 
-         Please gouping likt this -->IEnumerable<IGrouping<string, Item>> gruopFields =
+         Please gouping like this -->IEnumerable<IGrouping<string, Item>> gruopFields =
                                             from item in filters
                                             group item by item.FieldName;
          
@@ -43,7 +43,6 @@ namespace Alarm4Rest_Viewer.Services
                     
                     //If it is SearchingField Group
                     if (groupfield.Key == "FieldName")
-                    {
                         
                         // has 1 item parameter
                         if (gruopfields.Count == 1)
@@ -59,6 +58,7 @@ namespace Alarm4Rest_Viewer.Services
                         {  
                             //Loop through filters until we have create an expression for each 
                             while (gruopfields.Count > 0)
+                    {
                             {
                                 var f1 = gruopfields[0];
                                 var f2 = gruopfields[1];

@@ -17,7 +17,6 @@ namespace Alarm4Rest_Viewer
         private searchToolBarViewModel _searchToolViewModel = new searchToolBarViewModel();
         private CustomAlarmListViewModel _custAlarmViewModel = new CustomAlarmListViewModel();
 
-
         private PropertyChangeEventBase _CurrentToolViewModel;
         private PropertyChangeEventBase _CustAlarmViewModel;
         public RelayCommand EnableSearchCmd { get; private set; }
