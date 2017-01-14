@@ -20,7 +20,7 @@ namespace Alarm4Rest_Viewer.CustControl
         public static List<string> selectedGroupDescription = new List<string>();
         public Expression<Func<RestorationAlarmList, bool>> searchParseDeleg;
 
-        public static List<Item> filters = new List<Item>();
+        public static List<Item> searchList = new List<Item>();
 
         private HashSet<Item> mCheckedItems;
 
@@ -28,8 +28,8 @@ namespace Alarm4Rest_Viewer.CustControl
         public IEnumerable<Item> fieldItems { get { return mpfieldItems; } }
 
 
-        private ObservableCollection<Item> mgroupDescItems;
-        public IEnumerable<Item> groupDescItems { get { return mgroupDescItems; } }
+        private ObservableCollection<Item> mpriorityItems;
+        public IEnumerable<Item> priorityItems { get { return mpriorityItems; } }
 
 
         private ObservableCollection<Item> mstationItems;
@@ -63,19 +63,19 @@ namespace Alarm4Rest_Viewer.CustControl
                 OnPropertyChanged("selectedFieldView");
             }
         }
-        public string selectedGroupDescriptionView
+        public string selectedPriorityView
         {
-            get { return _selectedGroupDescriptionView; }
+            get { return _selectedPriorityView; }
             set
             {
-                Set(ref _selectedGroupDescriptionView, value);
-                OnPropertyChanged("selectedGroupDescriptionView");
+                Set(ref _selectedPriorityView, value);
+                OnPropertyChanged("selectedPriorityView");
             }
         }
 
         public string _selectedStationsView;
         public string _selectedFieldView;
-        public string _selectedGroupDescriptionView;
+        public string _selectedPriorityView;
 
         public string searchText
         {
@@ -94,7 +94,7 @@ namespace Alarm4Rest_Viewer.CustControl
         {
             mstationItems = new ObservableCollection<Item>();
             mpfieldItems = new ObservableCollection<Item>();
-            mgroupDescItems = new ObservableCollection<Item>();
+            mpriorityItems = new ObservableCollection<Item>();
             mCheckedItems = new HashSet<Item>();
 
             //Subscribe to RestAlarmChanged of the RestAlarmsListViewModel
@@ -102,7 +102,9 @@ namespace Alarm4Rest_Viewer.CustControl
 
             mstationItems.CollectionChanged += Items_CollectionChanged;
             mpfieldItems.CollectionChanged += Items_CollectionChanged;
-            mgroupDescItems.CollectionChanged += Items_CollectionChanged;
+            mpriorityItems.CollectionChanged += Items_CollectionChanged;
+            search_Parse_Pri = "";
+            search_Parse_Sec = "";
 
             RunSearchCmd = new RelayCommand(o => onSearchAlarms(), o => canSearch());
         }
@@ -120,49 +122,22 @@ namespace Alarm4Rest_Viewer.CustControl
                 }
 
                 // Adding Priority ComboBox items
-                
+                foreach (var Priority in RestAlarmsRepo.Priority)
+                {
+                    mpriorityItems.Add(new Item(Priority.ToString(), "Priority"));
+                }
+
+                // Adding Priority ComboBox items
+
                 mpfieldItems.Add(new Item("PointName", "FieldName"));
                 mpfieldItems.Add(new Item("Message", "FieldName"));
+                //mpfieldItems.Add(new Item("Priority", "FieldName"));
                 mpfieldItems.Add(new Item("GroupPointName", "FieldName"));
                 mpfieldItems.Add(new Item("GroupDescription", "FieldName"));
 
-                // Adding GoupDescription ComboBox items
-                foreach (var GroupDescription in RestAlarmsRepo.GroupDescription)
-                {
-                    mgroupDescItems.Add(new Item(GroupDescription.ToString(), "GroupDescription"));
-                }
             }
         }
 
-        //Manual Get Station Name
-        public void LoadFilterParameter()
-        {
-
-            //Stations = new ObservableCollection<string>(
-            //                await RestAlarmsRepo.GetStationNameAsync());
-
-            // Adding Station ComboBox items
-            mstationItems.Add(new Item("All", "StationName"));
-            foreach (var Station in RestAlarmsRepo.StationsName)
-            {
-                mstationItems.Add(new Item(Station.ToString(), "StationName"));
-            }
-
-            // Adding Priority ComboBox items
-            mpfieldItems.Add(new Item("All", "FieldName"));
-            foreach (var Field in RestAlarmsRepo.Priority)
-            {
-                mpfieldItems.Add(new Item(Field.ToString(), "FieldName"));
-            }
-
-            // Adding GoupDescription ComboBox items
-            mgroupDescItems.Add(new Item("All", "GroupDescription"));
-            foreach (var GroupDescription in RestAlarmsRepo.GroupDescription)
-            {
-                mgroupDescItems.Add(new Item(GroupDescription.ToString(), "GroupDescription"));
-            }
-
-        }
 
         private void Items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -202,13 +177,13 @@ namespace Alarm4Rest_Viewer.CustControl
                         case "FieldName":
                             selectedField.Add(item.Value.TrimEnd());
                             break;
-                        case "GroupDescription":
+                        case "Priority":
                             selectedGroupDescription.Add(item.Value.TrimEnd());
                             break;
                     }
 
                     //selectedStations.Add(item.Value.TrimEnd());
-                    filters.Add(item); //Add to filter parse
+                    searchList.Add(item); //Add to filter parse
                 }
                 else
                 {
@@ -221,12 +196,12 @@ namespace Alarm4Rest_Viewer.CustControl
                         case "FieldName":
                             selectedField.Remove(item.Value.TrimEnd());
                             break;
-                        case "GroupDescription":
+                        case "Priority":
                             selectedGroupDescription.Remove(item.Value.TrimEnd());
                             break;
                     }
                     //selectedStations.Remove(item.Value.TrimEnd());
-                    filters.Remove(item); //Remove from filter parse
+                    searchList.Remove(item); //Remove from filter parse
                 }
                 UpdateFilterParseTxt();
             }
@@ -236,14 +211,12 @@ namespace Alarm4Rest_Viewer.CustControl
         {
             selectedStationsView = string.Join(" | ", selectedStations.ToArray());
             selectedFieldView = string.Join(" | ", selectedField.ToArray());
-            selectedGroupDescriptionView = string.Join(" | ", selectedGroupDescription.ToArray());
+            selectedPriorityView = string.Join(" | ", selectedGroupDescription.ToArray());
 
             //To Do
             List<string> filterTextList = new List<string>();
-            if (selectedStationsView.Count() > 0) filterTextList.Add("(" + selectedStationsView + ")");
-            if (selectedFieldView.Count() > 0) filterTextList.Add("(" + selectedFieldView + ")");
-            if (selectedGroupDescriptionView.Count() > 0) filterTextList.Add("(" + selectedGroupDescriptionView + ")");
-
+            if (selectedFieldView.Count() > 0) filterTextList.Add("Search "+ searchText + "in field(s)" + "(" + selectedFieldView + ")" );
+            if (selectedStationsView.Count() > 0) filterTextList.Add(" @ station :" + "(" + selectedStationsView + ")");
             if (filterTextList.Count() > 0)
             {
                 searchText = string.Join(" & ", filterTextList.ToArray());
@@ -251,14 +224,28 @@ namespace Alarm4Rest_Viewer.CustControl
             }
         }
 
-        private string _search_Parse;
-        public string search_Parse
+        //Default Search Keyword
+        private string _search_Parse_Pri;
+        public string search_Parse_Pri
         {
-            get { return _search_Parse; }
+            get { return _search_Parse_Pri; }
             set
             {
-                _search_Parse = value;
-                OnPropertyChanged("search_Parse");
+                _search_Parse_Pri = value;
+                OnPropertyChanged("search_Parse_Pri");
+                // RestAlarmsRepo.filter_Parse = value;
+            }
+        }
+
+        //Option Search Keyword
+        private string _search_Parse_Sec;
+        public string search_Parse_Sec
+        {
+            get { return _search_Parse_Sec; }
+            set
+            {
+                _search_Parse_Sec = value;
+                OnPropertyChanged("search_Parse_Sec");
                 // RestAlarmsRepo.filter_Parse = value;
             }
         }
@@ -266,7 +253,7 @@ namespace Alarm4Rest_Viewer.CustControl
 
         public bool canSearch()
         {
-            return mCheckedItems.Count != 0;
+            return (_search_Parse_Pri != "" || _search_Parse_Sec != "");
         }
         public void onSearchAlarms()
         {
@@ -275,15 +262,26 @@ namespace Alarm4Rest_Viewer.CustControl
             //ExpressGen();
 
             IEnumerable<IGrouping<string, Item>> groupFields =
-                    from item in filters
+                    from item in searchList
                     group item by item.FieldName;
 
-            searchParseDeleg = SearchingExpressionBuilder.GetExpression<RestorationAlarmList>(groupFields, search_Parse);
+            string[] search_Parse_Pri_List = search_Parse_Pri.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            Console.WriteLine(search_Parse_Pri_List.Length);
 
-            RestAlarmsRepo.filterParseDeleg = searchParseDeleg;
-            RestAlarmsRepo.FilterAct();
+            //searchParseDeleg = SearchingExpressionBuilder.GetExpression<RestorationAlarmList>(groupFields, search_Parse_Pri);
+            searchParseDeleg = SearchingExpressionBuilder.GetExpression<RestorationAlarmList>(groupFields, search_Parse_Pri_List, _search_Parse_Sec);
 
-            Console.WriteLine(searchParseDeleg.Body);
+            if(searchParseDeleg == null)
+            {
+                Console.WriteLine("Expression Building Error");
+            }
+            else
+            {
+                RestAlarmsRepo.filterParseDeleg = searchParseDeleg;
+                RestAlarmsRepo.FilterAct();
+                Console.WriteLine(searchParseDeleg.Body);
+            }
+            
 
         }
     }
