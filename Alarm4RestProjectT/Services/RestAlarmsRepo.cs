@@ -120,7 +120,7 @@ namespace Alarm4Rest_Viewer.Services
                             .OrderByDescending(c => c.PkAlarmListID)
                             .Skip((pageIndex - 1) * pageSize)
                             .Take(pageSize)
-                            .Take(pageSize)
+                            //.Take(pageSize)
                             .ToListAsync<RestorationAlarmList>();
         }
 
@@ -129,9 +129,9 @@ namespace Alarm4Rest_Viewer.Services
             
             return await DBContext.RestorationAlarmLists
                             .OrderByDescending(c => c.PkAlarmListID)
+                            .Where(filter_Parse)
                             .Skip((pageIndex - 1) * pageSize)
                             .Take(pageSize)
-                            .Where(filter_Parse)
                             .ToListAsync<RestorationAlarmList>();
         }
 
