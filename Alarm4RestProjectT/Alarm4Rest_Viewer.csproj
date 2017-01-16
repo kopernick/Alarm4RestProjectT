@@ -70,6 +70,10 @@
     <Compile Include="CustControl\ComboWithCheckboxes.xaml.cs">
       <DependentUpon>ComboWithCheckboxes.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustControl\mainNavBarView.xaml.cs">
+      <DependentUpon>mainNavBarView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustControl\mainNavBarViewModel.cs" />
     <Compile Include="CustControl\searchToolBarView.xaml.cs">
       <DependentUpon>searchToolBarView.xaml</DependentUpon>
     </Compile>
@@ -100,6 +104,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustControl\filterToolBarView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustControl\mainNavBarView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -170,6 +178,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\filter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\firstPage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\prePage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\nextPage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\lastPage.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

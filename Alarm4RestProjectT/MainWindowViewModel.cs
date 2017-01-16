@@ -35,6 +35,7 @@ namespace Alarm4Rest_Viewer
 
         }
 
+        
         public PropertyChangeEventBase  CurrentToolViewModel
         {
             get { return _CurrentToolViewModel; }

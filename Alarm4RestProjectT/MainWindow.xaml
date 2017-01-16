@@ -18,36 +18,42 @@
         <DataTemplate DataType="{x:Type CustControl:filterToolBarViewModel}">
             <CustControl:filterToolBarView />
         </DataTemplate>
-        
+
         <DataTemplate DataType="{x:Type CustControl:searchToolBarViewModel}">
             <CustControl:searchToolBarView />
         </DataTemplate>
 
     </Window.Resources>
 
-    <DockPanel>
+    <DockPanel LastChildFill="True">
         <!--Resources-->
         <DockPanel.Resources>
             <BitmapImage x:Key="MainImage" UriSource="/Alarm4Rest_Viewer;component/images/main.png" />
             <BitmapImage x:Key="FilterImage" UriSource="/Alarm4Rest_Viewer;component/images/filter.png" />
             <BitmapImage x:Key="SearchImage" UriSource="/Alarm4Rest_Viewer;component/images/search.png" />
+
+            <BitmapImage x:Key="firstPageImage" UriSource = "/Alarm4Rest_Viewer;component/images/firstPage.png" />
+            <BitmapImage x:Key="prePageImage" UriSource = "/Alarm4Rest_Viewer;component/images/prePage.png" />
+            <BitmapImage x:Key="nextPageImage" UriSource = "/Alarm4Rest_Viewer;component/images/nextPage.png" />
+            <BitmapImage x:Key="lastPageImage" UriSource = "/Alarm4Rest_Viewer;component/images/lastPage.png" />
+
         </DockPanel.Resources>
 
         <!-- Tool Bar -->
         <Grid DockPanel.Dock ="Top">
             <StackPanel Orientation="Horizontal">
-                <Button Margin="2" IsDefault="True" Width="44" 
+                <Button Margin="2" IsDefault="True" Height ="48" 
                                 Command="{Binding EnableCustView}" 
                                 ToolTip="แสดง Main AlarmList เท่านั้น">
                     <Image Source ="{StaticResource MainImage}" />
                 </Button>
-                <Button Margin="2" IsDefault="True" Width="33" 
+                <Button Margin="2" IsDefault="True" Height="48" 
                                 Command="{Binding EnableFilterCmd}"
                                 ToolTip="Filter Alarms"
                                 CommandParameter="filterPrep">
                     <Image Source ="{StaticResource FilterImage}" />
                 </Button>
-                <Button Margin="2" IsDefault="True" Width="40" 
+                <Button Margin="2" IsDefault="True" Height="48" 
                                 Command="{Binding EnableSearchCmd}"
                                 ToolTip="Search Alarms">
                     <Image Source ="{StaticResource SearchImage}" />
@@ -66,7 +72,13 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-                <RestorationAlarmLists:RestAlarmsListView Grid.Column="0" x:Name="MainView" Margin="5" Width="Auto"/>
+            <DockPanel Grid.Column="0">
+
+                <Grid DockPanel.Dock ="Top">
+                    <RestorationAlarmLists:RestAlarmsListView Grid.Column="0" x:Name="MainView" Margin="2" Width="Auto" />
+                </Grid>
+                
+            </DockPanel>
             
 <!--
             <ContentControl Content="{Binding MainAlarmViewModel}" Grid.Column="0" x:Name="MainView" Margin="5" Width="Auto"/>
@@ -80,9 +92,7 @@
                 <Grid DockPanel.Dock ="Top">
 
                     <ContentControl x:Name="custView" Content="{Binding CustAlarmViewModel}" Width="Auto"/>
-                    <!--
-                        <CustomAlarmLists:CustomAlarmsListView  x:Name="CustView" Margin="5,0,5,5" Width="Auto"/>
-                    -->
+
                 </Grid>
             </DockPanel>
 

@@ -30,6 +30,10 @@ namespace Alarm4Rest_Viewer.Services
         public static RestorationAlarmList maxPkRecIndex { get; private set; }
         public static int pageIndex { get; set; }
         public static int pageSize { get; set; }
+
+        public static int pageCount { get; set; }
+        public static int restAlarmCount { get; private set; }
+        public static int custAlarmCount { get; private set; }
         public static List<string> Priority { get; private set; }
         public static List<string> GroupDescription { get; private set; }
 
@@ -66,6 +70,7 @@ namespace Alarm4Rest_Viewer.Services
         //Get All Data from SQL
         public static async Task GetInitDataRepositoryAsync()
         {
+
             RestAlarmListDump = await GetRestAlarmsAsync(pageIndex, pageSize);
             LastAlarmRecIndex = RestAlarmListDump[0].PkAlarmListID; //Set Last PkAlarmList initializing
 
@@ -116,6 +121,13 @@ namespace Alarm4Rest_Viewer.Services
 
         public static async Task<List<RestorationAlarmList>> GetRestAlarmsAsync(int pageIndex = 1, int pageSize = 30)
         {
+            //Get RestAlarm count
+            restAlarmCount = (from alarm in DBContext.RestorationAlarmLists
+                              orderby alarm.PkAlarmListID descending
+                              select alarm).Count();
+            pageCount = (restAlarmCount / pageSize) + 1;
+            
+            //Get one page
             return await DBContext.RestorationAlarmLists
                             .OrderByDescending(c => c.PkAlarmListID)
                             .Skip((pageIndex - 1) * pageSize)
@@ -126,7 +138,14 @@ namespace Alarm4Rest_Viewer.Services
 
         public static async Task<List<RestorationAlarmList>> GetCustomRestAlarmsAsync(Expression<Func<RestorationAlarmList, bool>> filter_Parse, int pageIndex = 1, int pageSize = 30)
         {
-            
+
+            //Get RestAlarm count
+            custAlarmCount = DBContext.RestorationAlarmLists
+                            .OrderByDescending(c => c.PkAlarmListID)
+                            .Where(filter_Parse)
+                            .Count();
+
+            //Get one page
             return await DBContext.RestorationAlarmLists
                             .OrderByDescending(c => c.PkAlarmListID)
                             .Where(filter_Parse)
@@ -190,6 +209,8 @@ namespace Alarm4Rest_Viewer.Services
 
             if (hasNewAlarmChk(maxPkRecIndex.PkAlarmListID))
             {
+                //To Do LastAlarmRecIndex_of_Page
+
                 PreviousAlarmRecIndex = LastAlarmRecIndex;
                 LastAlarmRecIndex = maxPkRecIndex.PkAlarmListID;
                 startNewRestItemArray = LastAlarmRecIndex-PreviousAlarmRecIndex-1;
