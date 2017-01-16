@@ -29,9 +29,11 @@ namespace Alarm4Rest_Viewer.Services
        
         public static RestorationAlarmList maxPkRecIndex { get; private set; }
         public static int pageIndex { get; set; }
+        public static int custPageIndex { get; set; }
         public static int pageSize { get; set; }
 
         public static int pageCount { get; set; }
+        public static int custPageCount { get; set; }
         public static int restAlarmCount { get; private set; }
         public static int custAlarmCount { get; private set; }
         public static List<string> Priority { get; private set; }
@@ -144,6 +146,7 @@ namespace Alarm4Rest_Viewer.Services
                             .OrderByDescending(c => c.PkAlarmListID)
                             .Where(filter_Parse)
                             .Count();
+            custPageCount = (custAlarmCount / pageSize) + 1;
 
             //Get one page
             return await DBContext.RestorationAlarmLists
@@ -158,7 +161,7 @@ namespace Alarm4Rest_Viewer.Services
         {
             RestEventArgs arg = new RestEventArgs();
             //Test Raise read "LoadStationName"
-            CustAlarmListDump = await GetCustomRestAlarmsAsync(filterParseDeleg, pageIndex, pageSize);
+            CustAlarmListDump = await GetCustomRestAlarmsAsync(filterParseDeleg, custPageIndex, pageSize);
             if (CustAlarmListDump.Count != 0)
             {
                 LastCustomAlarmRecIndex = CustAlarmListDump[0].PkAlarmListID;
@@ -192,7 +195,7 @@ namespace Alarm4Rest_Viewer.Services
             RestAlarmListDump  = await GetRestAlarmsAsync(pageIndex, pageSize);
             CheckNewRestAlarm();
 
-            CustAlarmListDump = await GetCustomRestAlarmsAsync(filterParseDeleg, pageIndex, pageSize);
+            CustAlarmListDump = await GetCustomRestAlarmsAsync(filterParseDeleg, custPageIndex, pageSize);
             if (CustAlarmListDump.Count != 0)
                 CheckNewCustomRestAlarm();
 

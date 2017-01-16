@@ -26,6 +26,14 @@
 
         <!--Style-->
         <DockPanel.Resources>
+            <!-- Image -->
+
+            <BitmapImage x:Key="firstPageImage" UriSource = "/Alarm4Rest_Viewer;component/images/firstPage.png" />
+            <BitmapImage x:Key="prePageImage" UriSource = "/Alarm4Rest_Viewer;component/images/prePage.png" />
+            <BitmapImage x:Key="nextPageImage" UriSource = "/Alarm4Rest_Viewer;component/images/nextPage.png" />
+            <BitmapImage x:Key="lastPageImage" UriSource = "/Alarm4Rest_Viewer;component/images/lastPage.png" />
+            <BitmapImage x:Key="exportImage" UriSource = "/Alarm4Rest_Viewer;component/images/export.png" />
+            
             <Style x:Key="RowPriority" TargetType="{x:Type DataGridRow}">
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Priority}" Value="High           ">
@@ -88,6 +96,63 @@
         </Grid>
         
         <!-- Custom List -->
+        <!--ToolBar-->
+        <Grid DockPanel.Dock ="Top">
+            <ToolBarTray >
+                <ToolBar  >
+
+                    <StackPanel Orientation="Horizontal">
+                        <Button Margin="2" IsDefault="True" Height="32"
+                                Command="{Binding Export}" >
+                            <Image Source ="{StaticResource exportImage}" />
+                            </Button>
+                    </StackPanel>
+
+                    <Button Margin="2" IsDefault="True" Height="32"
+                                Command="{Binding Path = FirstPageCommand}"
+                                ToolTip="หน้าแรก">
+                        <Image Source ="{StaticResource firstPageImage}" />
+                    </Button>
+
+                    <Button Margin="2" IsDefault="True" Height="32"
+                                Command="{Binding Path = PrePageCommand}"
+                                ToolTip="ก่อนหน้า">
+                        <Image Source ="{StaticResource prePageImage}" />
+                    </Button>
+                    <Label VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14">
+                        Page
+                    </Label>
+
+                    <TextBox Width="70" x:Name="txtPage" 
+                             Text="{Binding custPageIndex}" Margin="2" FontSize="14" HorizontalAlignment="Center" FontWeight="Bold">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding Path = EnterPageCommand}"
+                                        CommandParameter="{Binding ElementName=txtPage, Path=Text}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+
+                    <Label VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14">
+                        of
+                    </Label>
+                    <Label x:Name="totalPage" Width="Auto"
+                        Content ="{Binding custPageCount}" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" FontWeight="Bold">
+                    </Label>
+
+                    <Button Margin="2" IsDefault="True" Height="32"
+                                Command="{Binding Path = NextPageCommand}"
+                                ToolTip="หน้าต่อไป">
+                        <Image Source ="{StaticResource nextPageImage}" />
+                    </Button>
+
+                    <Button Margin="2" IsDefault="True" Height="32"
+                                Command="{Binding Path = LastPageCommand}"
+                                ToolTip="หน้าสุดท้าย">
+                        <Image Source ="{StaticResource lastPageImage}" />
+                    </Button>
+                </ToolBar>
+
+            </ToolBarTray>
+        </Grid>
         <Grid >
             <DataGrid ItemsSource="{Binding CustomAlarms}" 
                       x:Name="MainAlarmGrid"  FontSize="13" 

@@ -33,7 +33,7 @@
             <BitmapImage x:Key="prePageImage" UriSource = "/Alarm4Rest_Viewer;component/images/prePage.png" />
             <BitmapImage x:Key="nextPageImage" UriSource = "/Alarm4Rest_Viewer;component/images/nextPage.png" />
             <BitmapImage x:Key="lastPageImage" UriSource = "/Alarm4Rest_Viewer;component/images/lastPage.png" />
-
+            <BitmapImage x:Key="exportImage" UriSource = "/Alarm4Rest_Viewer;component/images/export.png" />
             <Style x:Key="RowPriority" TargetType="{x:Type DataGridRow}">
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Priority}" Value="High           ">
@@ -52,13 +52,16 @@
 
         <!-- Mail Alarm ListView -->
         
+        <!--ToolBar-->
         <Grid DockPanel.Dock ="Top">
             <ToolBarTray >
                 <ToolBar  >
                    
                     <StackPanel Orientation="Horizontal">
-                        <Button Margin="2" IsDefault="True" 
-                                Command="{Binding Export}" Content="Export CSV"/>
+                        <Button Margin="2" IsDefault="True" Height="32"
+                                Command="{Binding Export}" >
+                            <Image Source ="{StaticResource exportImage}" />
+                        </Button>
                     </StackPanel>
                     
                     <Button Margin="2" IsDefault="True" Height="32"
