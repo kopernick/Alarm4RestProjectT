@@ -80,10 +80,13 @@
                     </Label>
 
                     <TextBox Width="70" x:Name="txtPage" 
-                             Text="{Binding pageIndex}" Margin="2" FontSize="14" HorizontalAlignment="Center" FontWeight="Bold">
+                             Text="{Binding pageIndex, UpdateSourceTrigger=PropertyChanged}" Margin="2" FontSize="14" HorizontalAlignment="Center" FontWeight="Bold">
                         <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding Path = EnterPageCommand}"/>
+                            <!--
                             <KeyBinding Key="Enter" Command="{Binding Path = EnterPageCommand}"
                                         CommandParameter="{Binding ElementName=txtPage, Path=Text}"/>
+                            -->
                         </TextBox.InputBindings>
                     </TextBox>
                     
@@ -178,7 +181,7 @@
                                         IsReadOnly="True"/>
 
 
-                    <DataGridTextColumn Header="Event Message"
+                    <DataGridTextColumn Header="Message"
                                         Binding="{Binding Message}"
                                         IsReadOnly="True"/>
                 </DataGrid.Columns>

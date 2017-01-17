@@ -49,6 +49,8 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
             PrePageCommand = new RelayCommand(O => onPrePageCommand(), O => canPrePageCommand());
             NextPageCommand = new RelayCommand(O => onNextPageCommand(), O => canNextPageCommand());
             LastPageCommand = new RelayCommand(O => onLastPageCommand(), O => canNextPageCommand());
+            EnterPageCommand = new RelayCommand(O => onEnterPageCommand(), O => canEnterPageCommand());
+
             RestAlarmsRepo.RestAlarmChanged += OnRestAlarmRepoChanged;
             pageIndex = 1;
             pageSize = 40;
@@ -59,6 +61,7 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
             //_timer.Start();
         }
 
+        /* WPF call method with parameter
         RelayCommand _EnterPageCommand;
         public ICommand EnterPageCommand
         {
@@ -87,7 +90,8 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
             RestAlarmListDump = await RestAlarmsRepo.GetRestAlarmsAsync(pageIndex, pageSize);
             RestorationAlarms = new ObservableCollection<RestorationAlarmList>(RestAlarmListDump);
         }
-        
+        */
+
         public RelayCommand FirstPageCommand { get; private set; }
         private bool canPrePageCommand()
         {
@@ -97,6 +101,25 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
         private async void onFirstPageCommand()
         {
             pageIndex = 1;
+            Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _pageIndex);
+            RestAlarmsRepo.pageIndex = pageIndex;
+
+            //To Do function Update RestAlarmsRepo.RestAlarmListDump 
+            RestAlarmListDump = await RestAlarmsRepo.GetRestAlarmsAsync(pageIndex, pageSize);
+            RestorationAlarms = new ObservableCollection<RestorationAlarmList>(RestAlarmListDump);
+
+        }
+        public RelayCommand EnterPageCommand { get; private set; }
+        private bool canEnterPageCommand()
+        {
+            return (true);
+        }
+
+        private async void onEnterPageCommand()
+        {
+            if (_pageIndex <= 0) pageIndex = 1;
+            if (_pageIndex > RestAlarmsRepo.pageCount) pageIndex = RestAlarmsRepo.pageCount;
+
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _pageIndex);
             RestAlarmsRepo.pageIndex = pageIndex;
 

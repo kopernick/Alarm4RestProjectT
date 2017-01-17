@@ -36,7 +36,11 @@
                      AcceptsReturn="True"
                      ScrollViewer.CanContentScroll="True"
                      ScrollViewer.VerticalScrollBarVisibility="Auto"
-                     Text="{Binding search_Parse_Pri}" Margin="5">
+                     Text="{Binding search_Parse_Pri, UpdateSourceTrigger=PropertyChanged}" Margin="5">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Return" 
+                            Command="{Binding Ok}"/>
+                </TextBox.InputBindings>
 
             </TextBox>
             
@@ -79,7 +83,7 @@
                 AND
             </Label>
             <TextBox Grid.Column="5" Grid.Row="1" Width="150" Grid.ColumnSpan="1" 
-                     Text="{Binding search_Parse_Sec}" Margin="0.5, 5">
+                     Text="{Binding search_Parse_Sec, UpdateSourceTrigger=PropertyChanged}" Margin="0.5, 5">
 
             </TextBox>
             

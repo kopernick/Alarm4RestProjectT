@@ -123,6 +123,7 @@ namespace Alarm4Rest_Viewer.Services
 
         public static async Task<List<RestorationAlarmList>> GetRestAlarmsAsync(int pageIndex = 1, int pageSize = 30)
         {
+            //To Do ปรับปรุงให้มีการ Query ครั้งเดียว
             //Get RestAlarm count
             restAlarmCount = (from alarm in DBContext.RestorationAlarmLists
                               orderby alarm.PkAlarmListID descending
@@ -141,6 +142,7 @@ namespace Alarm4Rest_Viewer.Services
         public static async Task<List<RestorationAlarmList>> GetCustomRestAlarmsAsync(Expression<Func<RestorationAlarmList, bool>> filter_Parse, int pageIndex = 1, int pageSize = 30)
         {
 
+            //To Do ปรับปรุงให้มีการ Query ครั้งเดียว
             //Get RestAlarm count
             custAlarmCount = DBContext.RestorationAlarmLists
                             .OrderByDescending(c => c.PkAlarmListID)

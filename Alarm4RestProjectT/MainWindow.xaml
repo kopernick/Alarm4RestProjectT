@@ -42,18 +42,18 @@
         <!-- Tool Bar -->
         <Grid DockPanel.Dock ="Top">
             <StackPanel Orientation="Horizontal">
-                <Button Margin="2" IsDefault="True" Height ="48" 
+                <Button Margin="2" IsDefault="True" Height ="36" 
                                 Command="{Binding EnableCustView}" 
                                 ToolTip="แสดง Main AlarmList เท่านั้น">
                     <Image Source ="{StaticResource MainImage}" />
                 </Button>
-                <Button Margin="2" IsDefault="True" Height="48" 
+                <Button Margin="2" IsDefault="True" Height="36" 
                                 Command="{Binding EnableFilterCmd}"
                                 ToolTip="Filter Alarms"
                                 CommandParameter="filterPrep">
                     <Image Source ="{StaticResource FilterImage}" />
                 </Button>
-                <Button Margin="2" IsDefault="True" Height="48" 
+                <Button Margin="2" IsDefault="True" Height="36" 
                                 Command="{Binding EnableSearchCmd}"
                                 ToolTip="Search Alarms">
                     <Image Source ="{StaticResource SearchImage}" />
