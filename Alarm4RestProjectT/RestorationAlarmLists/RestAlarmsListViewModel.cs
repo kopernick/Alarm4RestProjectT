@@ -165,13 +165,21 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
         //OnLoad Control
         public async void LoadRestorationAlarmsAsync()
         {
-            RestEventArgs arg = new RestEventArgs();
-            await RestAlarmsRepo.GetInitDataRepositoryAsync();
-            RestorationAlarms = new ObservableCollection<RestorationAlarmList>(RestAlarmsRepo.RestAlarmListDump);
-            pageCount = RestAlarmsRepo.pageCount;
-            arg.message = "hasLoaded";
-            onRestAlarmChanged(arg);
-            Console.WriteLine("Load Success");
+            try
+            {
+                RestEventArgs arg = new RestEventArgs();
+                await RestAlarmsRepo.GetInitDataRepositoryAsync();
+                RestorationAlarms = new ObservableCollection<RestorationAlarmList>(RestAlarmsRepo.RestAlarmListDump);
+                pageCount = RestAlarmsRepo.pageCount;
+                arg.message = "hasLoaded";
+                onRestAlarmChanged(arg);
+                Console.WriteLine("Load Success");
+            }catch
+            {
+                Console.WriteLine("Load Fail");
+                NotificationMessage = "Can't connect to Database : " + DateTime.Now.ToLocalTime();
+            }
+            
         }
 
         //New alarm Process
@@ -185,9 +193,8 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
                     if (RestAlarmsRepo.PreviousAlarmRecIndex < 0) break;
                     for (int i = RestAlarmsRepo.startNewRestItemArray; i >= 0; i--)
                     {
-                        if (RestorationAlarms.Count>pageSize) RestorationAlarms.RemoveAt(pageSize);
                         RestorationAlarms.Insert(0,RestAlarmsRepo.RestAlarmListDump[i]);
-                        
+                        if (RestorationAlarms.Count > pageSize) RestorationAlarms.RemoveAt(pageSize);
                     }
                     pageCount = RestAlarmsRepo.pageCount;
                     NotificationMessage = "Has New Alarm : " + DateTime.Now.ToLocalTime();

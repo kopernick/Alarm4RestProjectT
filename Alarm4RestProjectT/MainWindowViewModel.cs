@@ -22,7 +22,6 @@ namespace Alarm4Rest_Viewer
         private searchToolBarViewModel _searchToolViewModel = new searchToolBarViewModel();
         private CustomAlarmListViewModel _custAlarmViewModel = new CustomAlarmListViewModel();
 
-        private PropertyChangeEventBase _CustAlarmViewModel;
         public RelayCommand EnableSearchCmd { get; private set; }
         public RelayCommand EnableFilterCmd { get; private set; }
         public RelayCommand EnableCustView { get; private set; }
@@ -519,10 +518,13 @@ namespace Alarm4Rest_Viewer
         }
         #endregion
 
+        private PropertyChangeEventBase _CustAlarmViewModel;
         public PropertyChangeEventBase CustAlarmViewModel
         {
             get { return _CustAlarmViewModel; }
-            set { SetProperty(ref _CustAlarmViewModel, value); }
+            set {
+                SetProperty(ref _CustAlarmViewModel, value);
+            }
         }
 
        

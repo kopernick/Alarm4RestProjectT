@@ -130,7 +130,14 @@ namespace Alarm4Rest_Viewer.Services
             restAlarmCount = (from alarm in DBContext.RestorationAlarmLists
                               orderby alarm.PkAlarmListID descending
                               select alarm).Count();
-            pageCount = (restAlarmCount / pageSize) + 1;
+
+            if (restAlarmCount % pageSize == 0)
+            {
+                pageCount = (restAlarmCount / pageSize);
+            }else
+            { 
+                pageCount = (restAlarmCount / pageSize) + 1;
+            }
             
             //Get one page
             return await DBContext.RestorationAlarmLists
@@ -150,7 +157,15 @@ namespace Alarm4Rest_Viewer.Services
                             .OrderByDescending(c => c.PkAlarmListID)
                             .Where(filter_Parse)
                             .Count();
-            custPageCount = (custAlarmCount / pageSize) + 1;
+
+            if (custAlarmCount % pageSize == 0)
+            {
+                custPageCount = (custAlarmCount / pageSize);
+            }
+            else
+            {
+                custPageCount = (custAlarmCount / pageSize) + 1;
+            }
 
             //Get one page
             return await DBContext.RestorationAlarmLists
@@ -201,7 +216,6 @@ namespace Alarm4Rest_Viewer.Services
             }
             else //filter result no item
             {
-
                 arg.message = "GetRestAlarmNoResult";
                 LastAlarmRecIndex = -1;
                 LastMaxAlarmRecIndex = -1;
@@ -213,25 +227,30 @@ namespace Alarm4Rest_Viewer.Services
         private static async void dispatcherTimer_Tick(object sender, EventArgs e)
         {
             Predicate<int> isEqualLast = (newIndex) => LastMaxAlarmRecIndex == newIndex;
-
-            maxPkRecIndex = (from alarm in DBContext.RestorationAlarmLists
-                             orderby alarm.PkAlarmListID descending
-                             select alarm).FirstOrDefault();
-
-            if (maxPkRecIndex == null || isEqualLast(maxPkRecIndex.PkAlarmListID)) return; //Exit if Has no data or No new Alarm
-             
-            //Get Update Data
-            RestAlarmListDump  = await GetRestAlarmsAsync(pageIndex, pageSize);
-            CheckNewRestAlarm();
-
-            if(filterParseDeleg != null)
+            try
             {
-                CustAlarmListDump = await GetCustomRestAlarmsAsync(filterParseDeleg, custPageIndex, pageSize);
-                if (CustAlarmListDump.Count != 0)
-                CheckNewCustomRestAlarm();
-            }
-            
 
+                maxPkRecIndex = (from alarm in DBContext.RestorationAlarmLists
+                                 orderby alarm.PkAlarmListID descending
+                                 select alarm).FirstOrDefault();
+
+                if (maxPkRecIndex == null || isEqualLast(maxPkRecIndex.PkAlarmListID)) return; //Exit if Has no data or No new Alarm
+
+                //Get Update Data
+                RestAlarmListDump = await GetRestAlarmsAsync(pageIndex, pageSize);
+                CheckNewRestAlarm();
+
+                if (filterParseDeleg != null)
+                {
+                    CustAlarmListDump = await GetCustomRestAlarmsAsync(filterParseDeleg, custPageIndex, pageSize);
+                    if (CustAlarmListDump.Count != 0)
+                        CheckNewCustomRestAlarm();
+                }
+            }catch
+            {
+                Console.WriteLine("Load Fail");
+            }
+           
         }
 
         private static void CheckNewRestAlarm()
