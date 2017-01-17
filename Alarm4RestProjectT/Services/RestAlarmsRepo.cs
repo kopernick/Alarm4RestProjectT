@@ -22,6 +22,7 @@ namespace Alarm4Rest_Viewer.Services
         //private static Thread thrChkNewEvents;
         public static int MainPage { get; private set; }
         public static int LastAlarmRecIndex { get; set; }
+        public static int LastMaxAlarmRecIndex { get; set; }
         public static int LastCustomAlarmRecIndex { get; set; }
         public static int PreviousAlarmRecIndex { get; private set; }
         public static int startNewRestItemArray { get; private set; }
@@ -75,7 +76,7 @@ namespace Alarm4Rest_Viewer.Services
 
             RestAlarmListDump = await GetRestAlarmsAsync(pageIndex, pageSize);
             LastAlarmRecIndex = RestAlarmListDump[0].PkAlarmListID; //Set Last PkAlarmList initializing
-
+            LastMaxAlarmRecIndex = LastAlarmRecIndex;
             StationsName = await GetStationNameAsync();
             Priority = await GetPriorityAsync();
             GroupDescription = await GetGroupAsync();
@@ -85,6 +86,7 @@ namespace Alarm4Rest_Viewer.Services
         {
             MainPage = 1;
             LastAlarmRecIndex = -1;
+            LastMaxAlarmRecIndex = -1;
             LastCustomAlarmRecIndex = -1;
             PreviousAlarmRecIndex = 0;
             maxPkRecIndex = null;
@@ -181,11 +183,36 @@ namespace Alarm4Rest_Viewer.Services
                 Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
                 onRestAlarmChanged(arg);//Raise Event
             }
+        }
 
+        public static async void GetRestAlarmAct()
+        {
+            RestEventArgs arg = new RestEventArgs();
+            //Test Raise read "LoadStationName"
+            RestAlarmListDump = await GetRestAlarmsAsync(pageIndex, pageSize);
+            if (RestAlarmListDump.Count != 0)
+            {
+                LastAlarmRecIndex = RestAlarmListDump[0].PkAlarmListID;
+                startNewRestItemArray = RestAlarmListDump.Count - 1;
+                arg.message = "GetRestAlarm";
+                Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
+                onRestAlarmChanged(arg);//Raise Event
+
+            }
+            else //filter result no item
+            {
+
+                arg.message = "GetRestAlarmNoResult";
+                LastAlarmRecIndex = -1;
+                LastMaxAlarmRecIndex = -1;
+                startNewRestItemArray = -1;
+                Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
+                onRestAlarmChanged(arg);//Raise Event
+            }
         }
         private static async void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            Predicate<int> isEqualLast = (newIndex) => LastAlarmRecIndex == newIndex;
+            Predicate<int> isEqualLast = (newIndex) => LastMaxAlarmRecIndex == newIndex;
 
             maxPkRecIndex = (from alarm in DBContext.RestorationAlarmLists
                              orderby alarm.PkAlarmListID descending
@@ -214,14 +241,16 @@ namespace Alarm4Rest_Viewer.Services
             //Func<int, int, bool> hasNewAlarm = hasNewAalrmChk;
 
             //Test using Predicate
-            Predicate<int> hasNewAlarmChk = (newLastIndex) => newLastIndex > LastAlarmRecIndex ;
+            Predicate<int> hasNewAlarmChk = (newLastIndex) => newLastIndex > LastMaxAlarmRecIndex;
 
             if (hasNewAlarmChk(maxPkRecIndex.PkAlarmListID))
             {
                 //To Do LastAlarmRecIndex_of_Page
 
+                LastMaxAlarmRecIndex = maxPkRecIndex.PkAlarmListID ;
                 PreviousAlarmRecIndex = LastAlarmRecIndex;
-                LastAlarmRecIndex = maxPkRecIndex.PkAlarmListID;
+                //LastAlarmRecIndex = maxPkRecIndex.PkAlarmListID;
+                LastAlarmRecIndex = RestAlarmListDump[0].PkAlarmListID;
                 startNewRestItemArray = LastAlarmRecIndex-PreviousAlarmRecIndex-1;
                 arg.message = "hasNewAlarm";
                 Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);

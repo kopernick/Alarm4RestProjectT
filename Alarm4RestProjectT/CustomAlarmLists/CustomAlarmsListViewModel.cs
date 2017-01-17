@@ -100,42 +100,33 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
             return (_custPageIndex > 1);
         }
 
-        private async void onFirstPageCommand()
+        private void onFirstPageCommand()
         {
             custPageIndex = 1;
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _custPageIndex);
             RestAlarmsRepo.custPageIndex = custPageIndex;
-
-            //To Do function Update RestAlarmsRepo.RestAlarmListDump 
-            CustRestAlarmListDump = await RestAlarmsRepo.GetCustomRestAlarmsAsync(RestAlarmsRepo.filterParseDeleg, custPageIndex, pageSize);
-            CustomAlarms = new ObservableCollection<RestorationAlarmList>(CustRestAlarmListDump);
+            RestAlarmsRepo.FilterAct();
 
         }
 
         public RelayCommand PrePageCommand { get; private set; }
 
-        private async void onPrePageCommand()
+        private void onPrePageCommand()
         {
             custPageIndex -= 1;
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _custPageIndex);
             RestAlarmsRepo.custPageIndex = custPageIndex;
-
-            //To Do function Update RestAlarmsRepo.RestAlarmListDump 
-            CustRestAlarmListDump = await RestAlarmsRepo.GetCustomRestAlarmsAsync(RestAlarmsRepo.filterParseDeleg, custPageIndex, pageSize);
-            CustomAlarms = new ObservableCollection<RestorationAlarmList>(CustRestAlarmListDump);
+            RestAlarmsRepo.FilterAct();
 
         }
         public RelayCommand NextPageCommand { get; private set; }
 
-        private async void onNextPageCommand()
+        private void onNextPageCommand()
         {
             custPageIndex += 1;
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _custPageIndex);
             RestAlarmsRepo.custPageIndex = custPageIndex;
-
-            //To Do function Update RestAlarmsRepo.RestAlarmListDump 
-            CustRestAlarmListDump = await RestAlarmsRepo.GetCustomRestAlarmsAsync(RestAlarmsRepo.filterParseDeleg, custPageIndex, pageSize);
-            CustomAlarms = new ObservableCollection<RestorationAlarmList>(CustRestAlarmListDump);
+            RestAlarmsRepo.FilterAct();
 
         }
 
@@ -145,15 +136,12 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
             return (_custPageIndex < RestAlarmsRepo.custPageCount);
         }
 
-        private async void onLastPageCommand()
+        private void onLastPageCommand()
         {
             custPageIndex = RestAlarmsRepo.custPageCount;
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _custPageIndex);
             RestAlarmsRepo.custPageIndex = custPageIndex;
-
-            //To Do function Update RestAlarmsRepo.RestAlarmListDump 
-            CustRestAlarmListDump = await RestAlarmsRepo.GetCustomRestAlarmsAsync(RestAlarmsRepo.filterParseDeleg, custPageIndex, pageSize);
-            CustomAlarms = new ObservableCollection<RestorationAlarmList>(CustRestAlarmListDump);
+            RestAlarmsRepo.FilterAct();
 
         }
 
@@ -168,8 +156,9 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
                     if (RestAlarmsRepo.PreviousAlarmRecIndex < 0) break;
                     for (int i = RestAlarmsRepo.startNewCustItemArray; i >= 0; i--)
                     {
-                        CustomAlarms.Insert(0, RestAlarmsRepo.RestAlarmListDump[i]);
                         if (CustomAlarms.Count > pageSize) CustomAlarms.RemoveAt(pageSize);
+                        CustomAlarms.Insert(0, RestAlarmsRepo.RestAlarmListDump[i]);
+                        
                     }
 
                     custPageCount = RestAlarmsRepo.custPageCount;
