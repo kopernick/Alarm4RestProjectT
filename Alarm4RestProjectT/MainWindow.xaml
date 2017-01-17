@@ -10,7 +10,7 @@
         x:Class="Alarm4Rest_Viewer.MainWindow"
         mc:Ignorable="d"
         Title="Smart Infomation for Restoration " Height="750" Width="1024">
-   
+
     <Window.Resources>
         <DataTemplate DataType="{x:Type CustomAlarmLists:CustomAlarmListViewModel}">
             <CustomAlarmLists:CustomAlarmsListView />
@@ -25,77 +25,278 @@
 
     </Window.Resources>
 
-    <DockPanel LastChildFill="True">
-        <!--Resources-->
-        <DockPanel.Resources>
-            <BitmapImage x:Key="MainImage" UriSource="/Alarm4Rest_Viewer;component/images/main.png" />
-            <BitmapImage x:Key="FilterImage" UriSource="/Alarm4Rest_Viewer;component/images/filter.png" />
-            <BitmapImage x:Key="SearchImage" UriSource="/Alarm4Rest_Viewer;component/images/search.png" />
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
 
-            <BitmapImage x:Key="firstPageImage" UriSource = "/Alarm4Rest_Viewer;component/images/firstPage.png" />
-            <BitmapImage x:Key="prePageImage" UriSource = "/Alarm4Rest_Viewer;component/images/prePage.png" />
-            <BitmapImage x:Key="nextPageImage" UriSource = "/Alarm4Rest_Viewer;component/images/nextPage.png" />
-            <BitmapImage x:Key="lastPageImage" UriSource = "/Alarm4Rest_Viewer;component/images/lastPage.png" />
+        <Ribbon x:Name="RibbonWin"  SelectedIndex="0">
+            <!-- Help Pane, located at the right-hand side -->
+            <Ribbon.HelpPaneContent>
+                <RibbonButton SmallImageSource="images\main.png" />
+            </Ribbon.HelpPaneContent>
 
-        </DockPanel.Resources>
+            <!-- Application Menu, located at the left-hand side (down arrow) -->
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu KeyTip="F">
+                    <RibbonApplicationMenuItem Header="Setting" ImageSource="Images\setting.png" />
+                    <RibbonApplicationMenuItem Header="Exit" ImageSource="Images\export.png" />
+                </RibbonApplicationMenu>
+            </Ribbon.ApplicationMenu>
 
-        <!-- Tool Bar -->
-        <Grid DockPanel.Dock ="Top">
-            <StackPanel Orientation="Horizontal">
-                <Button Margin="2" IsDefault="True" Height ="36" 
-                                Command="{Binding EnableCustView}" 
-                                ToolTip="แสดง Main AlarmList เท่านั้น">
-                    <Image Source ="{StaticResource MainImage}" />
-                </Button>
-                <Button Margin="2" IsDefault="True" Height="36" 
-                                Command="{Binding EnableFilterCmd}"
-                                ToolTip="Filter Alarms"
-                                CommandParameter="filterPrep">
-                    <Image Source ="{StaticResource FilterImage}" />
-                </Button>
-                <Button Margin="2" IsDefault="True" Height="36" 
-                                Command="{Binding EnableSearchCmd}"
-                                ToolTip="Search Alarms">
-                    <Image Source ="{StaticResource SearchImage}" />
-                </Button>
-            </StackPanel>
-        </Grid>
-        
-        <Grid>
-            <Grid.ColumnDefinitions >
+            <!-- Ribbon Tab #1: Search -->
+                <RibbonTab Header="Search" KeyTip="S" >
+                <!-- Keyword  group-->
+                <RibbonGroup x:Name="sMain">
+                    <RibbonButton LargeImageSource="Images\main.png" Label="Show Main List" KeyTip="S" 
+                                  Command="{Binding EnableCustView}" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="KeywordGroup" Header="ระบุคำที่ต้องการค้นหา">
+                    <Grid DockPanel.Dock ="Top">
+                        <Grid.ColumnDefinitions >
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
 
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
+                        <!-- Row 1 -->
+                        <Label Grid.Column="0" Grid.Row="0" Margin="2" Content="ค้นหา Point(s):"/>
+                        <TextBox Grid.Column="1" Grid.Row="0" Width="Auto" Grid.ColumnSpan="2" 
+                                MinLines="2"
+                                MaxLines="3"
+                                AcceptsReturn="True"
+                                ScrollViewer.CanContentScroll="True"
+                                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                Text="{Binding search_Parse_Pri, UpdateSourceTrigger=PropertyChanged}" Margin="2">
+                                    <TextBox.InputBindings>
+                                        <KeyBinding Key="Return" 
+                                               Command="{Binding Ok}"/>
+                                    </TextBox.InputBindings>
 
-            <DockPanel Grid.Column="0">
+                        </TextBox>
 
+                        <Label Grid.Column="0" Grid.Row="1" Margin="2"  Content="ค้นหาโดยระบุ Columns:"/>
+
+                        <TextBox Grid.Column="1" Grid.Row="1" Width="150" Grid.ColumnSpan="1" 
+                                Text="{Binding search_Parse_Sec, UpdateSourceTrigger=PropertyChanged}" Margin="2"/>
+
+                        <ComboBox Grid.Column="2" Grid.Row="1" Width="80"
+                                IsEditable="True"
+                                IsReadOnly="True"
+                                ItemsSource="{Binding fieldItems}"
+                                Text="{Binding selectedFieldView}" Margin="2">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type ComboBox}">
+                                        <CheckBox
+                                                Content="{Binding Value}"
+                                                IsChecked="{Binding IsChecked}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                    </Grid>
+                </RibbonGroup>
+
+                <!-- Scope  group-->
+                <RibbonGroup x:Name="SearchingScopeGroup" Header="Searching Scope">
                 <Grid DockPanel.Dock ="Top">
-                    <RestorationAlarmLists:RestAlarmsListView Grid.Column="0" x:Name="MainView" Margin="2" Width="Auto" />
-                </Grid>
-                
-            </DockPanel>
-            
-<!--
+                    <Grid.ColumnDefinitions >
+                        
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    
+                    <Label Grid.Column="0" Grid.Row="0" Margin="2" Width="80" Content="สถานี:"/>
+                    <ComboBox Grid.Column="1" Grid.Row="0" Width="100" Grid.ColumnSpan="1"
+                                    IsEditable="True"
+                                    IsReadOnly="True"
+                                    ItemsSource="{Binding stationItems}"
+                                    Text="{Binding selectedStationsView}" Margin="2">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type ComboBox}">
+                                <CheckBox
+                                                Content="{Binding Value}"
+                                                IsChecked="{Binding IsChecked}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <Label Grid.Column="0" Grid.Row="1" Margin="2" Width="Auto" Content="Priority:"/>
+
+                    <ComboBox Grid.Column="1" Grid.Row="1" Width="100" Grid.ColumnSpan="1"
+                        IsEditable="True"
+                        IsReadOnly="True"
+                        ItemsSource="{Binding priorityItems}"
+                        Text="{Binding selectedPriorityView}" Margin="2">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type ComboBox}">
+                                <CheckBox
+                                    Content="{Binding Value}"
+                                    IsChecked="{Binding IsChecked}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    </Grid>
+                    
+                </RibbonGroup>
+                    
+                <RibbonGroup x:Name="SearchCommandGroup" Header="Command">
+                    <RibbonButton LargeImageSource="Images\search.png" Label="Apply" KeyTip="S" 
+                                  Command="{Binding RunSearchCmd}" />
+                </RibbonGroup>
+
+            </RibbonTab>
+
+            <!-- Ribbon Tab #1: Filter -->
+            <RibbonTab Header="Filter" KeyTip="F" >
+                <!-- Filter  group-->
+
+                <RibbonGroup x:Name="fMain" >
+                    <RibbonButton LargeImageSource="Images\main.png" Label="Show Main List" KeyTip="S" 
+                                  Command="{Binding EnableCustView}" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="CoditionGroup" Header="Filter Condition">
+                    <Grid>
+                        <Grid.ColumnDefinitions >
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Column 1 -->
+                        <!-- Row 1 -->
+                        <Label Grid.Column="0" Grid.Row="0" Margin="2" Content="Station"/>
+                        <!-- Row 2 -->
+                        <ComboBox Grid.Column="1" Grid.Row="0" Width="180"
+                            IsEditable="True"
+                            IsReadOnly="True"
+                            ItemsSource="{Binding fltStationItems}"
+                            Text="{Binding fltSelectedStationsView}" Margin="2">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type ComboBox}">
+                                            <CheckBox
+                                        Content="{Binding Value}"
+                                        IsChecked="{Binding IsChecked}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                        <!-- Column 2 -->
+                        <!-- Row 1 -->
+                        <Label Grid.Column="2" Grid.Row="0" Margin="2" Content="Priority"/>
+
+                        <!-- Row 2 -->
+                        <ComboBox Grid.Column="3" Grid.Row="0" Width="140"
+                            IsEditable="True"
+                            IsReadOnly="True"
+                            ItemsSource="{Binding fltPriorityItems}"
+                            Text="{Binding fltSelectedPriorityView}" Margin="2">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type ComboBox}">
+                                            <CheckBox
+                                        Content="{Binding Value}"
+                                        IsChecked="{Binding IsChecked}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                        <!-- Column 3 -->
+                        <!-- Row 1 -->
+                        <Label Grid.Column="4" Grid.Row="0" Margin="2" Content="Group Desc."/>
+
+                        <!-- Row2 -->
+                        <ComboBox Grid.Column="6" Grid.Row="0" Width="200"
+                            IsEditable="True"
+                            IsReadOnly="True"
+                            ItemsSource="{Binding fltGroupDescItems}"
+                            Text="{Binding fltSelectedGroupDescriptionView}" Margin="2">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type ComboBox}">
+                                            <CheckBox
+                                        Content="{Binding Value}"
+                                        IsChecked="{Binding IsChecked}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                    </Grid>
+
+                </RibbonGroup>
+                <!-- Filter cmd group-->
+                <RibbonGroup x:Name="FilterCommand" Header="Command">
+                    <RibbonButton LargeImageSource="Images\filter.png" Label="Apply" KeyTip="F" 
+                                  Command="{Binding RunFilterCmd}" />
+                </RibbonGroup>
+            </RibbonTab>
+
+        </Ribbon>
+
+        <DockPanel Grid.Row="1">
+            <!--Resources-->
+            <DockPanel.Resources>
+                <BitmapImage x:Key="MainImage" UriSource="/Alarm4Rest_Viewer;component/images/main.png" />
+                <BitmapImage x:Key="FilterImage" UriSource="/Alarm4Rest_Viewer;component/images/filter.png" />
+                <BitmapImage x:Key="SearchImage" UriSource="/Alarm4Rest_Viewer;component/images/search.png" />
+
+                <BitmapImage x:Key="firstPageImage" UriSource = "/Alarm4Rest_Viewer;component/images/firstPage.png" />
+                <BitmapImage x:Key="prePageImage" UriSource = "/Alarm4Rest_Viewer;component/images/prePage.png" />
+                <BitmapImage x:Key="nextPageImage" UriSource = "/Alarm4Rest_Viewer;component/images/nextPage.png" />
+                <BitmapImage x:Key="lastPageImage" UriSource = "/Alarm4Rest_Viewer;component/images/lastPage.png" />
+
+            </DockPanel.Resources>
+
+            <Grid>
+                <Grid.ColumnDefinitions >
+
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row="1">
+
+                    <Grid DockPanel.Dock ="Top">
+                        <RestorationAlarmLists:RestAlarmsListView Grid.Column="0" x:Name="MainView" Margin="2" Width="Auto" />
+                    </Grid>
+
+                </DockPanel>
+
+                <!--
             <ContentControl Content="{Binding MainAlarmViewModel}" Grid.Column="0" x:Name="MainView" Margin="5" Width="Auto"/>
--->            
-            <GridSplitter Grid.Column="1" Width="3" Background="#FF4C91C1"/>
-            <DockPanel Grid.Column="2">
-                <Grid DockPanel.Dock ="Top">
-                    <ContentControl x:Name="ToolBar" Content="{Binding CurrentToolViewModel}" Width="Auto"/>
+-->
+                <GridSplitter Grid.Column="1" Width="3" Background="#FF4C91C1"/>
+                <DockPanel Grid.Column="2">
+                    <Grid DockPanel.Dock ="Top">
+
+                        <ContentControl x:Name="custView" Content="{Binding CustAlarmViewModel}" Margin="2" Width="Auto"/>
+
+                    </Grid>
+                </DockPanel>
                 </Grid>
-
-                <Grid DockPanel.Dock ="Top">
-
-                    <ContentControl x:Name="custView" Content="{Binding CustAlarmViewModel}" Width="Auto"/>
-
-                </Grid>
-            </DockPanel>
-
-        </Grid>
-    </DockPanel>
+          </DockPanel>
+    </Grid>
+   
 </Window>

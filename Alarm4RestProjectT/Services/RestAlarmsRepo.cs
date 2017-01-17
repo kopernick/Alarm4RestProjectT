@@ -197,9 +197,13 @@ namespace Alarm4Rest_Viewer.Services
             RestAlarmListDump  = await GetRestAlarmsAsync(pageIndex, pageSize);
             CheckNewRestAlarm();
 
-            CustAlarmListDump = await GetCustomRestAlarmsAsync(filterParseDeleg, custPageIndex, pageSize);
-            if (CustAlarmListDump.Count != 0)
+            if(filterParseDeleg != null)
+            {
+                CustAlarmListDump = await GetCustomRestAlarmsAsync(filterParseDeleg, custPageIndex, pageSize);
+                if (CustAlarmListDump.Count != 0)
                 CheckNewCustomRestAlarm();
+            }
+            
 
         }
 
