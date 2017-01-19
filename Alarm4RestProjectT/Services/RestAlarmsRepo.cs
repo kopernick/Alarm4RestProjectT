@@ -214,6 +214,46 @@ namespace Alarm4Rest_Viewer.Services
                             .Take(pageSize)
                             .ToListAsync<RestorationAlarmList>();
         }
+        public static async Task<List<RestorationAlarmList>> TGetCustomRestAlarmsAsync(DateTime exclusiveEnd)
+        {
+
+            //To Do ปรับปรุงให้มีการ Query ครั้งเดียว
+            //Get RestAlarm count
+            custAlarmCount = DBContext.RestorationAlarmLists
+                            .OrderByDescending(c => c.PkAlarmListID)
+                            .Where(filterParseDeleg)
+                            .Count();
+
+            if (custAlarmCount % pageSize == 0)
+            {
+                custPageCount = (custAlarmCount / pageSize);
+            }
+            else
+            {
+                custPageCount = (custAlarmCount / pageSize) + 1;
+            }
+
+            //exclusiveEnd = DateTime.ParseExact(exclusiveEnd.ToString(), "dd/MM/yyyy HH:mm:ss.000", System.Globalization.CultureInfo.InvariantCulture);
+
+            DateTime inclusiveStart = exclusiveEnd.AddDays(-1);
+           
+            // Reset time to HH: mm: ss.000" -> 0000:00.000
+            TimeSpan ts = new TimeSpan(0, 0, 0);
+            inclusiveStart = inclusiveStart.Date + ts;
+            Console.WriteLine("Test");
+
+
+            //Get one page
+            return await DBContext.RestorationAlarmLists
+                            //.OrderBy(c => c.Priority).ThenByDescending(c => c.PkAlarmListID)
+                            .OrderByDescending(c => c.PkAlarmListID)
+                            .Where(filterParseDeleg)
+                            .Where(c => c.DateTime >= inclusiveStart
+                                        && c.DateTime < exclusiveEnd)
+                            .Skip((custPageIndex - 1) * pageSize)
+                            .Take(pageSize)
+                            .ToListAsync<RestorationAlarmList>();
+        }
 
         public static async Task<List<RestorationAlarmList>> GetCustomRestAlarmsAsync(Expression<Func<RestorationAlarmList, bool>> filter_Parse, int custPageIndex = 1, int pageSize = 30)
         {
@@ -247,7 +287,33 @@ namespace Alarm4Rest_Viewer.Services
         {
             RestEventArgs arg = new RestEventArgs();
             //Test Raise read "LoadStationName"
+            if (filterParseDeleg == null) return;
             CustAlarmListDump = await GetCustomRestAlarmsAsync();
+            if (CustAlarmListDump.Count != 0)
+            {
+                LastCustomAlarmRecIndex = CustAlarmListDump[0].PkAlarmListID;
+                startNewCustItemArray = CustAlarmListDump.Count - 1;
+                arg.message = "filterAlarmCust";
+                Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
+                onRestAlarmChanged(arg);//Raise Event
+            }
+            else //filter result no item
+            {
+
+                arg.message = "filterAlarmCustNoResult";
+                LastCustomAlarmRecIndex = -1;
+                startNewCustItemArray = -1;
+                Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
+                onRestAlarmChanged(arg);//Raise Event
+            }
+        }
+
+        public static async Task TGetCustAlarmAct(DateTime exclusiveEnd)
+        {
+            RestEventArgs arg = new RestEventArgs();
+            //Test Raise read "LoadStationName"
+            if (filterParseDeleg == null) return;
+            CustAlarmListDump = await TGetCustomRestAlarmsAsync(exclusiveEnd);
             if (CustAlarmListDump.Count != 0)
             {
                 LastCustomAlarmRecIndex = CustAlarmListDump[0].PkAlarmListID;

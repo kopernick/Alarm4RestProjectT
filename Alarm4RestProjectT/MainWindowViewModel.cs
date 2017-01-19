@@ -236,6 +236,7 @@ namespace Alarm4Rest_Viewer
             //_searchToolViewModel = new searchToolBarViewModel();
 
             RestAlarmsRepo.InitializeRepository();
+            //CustAlarmViewModel = new CustomAlarmListViewModel();
 
             EnableSearchCmd = new RelayCommand(o => onSearchAlarms(), o => canSearch());
             EnableFilterCmd = new RelayCommand(o => onFilterAlarms(), o => canFilter());
@@ -245,6 +246,7 @@ namespace Alarm4Rest_Viewer
 
             pageSize = RestAlarmsRepo.pageSize;
             SetPageSize = new RelayCommand(o => onSetPageSize(), o => canSetPageSize());
+            RunFilterTodayCmd = new RelayCommand(o => onRunFilterToday(), o => canRunFilterToday());
 
             #region Initialize filter menu
             mfltStationItems = new ObservableCollection<Item>();
@@ -259,7 +261,7 @@ namespace Alarm4Rest_Viewer
             mfltMessageItems.CollectionChanged += fltItems_CollectionChanged;
 
             RunFilterCmd = new RelayCommand(o => onFilterAlarms(), o => canFilter());
-            #endregion
+       #endregion
 
       #region Initialize Search menu
             mstationItems = new ObservableCollection<Item>();
@@ -290,6 +292,27 @@ namespace Alarm4Rest_Viewer
             RestAlarmsRepo.pageSize = pageSize;
             await RestAlarmsRepo.GetRestAlarmAct();
             await RestAlarmsRepo.GetCustAlarmAct();
+        }
+
+        public RelayCommand RunFilterTodayCmd { get; private set; }
+
+        public bool canRunFilterToday()
+        {
+            return true;
+        }
+        public async void onRunFilterToday()
+        {
+            IEnumerable<IGrouping<string, Item>> groupFields =
+                    from item in filters
+                    group item by item.FieldName;
+
+            filterParseDeleg = FilterExpressionBuilder.GetExpression<RestorationAlarmList>(groupFields);
+
+            RestAlarmsRepo.filterParseDeleg = filterParseDeleg;
+            DateTime exclusiveEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetCustAlarmAct(exclusiveEnd);
+
+            Console.WriteLine(filterParseDeleg.Body);
         }
         #endregion
 
@@ -432,13 +455,13 @@ namespace Alarm4Rest_Viewer
         {
             return mfltCheckedItems.Count != 0;
         }
-        public void onFilterAlarms()
+        public async void onFilterAlarms()
         {
             //Implement for each query Group by PropertyName : StationName , Priority or Desc.
 
             //ExpressGen();
             Console.WriteLine("Run Filter cmd");
-            CustAlarmViewModel = _custAlarmViewModel;
+            //CustAlarmViewModel = _custAlarmViewModel;
 
             IEnumerable<IGrouping<string, Item>> groupFields =
                     from item in filters
@@ -447,7 +470,7 @@ namespace Alarm4Rest_Viewer
             filterParseDeleg = FilterExpressionBuilder.GetExpression<RestorationAlarmList>(groupFields);
 
             RestAlarmsRepo.filterParseDeleg = filterParseDeleg;
-            RestAlarmsRepo.GetCustAlarmAct();
+            await RestAlarmsRepo.GetCustAlarmAct();
 
             Console.WriteLine(filterParseDeleg.Body);
 
@@ -545,12 +568,12 @@ namespace Alarm4Rest_Viewer
         {
             return (_search_Parse_Pri != "" || _search_Parse_Sec != "");
         }
-        public void onSearchAlarms()
+        public async void onSearchAlarms()
         {
             //Implement for each query Group by PropertyName : StationName , Priority or Desc.
 
             //ExpressGen();
-            CustAlarmViewModel = _custAlarmViewModel;
+            //CustAlarmViewModel = _custAlarmViewModel;
 
             IEnumerable<IGrouping<string, Item>> groupFields =
                     from item in searchList
@@ -570,7 +593,7 @@ namespace Alarm4Rest_Viewer
             {
                 RestAlarmsRepo.custPageIndex = 1;
                 RestAlarmsRepo.filterParseDeleg = searchParseDeleg;
-                RestAlarmsRepo.GetCustAlarmAct();
+                await RestAlarmsRepo.GetCustAlarmAct();
                 Console.WriteLine(searchParseDeleg.Body);
             }
 
