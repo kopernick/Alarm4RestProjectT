@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Alarm4Rest_Viewer"
         xmlns:RestorationAlarmLists="clr-namespace:Alarm4Rest_Viewer.RestorationAlarmLists" 
         xmlns:CustomAlarmLists="clr-namespace:Alarm4Rest_Viewer.CustomAlarmLists" 
+        xmlns:Services="clr-namespace:Alarm4Rest_Viewer.Services"
         xmlns:CustControl="clr-namespace:Alarm4Rest_Viewer.CustControl" 
         x:Class="Alarm4Rest_Viewer.MainWindow"
         mc:Ignorable="d"
@@ -46,7 +47,7 @@
             </Ribbon.ApplicationMenu>
 
             <!-- Ribbon Tab #1: Search -->
-                <RibbonTab Header="Search" KeyTip="S" >
+            <RibbonTab Header="Search" KeyTip="S" >
                 <!-- Keyword  group-->
                 <RibbonGroup x:Name="sMain">
                     <RibbonButton LargeImageSource="Images\main.png" Label="Show Main List" KeyTip="S" 
@@ -74,17 +75,18 @@
                                 ScrollViewer.CanContentScroll="True"
                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                                 Text="{Binding search_Parse_Pri, UpdateSourceTrigger=PropertyChanged}" Margin="2">
-                                    <TextBox.InputBindings>
-                                        <KeyBinding Key="Return" 
-                                               Command="{Binding Ok}"/>
-                                    </TextBox.InputBindings>
 
                         </TextBox>
 
                         <Label Grid.Column="0" Grid.Row="1" Margin="2"  Content="ค้นหาโดยระบุ Columns:"/>
 
                         <TextBox Grid.Column="1" Grid.Row="1" Width="150" Grid.ColumnSpan="1" 
-                                Text="{Binding search_Parse_Sec, UpdateSourceTrigger=PropertyChanged}" Margin="2"/>
+                                Text="{Binding search_Parse_Sec, UpdateSourceTrigger=PropertyChanged}" Margin="2">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Key="Return" 
+                                               Command="{Binding RunSearchCmd}"/>
+                                </TextBox.InputBindings>
+                        </TextBox>
 
                         <ComboBox Grid.Column="2" Grid.Row="1" Width="80"
                                 IsEditable="True"
@@ -92,7 +94,7 @@
                                 ItemsSource="{Binding fieldItems}"
                                 Text="{Binding selectedFieldView}" Margin="2">
                                 <ComboBox.ItemTemplate>
-                                    <DataTemplate DataType="{x:Type ComboBox}">
+                                <DataTemplate DataType="{x:Type Services:Item}">
                                         <CheckBox
                                                 Content="{Binding Value}"
                                                 IsChecked="{Binding IsChecked}" />
@@ -105,37 +107,35 @@
 
                 <!-- Scope  group-->
                 <RibbonGroup x:Name="SearchingScopeGroup" Header="Searching Scope">
-                <Grid DockPanel.Dock ="Top">
-                    <Grid.ColumnDefinitions >
+                    <Grid DockPanel.Dock ="Top">
+                        <Grid.ColumnDefinitions >
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
                         
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    
-                    <Label Grid.Column="0" Grid.Row="0" Margin="2" Width="80" Content="สถานี:"/>
-                    <ComboBox Grid.Column="1" Grid.Row="0" Width="100" Grid.ColumnSpan="1"
-                                    IsEditable="True"
-                                    IsReadOnly="True"
-                                    ItemsSource="{Binding stationItems}"
-                                    Text="{Binding selectedStationsView}" Margin="2">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate DataType="{x:Type ComboBox}">
-                                <CheckBox
-                                                Content="{Binding Value}"
-                                                IsChecked="{Binding IsChecked}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
+                        <Label Grid.Column="0" Grid.Row="0" Margin="2" Width="80" Content="สถานี:"/>
+                        <ComboBox Grid.Column="1" Grid.Row="0" Width="100" Grid.ColumnSpan="1"
+                                        IsEditable="True"
+                                        IsReadOnly="True"
+                                        ItemsSource="{Binding stationItems}"
+                                        Text="{Binding selectedStationsView}" Margin="2">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type ComboBox}">
+                                    <CheckBox
+                                        Content="{Binding Value}"
+                                        IsChecked="{Binding IsChecked}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
 
-                    <Label Grid.Column="0" Grid.Row="1" Margin="2" Width="Auto" Content="Priority:"/>
-
-                    <ComboBox Grid.Column="1" Grid.Row="1" Width="100" Grid.ColumnSpan="1"
+                        <Label Grid.Column="0" Grid.Row="1" Margin="2" Width="Auto" Content="Priority:"/>
+                        <ComboBox Grid.Column="1" Grid.Row="1" Width="100" Grid.ColumnSpan="1"
                         IsEditable="True"
                         IsReadOnly="True"
                         ItemsSource="{Binding priorityItems}"
@@ -147,7 +147,7 @@
                                     IsChecked="{Binding IsChecked}" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
-                    </ComboBox>
+                        </ComboBox>
 
                     </Grid>
                     
@@ -157,6 +157,28 @@
                     <RibbonButton LargeImageSource="Images\search.png" Label="Apply" KeyTip="S" 
                                   Command="{Binding RunSearchCmd}" />
                 </RibbonGroup>
+                
+                <RibbonGroup x:Name="Setting" Header="Page Setting">
+                    <Grid DockPanel.Dock ="Top">
+                        <Grid.ColumnDefinitions >
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        
+                        <Label Grid.Column="0" Grid.Row="0" Margin="2"  Content="จำนวนแถวต่อหน้า"/>
+
+                        <TextBox Grid.Column="1" Grid.Row="0" Width="80" Grid.ColumnSpan="1" 
+                                Text="{Binding pageSize, UpdateSourceTrigger=PropertyChanged}" Margin="2">
+                            
+                        </TextBox>
+                        <Button Grid.Column="1" Grid.Row="1"  Content="Set Page"
+                                  Command="{Binding SetPageSize}" />
+                    </Grid>
+                    </RibbonGroup>
 
             </RibbonTab>
 
@@ -171,7 +193,7 @@
                 <RibbonGroup x:Name="CoditionGroup" Header="Filter Condition">
                     <Grid>
                         <Grid.ColumnDefinitions >
-                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
@@ -187,7 +209,7 @@
                         <!-- Row 1 -->
                         <Label Grid.Column="0" Grid.Row="0" Margin="2" Content="Station"/>
                         <!-- Row 2 -->
-                        <ComboBox Grid.Column="1" Grid.Row="0" Width="180"
+                        <ComboBox Grid.Column="1" Grid.Row="0" MinWidth="180" MaxWidth="300"
                             IsEditable="True"
                             IsReadOnly="True"
                             ItemsSource="{Binding fltStationItems}"
@@ -204,9 +226,8 @@
                         <!-- Column 2 -->
                         <!-- Row 1 -->
                         <Label Grid.Column="2" Grid.Row="0" Margin="2" Content="Priority"/>
-
                         <!-- Row 2 -->
-                        <ComboBox Grid.Column="3" Grid.Row="0" Width="140"
+                        <ComboBox Grid.Column="3" Grid.Row="0" MinWidth="140" MaxWidth="200"
                             IsEditable="True"
                             IsReadOnly="True"
                             ItemsSource="{Binding fltPriorityItems}"
@@ -222,10 +243,25 @@
 
                         <!-- Column 3 -->
                         <!-- Row 1 -->
-                        <Label Grid.Column="4" Grid.Row="0" Margin="2" Content="Group Desc."/>
-
+                        <Label Grid.Column="4" Grid.Row="0" Margin="2" Content="Message"/>
+                        <ComboBox Grid.Column="5" Grid.Row="0" MinWidth="200" MaxWidth="300"
+                            IsEditable="True"
+                            IsReadOnly="True"
+                            ItemsSource="{Binding fltMessageItems}"
+                            Text="{Binding fltSelectedMessageView}" Margin="2">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type ComboBox}">
+                                    <CheckBox
+                                        Content="{Binding Value}"
+                                        IsChecked="{Binding IsChecked}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        
                         <!-- Row2 -->
-                        <ComboBox Grid.Column="6" Grid.Row="0" Width="200"
+                        
+                        <Label Grid.Column="0" Grid.Row="1" Margin="2" Content="Group Desc."/>
+                        <ComboBox Grid.Column="1" Grid.Row="1" MinWidth="200" Grid.ColumnSpan="3"
                             IsEditable="True"
                             IsReadOnly="True"
                             ItemsSource="{Binding fltGroupDescItems}"
@@ -238,7 +274,6 @@
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
                         </ComboBox>
-
                     </Grid>
 
                 </RibbonGroup>

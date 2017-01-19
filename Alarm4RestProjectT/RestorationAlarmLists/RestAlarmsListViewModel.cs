@@ -37,7 +37,18 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
                 OnPropertyChanged("pageCount");
             }
         }
-        public int pageSize { get; private set; }
+
+        private int _restAlarmCount;
+        public int restAlarmCount
+        {
+            get { return _restAlarmCount; }
+            set
+            {
+                _restAlarmCount = value;
+                OnPropertyChanged("restAlarmCount");
+            }
+
+        }
 
         public static List<string> StationName { get; private set; }
         public RestAlarmsListViewModel()
@@ -53,9 +64,8 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
 
             RestAlarmsRepo.RestAlarmChanged += OnRestAlarmRepoChanged;
             pageIndex = 1;
-            pageSize = 40;
-            RestAlarmsRepo.pageSize = pageSize;
-            RestAlarmsRepo.pageIndex = pageIndex;
+            restAlarmCount = 0;
+            //RestAlarmsRepo.pageIndex = pageIndex;
 
             //_timer.Elapsed += (s, e) => NotificationMessage = "This is Alarm bar 2 : " + DateTime.Now.ToLocalTime();
             //_timer.Start();
@@ -98,15 +108,12 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
             return (_pageIndex > 1);
         }
 
-        private async void onFirstPageCommand()
+        private void onFirstPageCommand()
         {
             pageIndex = 1;
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _pageIndex);
             RestAlarmsRepo.pageIndex = pageIndex;
-
-            //To Do function Update RestAlarmsRepo.RestAlarmListDump 
-            RestAlarmListDump = await RestAlarmsRepo.GetRestAlarmsAsync(pageIndex, pageSize);
-            RestorationAlarms = new ObservableCollection<RestorationAlarmList>(RestAlarmListDump);
+            RestAlarmsRepo.GetRestAlarmAct();
 
         }
         public RelayCommand EnterPageCommand { get; private set; }
@@ -171,6 +178,7 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
                 await RestAlarmsRepo.GetInitDataRepositoryAsync();
                 RestorationAlarms = new ObservableCollection<RestorationAlarmList>(RestAlarmsRepo.RestAlarmListDump);
                 pageCount = RestAlarmsRepo.pageCount;
+                restAlarmCount = RestAlarmsRepo.restAlarmCount;
                 arg.message = "hasLoaded";
                 onRestAlarmChanged(arg);
                 Console.WriteLine("Load Success");
@@ -194,9 +202,10 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
                     for (int i = RestAlarmsRepo.startNewRestItemArray; i >= 0; i--)
                     {
                         RestorationAlarms.Insert(0,RestAlarmsRepo.RestAlarmListDump[i]);
-                        if (RestorationAlarms.Count > pageSize) RestorationAlarms.RemoveAt(pageSize);
+                        if (RestorationAlarms.Count > RestAlarmsRepo.pageSize) RestorationAlarms.RemoveAt(RestAlarmsRepo.pageSize);
                     }
                     pageCount = RestAlarmsRepo.pageCount;
+                    restAlarmCount = RestAlarmsRepo.restAlarmCount;
                     NotificationMessage = "Has New Alarm : " + DateTime.Now.ToLocalTime();
                     break;
 
@@ -208,6 +217,7 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
                         RestorationAlarms.Insert(0,RestAlarmsRepo.RestAlarmListDump[i]);
                     }
                     pageCount = RestAlarmsRepo.pageCount;
+                    restAlarmCount = RestAlarmsRepo.restAlarmCount;
                     NotificationMessage = "Database has been reset : " + DateTime.Now.ToLocalTime();
                     break;
 
@@ -219,12 +229,14 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
                         RestorationAlarms.Insert(0, RestAlarmsRepo.RestAlarmListDump[i]);
                     }
                     pageCount = RestAlarmsRepo.pageCount;
+                    restAlarmCount = RestAlarmsRepo.restAlarmCount;
 
                     break;
                 case "GetRestAlarmNoResult":
                     Console.WriteLine(DateTime.Now.ToString() + " :  Main Alarm List has been filtered but no data");
                     RestorationAlarms.Clear();
                     pageCount = RestAlarmsRepo.pageCount;
+                    restAlarmCount = RestAlarmsRepo.restAlarmCount;
                     NotificationMessage = "Main Alarm List No : " + DateTime.Now.ToLocalTime();
                     break;
 

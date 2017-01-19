@@ -280,7 +280,7 @@ namespace Alarm4Rest_Viewer.CustControl
             filterParseDeleg = FilterExpressionBuilder.GetExpression<RestorationAlarmList>(groupFields);
 
             RestAlarmsRepo.filterParseDeleg = filterParseDeleg;
-            RestAlarmsRepo.FilterAct();
+            RestAlarmsRepo.GetCustAlarmAct();
 
             Console.WriteLine(filterParseDeleg.Body);
 

@@ -30,6 +30,7 @@ namespace Alarm4Rest_Viewer
         #region Filter Properties
         public static List<string> fltSelectedStations = new List<string>();
         public static List<string> fltSelectedPriority = new List<string>();
+        public static List<string> fltSelectedMessage = new List<string>();
         public static List<string> fltSelectedGroupDescription = new List<string>();
         public Expression<Func<RestorationAlarmList, bool>> filterParseDeleg;
 
@@ -44,6 +45,8 @@ namespace Alarm4Rest_Viewer
         private ObservableCollection<Item> mfltGroupDescItems;
         public IEnumerable<Item> fltGroupDescItems { get { return mfltGroupDescItems; } }
 
+        private ObservableCollection<Item> mfltMessageItems;
+        public IEnumerable<Item> fltMessageItems { get { return mfltMessageItems; } }
 
         private ObservableCollection<Item> mfltStationItems;
         public IEnumerable<Item> fltStationItems { get { return mfltStationItems; } }
@@ -86,10 +89,20 @@ namespace Alarm4Rest_Viewer
             }
         }
 
+        public string fltSelectedMessageView
+        {
+            get { return _fltSelectedMessageView; }
+            set
+            {
+                Set(ref _fltSelectedMessageView, value);
+                OnPropertyChanged("fltSelectedMessageView");
+            }
+        }
+        
         private string _fltSelectedStationsView;
         private string _fltSelectedPriorityView;
         private string _fltSelectedGroupDescriptionView;
-
+        private string _fltSelectedMessageView;
         public string filterText
         {
             get { return _filterText; }
@@ -99,6 +112,17 @@ namespace Alarm4Rest_Viewer
                 OnPropertyChanged("Text");
             }
 
+        }
+
+        public int _pageSize;
+        public int pageSize
+        {
+            get { return _pageSize; }
+            set
+            {
+                _pageSize = value;
+                OnPropertyChanged("pageSize");
+            }
         }
 
         private string _filterText;
@@ -114,8 +138,8 @@ namespace Alarm4Rest_Viewer
 
         private HashSet<Item> mCheckedItems;
 
-        private ObservableCollection<Item> mpfieldItems;
-        public IEnumerable<Item> fieldItems { get { return mpfieldItems; } }
+        private ObservableCollection<Item> mfieldItems;
+        public IEnumerable<Item> fieldItems { get { return mfieldItems; } }
 
 
         private ObservableCollection<Item> mpriorityItems;
@@ -210,6 +234,7 @@ namespace Alarm4Rest_Viewer
         {
             //_filterToolViewModel = new filterToolBarViewModel();
             //_searchToolViewModel = new searchToolBarViewModel();
+
             RestAlarmsRepo.InitializeRepository();
 
             EnableSearchCmd = new RelayCommand(o => onSearchAlarms(), o => canSearch());
@@ -218,27 +243,32 @@ namespace Alarm4Rest_Viewer
 
             RestAlarmsListViewModel.RestAlarmChanged += OnRestAlarmChanged;
 
-      #region Initialize filter menu
+            pageSize = RestAlarmsRepo.pageSize;
+            SetPageSize = new RelayCommand(o => onSetPageSize(), o => canSetPageSize());
+
+            #region Initialize filter menu
             mfltStationItems = new ObservableCollection<Item>();
             mfltPriorityItems = new ObservableCollection<Item>();
             mfltGroupDescItems = new ObservableCollection<Item>();
+            mfltMessageItems = new ObservableCollection<Item>();
             mfltCheckedItems = new HashSet<Item>();
 
             mfltStationItems.CollectionChanged += fltItems_CollectionChanged;
             mfltPriorityItems.CollectionChanged += fltItems_CollectionChanged;
             mfltGroupDescItems.CollectionChanged += fltItems_CollectionChanged;
+            mfltMessageItems.CollectionChanged += fltItems_CollectionChanged;
 
             RunFilterCmd = new RelayCommand(o => onFilterAlarms(), o => canFilter());
             #endregion
 
       #region Initialize Search menu
             mstationItems = new ObservableCollection<Item>();
-            mpfieldItems = new ObservableCollection<Item>();
+            mfieldItems = new ObservableCollection<Item>();
             mpriorityItems = new ObservableCollection<Item>();
             mCheckedItems = new HashSet<Item>();
 
             mstationItems.CollectionChanged += Items_CollectionChanged;
-            mpfieldItems.CollectionChanged += Items_CollectionChanged;
+            mfieldItems.CollectionChanged += Items_CollectionChanged;
             mpriorityItems.CollectionChanged += Items_CollectionChanged;
             search_Parse_Pri = "";
             search_Parse_Sec = "";
@@ -247,6 +277,21 @@ namespace Alarm4Rest_Viewer
 
         #endregion
         }
+
+        #region Helper Function
+        public RelayCommand SetPageSize { get; private set; }
+
+        public bool canSetPageSize()
+        {
+            return (RestAlarmsRepo.pageSize != pageSize && pageSize != 0);
+        }
+        public async void onSetPageSize()
+        {
+            RestAlarmsRepo.pageSize = pageSize;
+            await RestAlarmsRepo.GetRestAlarmAct();
+            await RestAlarmsRepo.GetCustAlarmAct();
+        }
+        #endregion
 
         #region Filter Helper function
         private void OnRestAlarmChanged(object source, RestEventArgs arg)
@@ -274,13 +319,18 @@ namespace Alarm4Rest_Viewer
                     mfltGroupDescItems.Add(new Item(GroupDescription.ToString(), "GroupDescription"));
                 }
 
+                // Adding Message ComboBox items
+                foreach (var Message in RestAlarmsRepo.Message)
+                {
+                    mfltMessageItems.Add(new Item(Message.ToString(), "Message"));
+                }
                 // Adding Priority ComboBox items
 
-                mpfieldItems.Add(new Item("PointName", "FieldName"));
-                mpfieldItems.Add(new Item("Message", "FieldName"));
+                mfieldItems.Add(new Item("PointName", "FieldName"));
+                mfieldItems.Add(new Item("Message", "FieldName"));
                 //mpfieldItems.Add(new Item("Priority", "FieldName"));
-                mpfieldItems.Add(new Item("GroupPointName", "FieldName"));
-                mpfieldItems.Add(new Item("GroupDescription", "FieldName"));
+                mfieldItems.Add(new Item("GroupPointName", "FieldName"));
+                mfieldItems.Add(new Item("GroupDescription", "FieldName"));
             }
         }
         private void fltItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -320,6 +370,9 @@ namespace Alarm4Rest_Viewer
                         case "Priority":
                             fltSelectedPriority.Add(item.Value.TrimEnd());
                             break;
+                        case "Message":
+                            fltSelectedMessage.Add(item.Value.TrimEnd());
+                            break;
                         case "GroupDescription":
                             fltSelectedGroupDescription.Add(item.Value.TrimEnd());
                             break;
@@ -339,6 +392,9 @@ namespace Alarm4Rest_Viewer
                         case "Priority":
                             fltSelectedPriority.Remove(item.Value.TrimEnd());
                             break;
+                        case "Message":
+                            fltSelectedMessage.Remove(item.Value.TrimEnd());
+                            break;
                         case "GroupDescription":
                             fltSelectedGroupDescription.Remove(item.Value.TrimEnd());
                             break;
@@ -354,12 +410,14 @@ namespace Alarm4Rest_Viewer
             fltSelectedStationsView = string.Join(" | ", fltSelectedStations.ToArray());
             fltSelectedPriorityView = string.Join(" | ", fltSelectedPriority.ToArray());
             fltSelectedGroupDescriptionView = string.Join(" | ", fltSelectedGroupDescription.ToArray());
+            fltSelectedMessageView = string.Join(" | ", fltSelectedMessage.ToArray());
 
             //To Do
             List<string> filterTextList = new List<string>();
             if (fltSelectedStationsView.Count() > 0) filterTextList.Add("(" + fltSelectedStationsView + ")");
             if (fltSelectedPriorityView.Count() > 0) filterTextList.Add("(" + fltSelectedPriorityView + ")");
             if (fltSelectedGroupDescriptionView.Count() > 0) filterTextList.Add("(" + fltSelectedGroupDescriptionView + ")");
+            if (fltSelectedMessageView.Count() > 0) filterTextList.Add("(" + fltSelectedMessageView + ")");
 
             if (filterTextList.Count() > 0)
             {
@@ -389,7 +447,7 @@ namespace Alarm4Rest_Viewer
             filterParseDeleg = FilterExpressionBuilder.GetExpression<RestorationAlarmList>(groupFields);
 
             RestAlarmsRepo.filterParseDeleg = filterParseDeleg;
-            RestAlarmsRepo.FilterAct();
+            RestAlarmsRepo.GetCustAlarmAct();
 
             Console.WriteLine(filterParseDeleg.Body);
 
@@ -510,8 +568,9 @@ namespace Alarm4Rest_Viewer
             }
             else
             {
+                RestAlarmsRepo.custPageIndex = 1;
                 RestAlarmsRepo.filterParseDeleg = searchParseDeleg;
-                RestAlarmsRepo.FilterAct();
+                RestAlarmsRepo.GetCustAlarmAct();
                 Console.WriteLine(searchParseDeleg.Body);
             }
 

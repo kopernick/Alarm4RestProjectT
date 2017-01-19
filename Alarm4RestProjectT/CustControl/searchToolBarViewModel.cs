@@ -278,7 +278,7 @@ namespace Alarm4Rest_Viewer.CustControl
             else
             {
                 RestAlarmsRepo.filterParseDeleg = searchParseDeleg;
-                RestAlarmsRepo.FilterAct();
+                RestAlarmsRepo.GetCustAlarmAct();
                 Console.WriteLine(searchParseDeleg.Body);
             }
             

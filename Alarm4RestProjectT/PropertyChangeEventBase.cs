@@ -17,6 +17,14 @@ namespace Alarm4Rest_Viewer
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
+        protected virtual void OnPropertyChanged(Object sender, string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(sender, new PropertyChangedEventArgs(propertyName));
+            }
+        }
         public void Set(ref string _text, string value)
         {
            // if (_text != null)

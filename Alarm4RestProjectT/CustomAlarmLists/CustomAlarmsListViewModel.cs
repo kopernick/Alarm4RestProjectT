@@ -40,6 +40,18 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
                 OnPropertyChanged("custPageCount");
             }
         }
+
+        private int _custAlarmCount;
+        public int custAlarmCount
+        {
+            get { return _custAlarmCount; }
+            set
+            {
+                _custAlarmCount = value;
+                OnPropertyChanged("custAlarmCount");
+            }
+
+        }
         public int pageSize { get; private set; }
 
         private Timer _timer = new Timer(5000);
@@ -57,9 +69,10 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
 
            RestAlarmsRepo.RestAlarmChanged += OnRestAlarmChanged;
             custPageIndex = 1;
-            pageSize = 40;
-            RestAlarmsRepo.pageSize = pageSize;
-            RestAlarmsRepo.custPageIndex = custPageIndex;
+            pageSize = 35;
+            custAlarmCount = 0;
+            //RestAlarmsRepo.pageSize = pageSize;
+            //RestAlarmsRepo.custPageIndex = custPageIndex;
 
             //_timer.Elapsed += (s, e) => NotificationMessage = "This is Alarm bar 2 : " + DateTime.Now.ToLocalTime();
             //_timer.Start();
@@ -87,8 +100,8 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
             if (_custPageIndex > RestAlarmsRepo.custPageIndex) custPageIndex = RestAlarmsRepo.custPageCount;
 
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _custPageIndex);
-            RestAlarmsRepo.pageIndex = custPageIndex;
-            RestAlarmsRepo.FilterAct();
+            RestAlarmsRepo.custPageIndex = custPageIndex;
+            RestAlarmsRepo.GetCustAlarmAct();
 
             //To Do function Update RestAlarmsRepo.RestAlarmListDump 
             //CustRestAlarmListDump = await RestAlarmsRepo.GetCustomRestAlarmsAsync(RestAlarmsRepo.filterParseDeleg, custPageIndex, pageSize);
@@ -106,7 +119,7 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
             custPageIndex = 1;
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _custPageIndex);
             RestAlarmsRepo.custPageIndex = custPageIndex;
-            RestAlarmsRepo.FilterAct();
+            RestAlarmsRepo.GetCustAlarmAct();
 
         }
 
@@ -117,7 +130,7 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
             custPageIndex -= 1;
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _custPageIndex);
             RestAlarmsRepo.custPageIndex = custPageIndex;
-            RestAlarmsRepo.FilterAct();
+            RestAlarmsRepo.GetCustAlarmAct();
 
         }
         public RelayCommand NextPageCommand { get; private set; }
@@ -127,7 +140,7 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
             custPageIndex += 1;
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _custPageIndex);
             RestAlarmsRepo.custPageIndex = custPageIndex;
-            RestAlarmsRepo.FilterAct();
+            RestAlarmsRepo.GetCustAlarmAct();
 
         }
 
@@ -142,7 +155,7 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
             custPageIndex = RestAlarmsRepo.custPageCount;
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _custPageIndex);
             RestAlarmsRepo.custPageIndex = custPageIndex;
-            RestAlarmsRepo.FilterAct();
+            RestAlarmsRepo.GetCustAlarmAct();
 
         }
 
@@ -162,6 +175,7 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
                     }
 
                     custPageCount = RestAlarmsRepo.custPageCount;
+                    custAlarmCount = RestAlarmsRepo.custAlarmCount;
                     NotificationMessage = "Has New Alarm : " + DateTime.Now.ToLocalTime();
                     break;
 
@@ -172,27 +186,29 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
                         CustomAlarms.Insert(0,RestAlarmsRepo.CustAlarmListDump[i]);
 
                     custPageCount = RestAlarmsRepo.custPageCount;
+                    custAlarmCount = RestAlarmsRepo.custAlarmCount;
                     NotificationMessage = "Database has been reset : " + DateTime.Now.ToLocalTime();
                     break;
 
                 case "filterAlarmCust":
-                    Console.WriteLine(DateTime.Now.ToString() + " :  Custom Alarm List has been filtered");
+                    Console.WriteLine(DateTime.Now.ToString() + " :  Custom Alarm List has been Filtered/Searched");
                     CustomAlarms.Clear();
                     for (int i = RestAlarmsRepo.startNewCustItemArray; i >= 0; i--)
                         CustomAlarms.Insert(0, RestAlarmsRepo.CustAlarmListDump[i]);
 
                     custPageCount = RestAlarmsRepo.custPageCount;
-                    NotificationMessage = "Filtering : " + DateTime.Now.ToLocalTime();
+                    custAlarmCount = RestAlarmsRepo.custAlarmCount;
+                    //NotificationMessage = "Filtering : " + DateTime.Now.ToLocalTime();
                     break;
 
                 case "filterAlarmCustNoResult":
-                    Console.WriteLine(DateTime.Now.ToString() + " :  Custom Alarm List has been filtered but no data");
+                    Console.WriteLine(DateTime.Now.ToString() + " :  Custom Alarm List has been Filtered/Searched but no data");
                     CustomAlarms.Clear();
 
                     custPageCount = RestAlarmsRepo.custPageCount;
-                    NotificationMessage = "No result Filtering : " + DateTime.Now.ToLocalTime();
+                    custAlarmCount = RestAlarmsRepo.custAlarmCount;
+                    NotificationMessage = "No Filtering/Searching result  : " + DateTime.Now.ToLocalTime();
                     break;
-                    
 
                 default:
                     Console.WriteLine(DateTime.Now.ToString() + " :  Custom Alarm List Default");

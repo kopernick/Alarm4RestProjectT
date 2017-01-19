@@ -149,6 +149,12 @@
                                 ToolTip="หน้าสุดท้าย">
                         <Image Source ="{StaticResource lastPageImage}" />
                     </Button>
+                    
+                    <Label Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14">
+                        Total Record(s):
+                    </Label>
+                    <Label Content="{Binding custAlarmCount}" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" FontWeight="Bold">
+                    </Label>
                 </ToolBar>
 
             </ToolBarTray>
