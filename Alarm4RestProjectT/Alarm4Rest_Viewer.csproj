@@ -71,10 +71,10 @@
     <Compile Include="CustControl\ComboWithCheckboxes.xaml.cs">
       <DependentUpon>ComboWithCheckboxes.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustControl\mainNavBarView.xaml.cs">
-      <DependentUpon>mainNavBarView.xaml</DependentUpon>
+    <Compile Include="CustControl\mainRibbonTabView.xaml.cs">
+      <DependentUpon>mainRibbonTabView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustControl\mainNavBarViewModel.cs" />
+    <Compile Include="CustControl\mainRibbonTapViewModel.cs" />
     <Compile Include="CustControl\searchToolBarView.xaml.cs">
       <DependentUpon>searchToolBarView.xaml</DependentUpon>
     </Compile>
@@ -109,7 +109,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CustControl\mainNavBarView.xaml">
+    <Page Include="CustControl\mainRibbonTabView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -204,6 +204,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Note\PassMultiCmdParameter-ICommand.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Note\RibbonTab_Home.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Note\สร้าง RibbonTab เอง.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

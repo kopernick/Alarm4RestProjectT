@@ -247,7 +247,6 @@ namespace Alarm4Rest_Viewer
 
             pageSize = RestAlarmsRepo.pageSize;
             SetPageSize = new RelayCommand(o => onSetPageSize(), o => canSetPageSize());
-            TRunFilterTimeCondCmd = new RelayCommand(o => onRunFilterTimeCond(), o => canRunFilterToday());
 
       #region Initialize filter menu
             mfltStationItems = new ObservableCollection<Item>();
@@ -311,11 +310,12 @@ namespace Alarm4Rest_Viewer
             filterParseDeleg = FilterExpressionBuilder.GetExpression<RestorationAlarmList>(groupFields);
             */
             
-            RestAlarmsRepo.filterParseDeleg = filterParseDeleg;
+            //RestAlarmsRepo.filterParseDeleg = filterParseDeleg;
+            RestAlarmsRepo.filterParseDeleg = searchParseDeleg;
             DateTime exclusiveEnd = DateTime.Now;
             await RestAlarmsRepo.TGetCustAlarmAct(exclusiveEnd, DateTimeCond);
 
-            Console.WriteLine(filterParseDeleg.Body);
+            //Console.WriteLine(filterParseDeleg.Body);
         }
         
         public RelayCommand SetPageSize { get; private set; }
@@ -331,28 +331,6 @@ namespace Alarm4Rest_Viewer
             await RestAlarmsRepo.GetCustAlarmAct();
         }
 
-        public RelayCommand TRunFilterTimeCondCmd { get; private set; }
-
-        public bool canRunFilterToday()
-        {
-            return true;
-        }
-        public async void onRunFilterTimeCond()
-        {
-            IEnumerable<IGrouping<string, Item>> groupFields =
-                    from item in filters
-                    group item by item.FieldName;
-
-            TimeCondItem DateTimeCond = new TimeCondItem("Day", 2);
-
-            filterParseDeleg = FilterExpressionBuilder.GetExpression<RestorationAlarmList>(groupFields);
-
-            RestAlarmsRepo.filterParseDeleg = filterParseDeleg;
-            DateTime exclusiveEnd = DateTime.Now;
-            await RestAlarmsRepo.TGetCustAlarmAct(exclusiveEnd, DateTimeCond);
-
-            Console.WriteLine(filterParseDeleg.Body);
-        }
         #endregion
 
         #region Filter Helper function

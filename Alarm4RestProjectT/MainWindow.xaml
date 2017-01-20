@@ -1,4 +1,4 @@
-﻿<Window
+﻿<Window x:Class="Alarm4Rest_Viewer.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,7 +9,6 @@
         xmlns:Services="clr-namespace:Alarm4Rest_Viewer.Services"
         xmlns:CustControl="clr-namespace:Alarm4Rest_Viewer.CustControl" 
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        x:Class="Alarm4Rest_Viewer.MainWindow"
         mc:Ignorable="d"
         Title="Smart Infomation for Restoration " Height="750" Width="1024">
 
@@ -35,7 +34,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Ribbon x:Name="RibbonWin"  SelectedIndex="0">
+        <Ribbon x:Name="RibbonWin"  SelectedIndex="0" Grid.Row="0">
             <!-- Help Pane, located at the right-hand side -->
             <Ribbon.HelpPaneContent>
                 <RibbonButton SmallImageSource="images\main.png" />
@@ -50,68 +49,12 @@
             </Ribbon.ApplicationMenu>
 
             <!-- Ribbon Tab #0: Home -->
-            <RibbonTab Header="Home" KeyTip="F" >
-                <!-- Filter  group-->
 
-                <RibbonGroup x:Name="HMain" >
-
-                    <Button  Content="Today"
-                                  Command="{Binding RunFilterTimeCondCmd}">
-                        <Button.Resources>
-                            <sys:String x:Key="fixedTimeType">Day</sys:String>
-                            <sys:String x:Key="fixedValue">1</sys:String>
-                        </Button.Resources>
-                        <Button.CommandParameter>
-                            <MultiBinding Converter="{StaticResource MultiValueConverter}">
-                                <Binding Source="{StaticResource fixedTimeType}"/>
-                                <Binding Source="{StaticResource fixedValue}"/>
-                            </MultiBinding>
-                        </Button.CommandParameter>
-                    </Button>
-                    <Button  Content="Last 2 Days"
-                                  Command="{Binding RunFilterTimeCondCmd}">
-                        <Button.Resources>
-                            <sys:String x:Key="fixedTimeType">Day</sys:String>
-                            <sys:String x:Key="fixedValue">2</sys:String>
-                        </Button.Resources>
-                        <Button.CommandParameter>
-                            <MultiBinding Converter="{StaticResource MultiValueConverter}">
-                                <Binding Source="{StaticResource fixedTimeType}"/>
-                                <Binding Source="{StaticResource fixedValue}"/>
-                            </MultiBinding>
-                        </Button.CommandParameter>
-                    </Button>
-                    <Button  Content="Last Week"
-                                  Command="{Binding RunFilterTimeCondCmd}">
-                        <Button.Resources>
-                            <sys:String x:Key="fixedTimeType">Week</sys:String>
-                            <sys:String x:Key="fixedValue">1</sys:String>
-                        </Button.Resources>
-                        <Button.CommandParameter>
-                            <MultiBinding Converter="{StaticResource MultiValueConverter}">
-                                <Binding Source="{StaticResource fixedTimeType}"/>
-                                <Binding Source="{StaticResource fixedValue}"/>
-                            </MultiBinding>
-                        </Button.CommandParameter>
-                     </Button>
-                    <Button  Content="Last Month"
-                                  Command="{Binding RunFilterTimeCondCmd}">
-                        <Button.Resources>
-                            <sys:String x:Key="fixedTimeType">Month</sys:String>
-                            <sys:String x:Key="fixedValue">1</sys:String>
-                        </Button.Resources>
-                        <Button.CommandParameter>
-                            <MultiBinding Converter="{StaticResource MultiValueConverter}">
-                                <Binding Source="{StaticResource fixedTimeType}"/>
-                                <Binding Source="{StaticResource fixedValue}"/>
-                            </MultiBinding>
-                        </Button.CommandParameter>
-                    </Button>
-                </RibbonGroup>
-            </RibbonTab>
-
+            <CustControl:mainRibbonTapView Header="Main" x:Name="RibbonTabHome" Height="Auto"/>
+            
+            
             <!-- Ribbon Tab #1: Search -->
-            <RibbonTab Header="Search" KeyTip="S" >
+            <RibbonTab Header="Advance Search" KeyTip="S" >
                 <!-- Keyword  group-->
                 <RibbonGroup x:Name="sMain">
                     <RibbonButton LargeImageSource="Images\main.png" Label="Show only Main List" KeyTip="S" 
@@ -248,7 +191,7 @@
             </RibbonTab>
 
             <!-- Ribbon Tab #1: Filter -->
-            <RibbonTab Header="Filter" KeyTip="F" >
+            <RibbonTab Header="Advance Filter" KeyTip="F" >
                 <!-- Filter  group-->
 
                 <RibbonGroup x:Name="fMain" >
