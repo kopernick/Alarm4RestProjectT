@@ -12,6 +12,7 @@ using System.Linq.Expressions;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Windows.Input;
 
 namespace Alarm4Rest_Viewer
 {
@@ -246,9 +247,9 @@ namespace Alarm4Rest_Viewer
 
             pageSize = RestAlarmsRepo.pageSize;
             SetPageSize = new RelayCommand(o => onSetPageSize(), o => canSetPageSize());
-            RunFilterTodayCmd = new RelayCommand(o => onRunFilterToday(), o => canRunFilterToday());
+            TRunFilterTimeCondCmd = new RelayCommand(o => onRunFilterTimeCond(), o => canRunFilterToday());
 
-            #region Initialize filter menu
+      #region Initialize filter menu
             mfltStationItems = new ObservableCollection<Item>();
             mfltPriorityItems = new ObservableCollection<Item>();
             mfltGroupDescItems = new ObservableCollection<Item>();
@@ -281,6 +282,42 @@ namespace Alarm4Rest_Viewer
         }
 
         #region Helper Function
+
+        /* WPF call method with parameter*/
+        RelayCommand _RunFilterTimeCondCmd;
+        public ICommand RunFilterTimeCondCmd
+        {
+            get
+            {
+                if (_RunFilterTimeCondCmd == null)
+                {
+                    _RunFilterTimeCondCmd = new RelayCommand(p => RunFilterTimeCond(p),
+                        p => true);
+                }
+                return _RunFilterTimeCondCmd;
+            }
+        }
+
+        // WPF Call with parameter
+        private async void RunFilterTimeCond(object value)
+        {
+            TimeCondItem DateTimeCond = (TimeCondItem)value;
+
+            /*
+            IEnumerable<IGrouping<string, Item>> groupFields =
+                    from item in filters
+                    group item by item.FieldName;
+
+            filterParseDeleg = FilterExpressionBuilder.GetExpression<RestorationAlarmList>(groupFields);
+            */
+            
+            RestAlarmsRepo.filterParseDeleg = filterParseDeleg;
+            DateTime exclusiveEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetCustAlarmAct(exclusiveEnd, DateTimeCond);
+
+            Console.WriteLine(filterParseDeleg.Body);
+        }
+        
         public RelayCommand SetPageSize { get; private set; }
 
         public bool canSetPageSize()
@@ -294,23 +331,25 @@ namespace Alarm4Rest_Viewer
             await RestAlarmsRepo.GetCustAlarmAct();
         }
 
-        public RelayCommand RunFilterTodayCmd { get; private set; }
+        public RelayCommand TRunFilterTimeCondCmd { get; private set; }
 
         public bool canRunFilterToday()
         {
             return true;
         }
-        public async void onRunFilterToday()
+        public async void onRunFilterTimeCond()
         {
             IEnumerable<IGrouping<string, Item>> groupFields =
                     from item in filters
                     group item by item.FieldName;
 
+            TimeCondItem DateTimeCond = new TimeCondItem("Day", 2);
+
             filterParseDeleg = FilterExpressionBuilder.GetExpression<RestorationAlarmList>(groupFields);
 
             RestAlarmsRepo.filterParseDeleg = filterParseDeleg;
             DateTime exclusiveEnd = DateTime.Now;
-            await RestAlarmsRepo.TGetCustAlarmAct(exclusiveEnd);
+            await RestAlarmsRepo.TGetCustAlarmAct(exclusiveEnd, DateTimeCond);
 
             Console.WriteLine(filterParseDeleg.Body);
         }

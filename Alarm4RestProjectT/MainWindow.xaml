@@ -8,11 +8,14 @@
         xmlns:CustomAlarmLists="clr-namespace:Alarm4Rest_Viewer.CustomAlarmLists" 
         xmlns:Services="clr-namespace:Alarm4Rest_Viewer.Services"
         xmlns:CustControl="clr-namespace:Alarm4Rest_Viewer.CustControl" 
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         x:Class="Alarm4Rest_Viewer.MainWindow"
         mc:Ignorable="d"
         Title="Smart Infomation for Restoration " Height="750" Width="1024">
 
     <Window.Resources>
+
+        <Services:MultiValueConverter x:Key="MultiValueConverter" />
         <DataTemplate DataType="{x:Type CustomAlarmLists:CustomAlarmListViewModel}">
             <CustomAlarmLists:CustomAlarmsListView />
         </DataTemplate>
@@ -51,8 +54,59 @@
                 <!-- Filter  group-->
 
                 <RibbonGroup x:Name="HMain" >
-                    <RibbonButton  Label="Today" KeyTip="T" 
-                                  Command="{Binding RunFilterTodayCmd}" />
+
+                    <Button  Content="Today"
+                                  Command="{Binding RunFilterTimeCondCmd}">
+                        <Button.Resources>
+                            <sys:String x:Key="fixedTimeType">Day</sys:String>
+                            <sys:String x:Key="fixedValue">1</sys:String>
+                        </Button.Resources>
+                        <Button.CommandParameter>
+                            <MultiBinding Converter="{StaticResource MultiValueConverter}">
+                                <Binding Source="{StaticResource fixedTimeType}"/>
+                                <Binding Source="{StaticResource fixedValue}"/>
+                            </MultiBinding>
+                        </Button.CommandParameter>
+                    </Button>
+                    <Button  Content="Last 2 Days"
+                                  Command="{Binding RunFilterTimeCondCmd}">
+                        <Button.Resources>
+                            <sys:String x:Key="fixedTimeType">Day</sys:String>
+                            <sys:String x:Key="fixedValue">2</sys:String>
+                        </Button.Resources>
+                        <Button.CommandParameter>
+                            <MultiBinding Converter="{StaticResource MultiValueConverter}">
+                                <Binding Source="{StaticResource fixedTimeType}"/>
+                                <Binding Source="{StaticResource fixedValue}"/>
+                            </MultiBinding>
+                        </Button.CommandParameter>
+                    </Button>
+                    <Button  Content="Last Week"
+                                  Command="{Binding RunFilterTimeCondCmd}">
+                        <Button.Resources>
+                            <sys:String x:Key="fixedTimeType">Week</sys:String>
+                            <sys:String x:Key="fixedValue">1</sys:String>
+                        </Button.Resources>
+                        <Button.CommandParameter>
+                            <MultiBinding Converter="{StaticResource MultiValueConverter}">
+                                <Binding Source="{StaticResource fixedTimeType}"/>
+                                <Binding Source="{StaticResource fixedValue}"/>
+                            </MultiBinding>
+                        </Button.CommandParameter>
+                     </Button>
+                    <Button  Content="Last Month"
+                                  Command="{Binding RunFilterTimeCondCmd}">
+                        <Button.Resources>
+                            <sys:String x:Key="fixedTimeType">Month</sys:String>
+                            <sys:String x:Key="fixedValue">1</sys:String>
+                        </Button.Resources>
+                        <Button.CommandParameter>
+                            <MultiBinding Converter="{StaticResource MultiValueConverter}">
+                                <Binding Source="{StaticResource fixedTimeType}"/>
+                                <Binding Source="{StaticResource fixedValue}"/>
+                            </MultiBinding>
+                        </Button.CommandParameter>
+                    </Button>
                 </RibbonGroup>
             </RibbonTab>
 
@@ -362,7 +416,7 @@
                 <GridSplitter Grid.Column="1" Width="3" Background="#FF4C91C1"/>
                 <DockPanel Grid.Column="2">
                     <Grid DockPanel.Dock ="Top">
-                        <Label Content="Custom Alarm List" HorizontalAlignment="Center" Width="Auto" FontSize="14" FontWeight="Bold" Foreground="#FF015DFF" />
+                        <Label Content="Restoration Alarm List" HorizontalAlignment="Center" Width="Auto" FontSize="14" FontWeight="Bold" Foreground="#FF015DFF" />
                     </Grid>
                     <Grid DockPanel.Dock ="Top">
                         <!--

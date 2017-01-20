@@ -79,6 +79,7 @@
       <DependentUpon>searchToolBarView.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustControl\searchToolBarViewModel.cs" />
+    <Compile Include="Services\TimeCondItem.cs" />
     <Compile Include="Services\SearchingExpressionBuilder.cs" />
     <Compile Include="Services\FilterExpressionBuilder.cs" />
     <Compile Include="CustControl\filterToolBarView.xaml.cs">
@@ -200,6 +201,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\setting.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Note\PassMultiCmdParameter-ICommand.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

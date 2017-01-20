@@ -32,6 +32,7 @@ namespace Alarm4Rest_Viewer.Services
         public static int pageIndex { get; set; }
         public static int custPageIndex { get; set; }
         public static int pageSize { get; set; }
+        public static TimeCondItem DateTimeCondItem { get; private set; }
 
         public static int pageCount { get; set; }
         public static int custPageCount { get; set; }
@@ -64,6 +65,8 @@ namespace Alarm4Rest_Viewer.Services
             DBContext = new Alarm4RestorationContext();
             RestAlarmListDump = new List<RestorationAlarmList>();
             CustAlarmListDump = new List<RestorationAlarmList>();
+
+            DateTimeCondItem = new TimeCondItem("Day", 2);
             filterParseDeleg = null;
             //StationsName = new List<string>();
 
@@ -214,14 +217,45 @@ namespace Alarm4Rest_Viewer.Services
                             .Take(pageSize)
                             .ToListAsync<RestorationAlarmList>();
         }
-        public static async Task<List<RestorationAlarmList>> TGetCustomRestAlarmsAsync(DateTime exclusiveEnd)
+        public static async Task<List<RestorationAlarmList>> TGetCustomRestAlarmsAsync(DateTime exclusiveEnd, TimeCondItem timeCondition)
         {
 
+            //exclusiveEnd = DateTime.ParseExact(exclusiveEnd.ToString(), "dd/MM/yyyy HH:mm:ss.000", System.Globalization.CultureInfo.InvariantCulture);
+            DateTime inclusiveStart = new DateTime();
+            TimeSpan ts = new TimeSpan(0, 0, 0);
+            switch (timeCondition.TimeType)
+            {
+                case "Day":
+                    inclusiveStart = exclusiveEnd.AddDays((-1) * (timeCondition.Value-1));
+                    inclusiveStart = inclusiveStart.Date + ts; // Reset time to HH: mm: ss.000" -> 0000:00.000
+                    break;
+                case "Week":
+                    int diff = exclusiveEnd.DayOfWeek - DayOfWeek.Monday;
+                    if (diff < 0)
+                    {
+                        diff += 7;
+                    }
+                    inclusiveStart= exclusiveEnd.AddDays(-1 * diff).Date;
+                    inclusiveStart = inclusiveStart.Date + ts; // Reset time to HH: mm: ss.000" -> 0000:00.000
+                    break;
+                case "Month":
+                    inclusiveStart = exclusiveEnd.AddMonths((-1) * (timeCondition.Value - 1));
+                    inclusiveStart = new DateTime(inclusiveStart.Year, inclusiveStart.Month, 1);
+                    break;
+                default: //All one year
+                    inclusiveStart = exclusiveEnd.AddYears(-1);
+                    inclusiveStart = new DateTime(inclusiveStart.Year, 1, 1);
+                    break;
+
+            }       
+
             //To Do ปรับปรุงให้มีการ Query ครั้งเดียว
-            //Get RestAlarm count
+            //Get CustRestAlarm count
             custAlarmCount = DBContext.RestorationAlarmLists
                             .OrderByDescending(c => c.PkAlarmListID)
                             .Where(filterParseDeleg)
+                            .Where(c => c.DateTime >= inclusiveStart
+                                        && c.DateTime < exclusiveEnd)
                             .Count();
 
             if (custAlarmCount % pageSize == 0)
@@ -233,14 +267,8 @@ namespace Alarm4Rest_Viewer.Services
                 custPageCount = (custAlarmCount / pageSize) + 1;
             }
 
-            //exclusiveEnd = DateTime.ParseExact(exclusiveEnd.ToString(), "dd/MM/yyyy HH:mm:ss.000", System.Globalization.CultureInfo.InvariantCulture);
-
-            DateTime inclusiveStart = exclusiveEnd.AddDays(-1);
-           
-            // Reset time to HH: mm: ss.000" -> 0000:00.000
-            TimeSpan ts = new TimeSpan(0, 0, 0);
-            inclusiveStart = inclusiveStart.Date + ts;
-            Console.WriteLine("Test");
+            
+            
 
 
             //Get one page
@@ -308,12 +336,14 @@ namespace Alarm4Rest_Viewer.Services
             }
         }
 
-        public static async Task TGetCustAlarmAct(DateTime exclusiveEnd)
+        public static async Task TGetCustAlarmAct(DateTime exclusiveEnd, TimeCondItem DatetimeCond)
         {
             RestEventArgs arg = new RestEventArgs();
+
+            DateTimeCondItem = DatetimeCond;
             //Test Raise read "LoadStationName"
             if (filterParseDeleg == null) return;
-            CustAlarmListDump = await TGetCustomRestAlarmsAsync(exclusiveEnd);
+            CustAlarmListDump = await TGetCustomRestAlarmsAsync(exclusiveEnd, DateTimeCondItem);
             if (CustAlarmListDump.Count != 0)
             {
                 LastCustomAlarmRecIndex = CustAlarmListDump[0].PkAlarmListID;
