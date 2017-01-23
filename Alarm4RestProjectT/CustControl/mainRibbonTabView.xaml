@@ -21,23 +21,34 @@
         <!--<ViewModel:ViewModelEventAlarm/> -->
     </RibbonTab.DataContext>
 
-            <!-- Filter  group-->
-            <RibbonGroup x:Name="StdQuery" Header="Standard Query">
-                <Grid DockPanel.Dock ="Top">
-                    <Grid.ColumnDefinitions >
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
 
-                </Grid>
-            </RibbonGroup>
+    <!-- Standard Query group-->
+    <RibbonGroup x:Name="StdQuery" Header="Standard Query">
+        <Grid>
+            <Grid.ColumnDefinitions >
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
 
+            <Button  Content="Query 1" Grid.Row="0" Grid.Column="0" MinWidth="72" Width="Auto" Margin="5,2,5,2"
+                                  Command="{Binding RunStdSortQuery1}">
+                </Button>
+            <Button  Content="Query 2" Grid.Row="0" Grid.Column="1" MinWidth="72" Width="Auto" Margin="5,2,5,2"
+                                  Command="{Binding RunStdSortQuery2}">
+            </Button>
+            <Button  Content="Query 3" Grid.Row="0" Grid.Column="2" MinWidth="72" Width="Auto" Margin="5,2,5,2"
+                                  Command="{Binding RunStdSortQuery3}">
+            </Button>
+        </Grid>
+
+    </RibbonGroup>
+    
     <RibbonGroup x:Name="TimeCondition" Header="Filter by Time" Grid.Column="1">
         <Grid DockPanel.Dock ="Top">
             <Grid.ColumnDefinitions >
@@ -75,7 +86,7 @@
                     </MultiBinding>
                 </Button.CommandParameter>
             </Button>
-            <Button  Content="Last Week" Grid.Row="1" Grid.Column="0" MinWidth="72" Width="Auto" Margin="5,2,5,2"
+            <Button  Content="This Week" Grid.Row="1" Grid.Column="0" MinWidth="72" Width="Auto" Margin="5,2,5,2"
                                   Command="{Binding RunFilterTimeCondCmd}">
                 <Button.Resources>
                     <sys:String x:Key="fixedTimeType">Week</sys:String>
@@ -88,7 +99,7 @@
                     </MultiBinding>
                 </Button.CommandParameter>
             </Button>
-            <Button  Content="Last Month" Grid.Row="1" Grid.Column="1" MinWidth="72" Width="Auto" Margin="5,2,5,2"
+            <Button  Content="This Month" Grid.Row="1" Grid.Column="1" MinWidth="72" Width="Auto" Margin="5,2,5,2"
                                   Command="{Binding RunFilterTimeCondCmd}">
                 <Button.Resources>
                     <sys:String x:Key="fixedTimeType">Month</sys:String>

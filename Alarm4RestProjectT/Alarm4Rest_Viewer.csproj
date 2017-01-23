@@ -79,6 +79,8 @@
       <DependentUpon>searchToolBarView.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustControl\searchToolBarViewModel.cs" />
+    <Compile Include="Services\SortExpression.cs" />
+    <Compile Include="Services\SortItem.cs" />
     <Compile Include="Services\TimeCondItem.cs" />
     <Compile Include="Services\SearchingExpressionBuilder.cs" />
     <Compile Include="Services\FilterExpressionBuilder.cs" />
@@ -167,12 +169,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Alarm4RestProject\Alarm4RestData\Alarm4Rest.Data.csproj">
-      <Project>{1e3dff06-904a-44ee-a7b6-23788b715e91}</Project>
-      <Name>Alarm4Rest.Data</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="images\main.png" />
   </ItemGroup>
   <ItemGroup>
@@ -210,6 +206,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Note\สร้าง RibbonTab เอง.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Alarm4RestData\Alarm4Rest.Data.csproj">
+      <Project>{1e3dff06-904a-44ee-a7b6-23788b715e91}</Project>
+      <Name>Alarm4Rest.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -71,6 +71,27 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
             //_timer.Start();
         }
 
+        //OnLoad Control
+        public async void LoadRestorationAlarmsAsync()
+        {
+            try
+            {
+                RestEventArgs arg = new RestEventArgs();
+                await RestAlarmsRepo.GetInitDataRepositoryAsync();
+                RestorationAlarms = new ObservableCollection<RestorationAlarmList>(RestAlarmsRepo.RestAlarmListDump);
+                pageCount = RestAlarmsRepo.pageCount;
+                restAlarmCount = RestAlarmsRepo.restAlarmCount;
+                arg.message = "hasLoaded";
+                onRestAlarmChanged(arg);
+                Console.WriteLine("Load Success");
+            }
+            catch
+            {
+                Console.WriteLine("Load Fail");
+                NotificationMessage = "Can't connect to Database : " + DateTime.Now.ToLocalTime();
+            }
+
+        }
 
         public RelayCommand FirstPageCommand { get; private set; }
         private bool canPrePageCommand()
@@ -139,27 +160,7 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
             await RestAlarmsRepo.GetRestAlarmAct();
         }
 
-        //OnLoad Control
-        public async void LoadRestorationAlarmsAsync()
-        {
-            try
-            {
-                RestEventArgs arg = new RestEventArgs();
-                await RestAlarmsRepo.GetInitDataRepositoryAsync();
-                RestorationAlarms = new ObservableCollection<RestorationAlarmList>(RestAlarmsRepo.RestAlarmListDump);
-                pageCount = RestAlarmsRepo.pageCount;
-                restAlarmCount = RestAlarmsRepo.restAlarmCount;
-                arg.message = "hasLoaded";
-                onRestAlarmChanged(arg);
-                Console.WriteLine("Load Success");
-            }catch
-            {
-                Console.WriteLine("Load Fail");
-                NotificationMessage = "Can't connect to Database : " + DateTime.Now.ToLocalTime();
-            }
-            
-        }
-
+        
         //New alarm Process
         private void OnRestAlarmRepoChanged(object source, RestEventArgs arg)
         {

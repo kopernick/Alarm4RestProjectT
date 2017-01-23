@@ -267,7 +267,7 @@ namespace Alarm4Rest_Viewer.CustControl
         {
             return mCheckedItems.Count != 0;
         }
-        public void onFilterAlarms()
+        public async void onFilterAlarms()
         {
             //Implement for each query Group by PropertyName : StationName , Priority or Desc.
 
@@ -280,7 +280,7 @@ namespace Alarm4Rest_Viewer.CustControl
             filterParseDeleg = FilterExpressionBuilder.GetExpression<RestorationAlarmList>(groupFields);
 
             RestAlarmsRepo.filterParseDeleg = filterParseDeleg;
-            RestAlarmsRepo.GetCustAlarmAct();
+            await RestAlarmsRepo.GetCustAlarmAct();
 
             Console.WriteLine(filterParseDeleg.Body);
 

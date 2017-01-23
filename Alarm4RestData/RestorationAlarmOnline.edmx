@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Alarm4Rest.data.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="RestorationAlarmList">
+          <Key>
+            <PropertyRef Name="PkAlarmListID" />
+          </Key>
+          <Property Name="PkAlarmListID" Type="int" Nullable="false" />
+          <Property Name="DateTime" Type="datetime" />
+          <Property Name="PointType" Type="tinyint" />
+          <Property Name="FkIndexID" Type="int" />
+          <Property Name="StationName" Type="char" MaxLength="15" />
+          <Property Name="PointName" Type="char" MaxLength="40" />
+          <Property Name="AlarmType" Type="int" />
+          <Property Name="Flashing" Type="tinyint" />
+          <Property Name="ActualValue" Type="float" />
+          <Property Name="Message" Type="char" MaxLength="40" />
+          <Property Name="SourceName" Type="char" MaxLength="20" />
+          <Property Name="SourceID" Type="int" />
+          <Property Name="SourceType" Type="tinyint" />
+          <Property Name="AlarmFlag" Type="tinyint" />
+          <Property Name="GroupPointName" Type="varchar" MaxLength="50" />
+          <Property Name="GroupDescription" Type="varchar" MaxLength="100" />
+          <Property Name="Priority" Type="char" MaxLength="15" />
+        </EntityType>
+        <EntityType Name="Station">
+          <Key>
+            <PropertyRef Name="PkStationID" />
+          </Key>
+          <Property Name="PkStationID" Type="int" Nullable="false" />
+          <Property Name="StationName" Type="char" MaxLength="15" Nullable="false" />
+          <Property Name="StationNumber" Type="int" Nullable="false" />
+          <Property Name="Detail" Type="char" MaxLength="80" />
+          <Property Name="DCSName" Type="char" MaxLength="15" />
+          <Property Name="DCSNumber" Type="tinyint" />
+          <Property Name="RegionName" Type="char" MaxLength="15" />
+          <Property Name="RegionNumber" Type="tinyint" />
+        </EntityType>
+        <EntityContainer Name="Alarm4RestdataStoreContainer">
+          <EntitySet Name="RestorationAlarmList" EntityType="Self.RestorationAlarmList" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Station" EntityType="Self.Station" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Alarm4Rest.data" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="RestorationAlarmList">
+          <Key>
+            <PropertyRef Name="PkAlarmListID" />
+          </Key>
+          <Property Name="PkAlarmListID" Type="Int32" Nullable="false" />
+          <Property Name="DateTime" Type="DateTime" Precision="3" />
+          <Property Name="PointType" Type="Byte" />
+          <Property Name="FkIndexID" Type="Int32" />
+          <Property Name="StationName" Type="String" MaxLength="15" FixedLength="true" Unicode="false" />
+          <Property Name="PointName" Type="String" MaxLength="40" FixedLength="true" Unicode="false" />
+          <Property Name="AlarmType" Type="Int32" />
+          <Property Name="Flashing" Type="Byte" />
+          <Property Name="ActualValue" Type="Double" />
+          <Property Name="Message" Type="String" MaxLength="40" FixedLength="true" Unicode="false" />
+          <Property Name="SourceName" Type="String" MaxLength="20" FixedLength="true" Unicode="false" />
+          <Property Name="SourceID" Type="Int32" />
+          <Property Name="SourceType" Type="Byte" />
+          <Property Name="AlarmFlag" Type="Byte" />
+          <Property Name="GroupPointName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="GroupDescription" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Priority" Type="String" MaxLength="15" FixedLength="true" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Station">
+          <Key>
+            <PropertyRef Name="PkStationID" />
+          </Key>
+          <Property Name="PkStationID" Type="Int32" Nullable="false" />
+          <Property Name="StationName" Type="String" MaxLength="15" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="StationNumber" Type="Int32" Nullable="false" />
+          <Property Name="Detail" Type="String" MaxLength="80" FixedLength="true" Unicode="false" />
+          <Property Name="DCSName" Type="String" MaxLength="15" FixedLength="true" Unicode="false" />
+          <Property Name="DCSNumber" Type="Byte" />
+          <Property Name="RegionName" Type="String" MaxLength="15" FixedLength="true" Unicode="false" />
+          <Property Name="RegionNumber" Type="Byte" />
+        </EntityType>
+        <EntityContainer Name="Alarm4RestorationContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="RestorationAlarmLists" EntityType="Self.RestorationAlarmList" />
+          <EntitySet Name="Stations" EntityType="Self.Station" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Alarm4RestdataStoreContainer" CdmEntityContainer="Alarm4RestorationContext">
+          <EntitySetMapping Name="RestorationAlarmLists">
+            <EntityTypeMapping TypeName="Alarm4Rest.data.RestorationAlarmList">
+              <MappingFragment StoreEntitySet="RestorationAlarmList">
+                <ScalarProperty Name="PkAlarmListID" ColumnName="PkAlarmListID" />
+                <ScalarProperty Name="DateTime" ColumnName="DateTime" />
+                <ScalarProperty Name="PointType" ColumnName="PointType" />
+                <ScalarProperty Name="FkIndexID" ColumnName="FkIndexID" />
+                <ScalarProperty Name="StationName" ColumnName="StationName" />
+                <ScalarProperty Name="PointName" ColumnName="PointName" />
+                <ScalarProperty Name="AlarmType" ColumnName="AlarmType" />
+                <ScalarProperty Name="Flashing" ColumnName="Flashing" />
+                <ScalarProperty Name="ActualValue" ColumnName="ActualValue" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="SourceName" ColumnName="SourceName" />
+                <ScalarProperty Name="SourceID" ColumnName="SourceID" />
+                <ScalarProperty Name="SourceType" ColumnName="SourceType" />
+                <ScalarProperty Name="AlarmFlag" ColumnName="AlarmFlag" />
+                <ScalarProperty Name="GroupPointName" ColumnName="GroupPointName" />
+                <ScalarProperty Name="GroupDescription" ColumnName="GroupDescription" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Stations">
+            <EntityTypeMapping TypeName="Alarm4Rest.data.Station">
+              <MappingFragment StoreEntitySet="Station">
+                <ScalarProperty Name="PkStationID" ColumnName="PkStationID" />
+                <ScalarProperty Name="StationName" ColumnName="StationName" />
+                <ScalarProperty Name="StationNumber" ColumnName="StationNumber" />
+                <ScalarProperty Name="Detail" ColumnName="Detail" />
+                <ScalarProperty Name="DCSName" ColumnName="DCSName" />
+                <ScalarProperty Name="DCSNumber" ColumnName="DCSNumber" />
+                <ScalarProperty Name="RegionName" ColumnName="RegionName" />
+                <ScalarProperty Name="RegionNumber" ColumnName="RegionNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -34,7 +34,8 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Ribbon x:Name="RibbonWin"  SelectedIndex="0" Grid.Row="0">
+        <Ribbon x:Name="RibbonWin" DockPanel.Dock="Top" SelectedIndex="0" Grid.Row="0">
+           
             <!-- Help Pane, located at the right-hand side -->
             <Ribbon.HelpPaneContent>
                 <RibbonButton SmallImageSource="images\main.png" />

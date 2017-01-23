@@ -4,8 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alarm4Rest_Viewer", "Alarm4RestProjectT\Alarm4Rest_Viewer.csproj", "{882C62F5-8D1A-48E6-AF45-E6DF31873AC1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1E3DFF06-904A-44EE-A7B6-23788B715E91} = {1E3DFF06-904A-44EE-A7B6-23788B715E91}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alarm4Rest.Data", "..\Alarm4RestProject\Alarm4RestData\Alarm4Rest.Data.csproj", "{1E3DFF06-904A-44EE-A7B6-23788B715E91}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alarm4Rest.Data", "Alarm4RestData\Alarm4Rest.Data.csproj", "{1E3DFF06-904A-44EE-A7B6-23788B715E91}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

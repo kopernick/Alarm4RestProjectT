@@ -7,6 +7,8 @@ using Alarm4Rest.Data;
 using System.Windows.Threading;
 using System.Linq.Expressions;
 using System.Threading;
+using System.Collections;
+using System.ComponentModel;
 
 namespace Alarm4Rest_Viewer.Services
 {
@@ -44,6 +46,7 @@ namespace Alarm4Rest_Viewer.Services
 
         //Global Filter Keyword
         public static Expression<Func<RestorationAlarmList, bool>> filterParseDeleg;
+        public static Expression<Func<RestorationAlarmList, object>> orderParseDeleg;
 
         //public static List<string> filter_Parse { get; set; }
 
@@ -267,10 +270,6 @@ namespace Alarm4Rest_Viewer.Services
                 custPageCount = (custAlarmCount / pageSize) + 1;
             }
 
-            
-            
-
-
             //Get one page
             return await DBContext.RestorationAlarmLists
                             //.OrderBy(c => c.Priority).ThenByDescending(c => c.PkAlarmListID)
@@ -282,6 +281,38 @@ namespace Alarm4Rest_Viewer.Services
                             .Take(pageSize)
                             .ToListAsync<RestorationAlarmList>();
         }
+
+        public static async Task<List<RestorationAlarmList>> SGetCustomRestAlarmsAsync(SortItem orderParseDeleg)
+        {
+
+            string[] sortOreder = orderParseDeleg.ToArray();
+
+            //Get one page
+            IEnumerable<RestorationAlarmList> Query = await DBContext.RestorationAlarmLists
+                            .OrderByDescending(c => c.PkAlarmListID)
+                            .Where(filterParseDeleg)
+                            .ToListAsync();
+
+            var resultList = Query.BuildOrderBys(
+                                new SortDescription(sortOreder[0], ListSortDirection.Ascending),
+                                new SortDescription(sortOreder[1], ListSortDirection.Ascending)).ToList();
+
+            custAlarmCount = resultList.Count();
+
+            if (custAlarmCount % pageSize == 0)
+            {
+                custPageCount = (custAlarmCount / pageSize);
+            }
+            else
+            {
+                custPageCount = (custAlarmCount / pageSize) + 1;
+            }
+            return resultList
+                            .Skip((custPageIndex - 1) * pageSize)
+                            .Take(pageSize)
+                            .ToList();
+        }
+
 
         public static async Task<List<RestorationAlarmList>> GetCustomRestAlarmsAsync(Expression<Func<RestorationAlarmList, bool>> filter_Parse, int custPageIndex = 1, int pageSize = 30)
         {
@@ -363,7 +394,32 @@ namespace Alarm4Rest_Viewer.Services
             }
         }
 
+        public static async Task SGetCustAlarmAct(SortItem orderParseDeleg)
+        {
+            RestEventArgs arg = new RestEventArgs();
 
+            //Test Raise read "LoadStationName"
+            if (orderParseDeleg == null) return;
+            CustAlarmListDump = await SGetCustomRestAlarmsAsync(orderParseDeleg);
+            if (CustAlarmListDump.Count != 0)
+            {
+                LastCustomAlarmRecIndex = CustAlarmListDump[0].PkAlarmListID;
+                startNewCustItemArray = CustAlarmListDump.Count - 1;
+                arg.message = "filterAlarmCust";
+                Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
+                onRestAlarmChanged(arg);//Raise Event
+            }
+            else //filter result no item
+            {
+
+                arg.message = "filterAlarmCustNoResult";
+                LastCustomAlarmRecIndex = -1;
+                startNewCustItemArray = -1;
+                Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
+                onRestAlarmChanged(arg);//Raise Event
+            }
+        }
+        
         public static async Task GetRestAlarmAct()
         {
             RestEventArgs arg = new RestEventArgs();

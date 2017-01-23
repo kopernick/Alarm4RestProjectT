@@ -10,7 +10,7 @@ using System.Windows.Data;
 
 namespace Alarm4Rest_Viewer.Services
 {
-    public class TimeCondItem : PropertyChangeEventBase
+    public class TimeCondItem
     {
         public string TimeType { get; private set; }
         public int Value { get; private set; }

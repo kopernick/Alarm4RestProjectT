@@ -19,14 +19,16 @@ namespace Alarm4Rest_Viewer
     public class MainWindowViewModel : PropertyChangeEventBase
     {
 
-        private filterToolBarViewModel _filterToolViewModel = new filterToolBarViewModel();
-        private searchToolBarViewModel _searchToolViewModel = new searchToolBarViewModel();
-        private CustomAlarmListViewModel _custAlarmViewModel = new CustomAlarmListViewModel();
+        //private filterToolBarViewModel _filterToolViewModel = new filterToolBarViewModel();
+        //private searchToolBarViewModel _searchToolViewModel = new searchToolBarViewModel();
 
         public RelayCommand EnableSearchCmd { get; private set; }
         public RelayCommand EnableFilterCmd { get; private set; }
         public RelayCommand EnableCustView { get; private set; }
 
+        #region Sorting Templat
+        public static List<SortItem> sortOrderList = new List<SortItem>();
+        #endregion
 
         #region Filter Properties
         public static List<string> fltSelectedStations = new List<string>();
@@ -115,7 +117,7 @@ namespace Alarm4Rest_Viewer
 
         }
 
-        public int _pageSize;
+        private int _pageSize;
         public int pageSize
         {
             get { return _pageSize; }
@@ -236,7 +238,7 @@ namespace Alarm4Rest_Viewer
             //_filterToolViewModel = new filterToolBarViewModel();
             //_searchToolViewModel = new searchToolBarViewModel();
 
-            RestAlarmsRepo.InitializeRepository();
+            RestAlarmsRepo.InitializeRepository(); // Start define --> DBContext = new Alarm4RestorationContext();
             //CustAlarmViewModel = new CustomAlarmListViewModel();
 
             EnableSearchCmd = new RelayCommand(o => onSearchAlarms(), o => canSearch());
@@ -248,7 +250,11 @@ namespace Alarm4Rest_Viewer
             pageSize = RestAlarmsRepo.pageSize;
             SetPageSize = new RelayCommand(o => onSetPageSize(), o => canSetPageSize());
 
-      #region Initialize filter menu
+            #region Initialize Sort Template menu
+            InitSortOrderTemplate();
+            #endregion
+
+            #region Initialize filter menu
             mfltStationItems = new ObservableCollection<Item>();
             mfltPriorityItems = new ObservableCollection<Item>();
             mfltGroupDescItems = new ObservableCollection<Item>();
@@ -282,42 +288,6 @@ namespace Alarm4Rest_Viewer
 
         #region Helper Function
 
-        /* WPF call method with parameter*/
-        RelayCommand _RunFilterTimeCondCmd;
-        public ICommand RunFilterTimeCondCmd
-        {
-            get
-            {
-                if (_RunFilterTimeCondCmd == null)
-                {
-                    _RunFilterTimeCondCmd = new RelayCommand(p => RunFilterTimeCond(p),
-                        p => true);
-                }
-                return _RunFilterTimeCondCmd;
-            }
-        }
-
-        // WPF Call with parameter
-        private async void RunFilterTimeCond(object value)
-        {
-            TimeCondItem DateTimeCond = (TimeCondItem)value;
-
-            /*
-            IEnumerable<IGrouping<string, Item>> groupFields =
-                    from item in filters
-                    group item by item.FieldName;
-
-            filterParseDeleg = FilterExpressionBuilder.GetExpression<RestorationAlarmList>(groupFields);
-            */
-            
-            //RestAlarmsRepo.filterParseDeleg = filterParseDeleg;
-            RestAlarmsRepo.filterParseDeleg = searchParseDeleg;
-            DateTime exclusiveEnd = DateTime.Now;
-            await RestAlarmsRepo.TGetCustAlarmAct(exclusiveEnd, DateTimeCond);
-
-            //Console.WriteLine(filterParseDeleg.Body);
-        }
-        
         public RelayCommand SetPageSize { get; private set; }
 
         public bool canSetPageSize()
@@ -332,8 +302,16 @@ namespace Alarm4Rest_Viewer
         }
 
         #endregion
+        #region Sort Template Helper function
+        private void InitSortOrderTemplate()
+        {
+            sortOrderList.Add(new SortItem("StationName", "DateTime", "Priority"));
+            sortOrderList.Add(new SortItem("StationName", "Priority", "DateTime"));
+            sortOrderList.Add(new SortItem("DateTime", "StationName", "Priority"));
+        }
+        #endregion
 
-        #region Filter Helper function
+            #region Filter Helper function
         private void OnRestAlarmChanged(object source, RestEventArgs arg)
         {
             if (arg.message == "hasLoaded")
@@ -364,8 +342,8 @@ namespace Alarm4Rest_Viewer
                 {
                     mfltMessageItems.Add(new Item(Message.ToString(), "Message"));
                 }
-                // Adding Priority ComboBox items
-
+                             
+                // Adding Search field items
                 mfieldItems.Add(new Item("PointName", "FieldName"));
                 mfieldItems.Add(new Item("Message", "FieldName"));
                 //mpfieldItems.Add(new Item("Priority", "FieldName"));

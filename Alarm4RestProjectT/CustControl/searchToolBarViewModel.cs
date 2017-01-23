@@ -255,7 +255,7 @@ namespace Alarm4Rest_Viewer.CustControl
         {
             return (_search_Parse_Pri != "" || _search_Parse_Sec != "");
         }
-        public void onSearchAlarms()
+        public async void onSearchAlarms()
         {
             //Implement for each query Group by PropertyName : StationName , Priority or Desc.
 
@@ -278,7 +278,7 @@ namespace Alarm4Rest_Viewer.CustControl
             else
             {
                 RestAlarmsRepo.filterParseDeleg = searchParseDeleg;
-                RestAlarmsRepo.GetCustAlarmAct();
+                await RestAlarmsRepo.GetCustAlarmAct();
                 Console.WriteLine(searchParseDeleg.Body);
             }
             
