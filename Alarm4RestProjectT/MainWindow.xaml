@@ -363,11 +363,11 @@
                         <Label Content="Restoration Alarm List" HorizontalAlignment="Center" Width="Auto" FontSize="14" FontWeight="Bold" Foreground="#FF015DFF" />
                     </Grid>
                     <Grid DockPanel.Dock ="Top">
-                        <!--
-                        <ContentControl x:Name="custView" Content="{Binding CustAlarmViewModel}" Margin="2" Width="Auto"/>
-                        -->
-                        <CustomAlarmLists:CustomAlarmsListView Grid.Column="0" x:Name="custView" Margin="2" HorizontalAlignment="Stretch" Width="Auto" />
 
+                        <ContentControl x:Name="custView" Content="{Binding CustAlarmViewModel}" Margin="2" HorizontalAlignment="Stretch" Width="Auto"/>
+                        <!--
+                        <CustomAlarmLists:CustomAlarmsListView Grid.Column="0" x:Name="custView" Margin="2" HorizontalAlignment="Stretch" Width="Auto" />
+                        -->
                     </Grid>
                 </DockPanel>
             </Grid>

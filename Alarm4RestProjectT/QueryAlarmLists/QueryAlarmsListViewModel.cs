@@ -6,13 +6,13 @@ using System.Timers;
 using System.Collections.Generic;
 using System.Windows.Input;
 
-namespace Alarm4Rest_Viewer.RestorationAlarmLists
+namespace Alarm4Rest_Viewer.QueryAlarmLists
 {
-    class RestAlarmsListViewModel: PropertyChangeEventBase
+    class QueryAlarmsListViewModel: PropertyChangeEventBase
     {
 
         //private IRestAlarmsRepository _repository = new RestAlarmsRepository();
-        public static List<RestorationAlarmList> RestAlarmListDump { get; private set; }
+        public static List<RestorationAlarmList> QueryAlarmListDump { get; private set; }
 
         private Timer _timer = new Timer(5000);
 
@@ -51,10 +51,10 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
         }
 
         public static List<string> StationName { get; private set; }
-        public RestAlarmsListViewModel()
+        public QueryAlarmsListViewModel()
         {
-            RestAlarmListDump = new List<RestorationAlarmList>();
-            RestorationDetailCommand = new RelayCommand(O=>OnRestorationDetailCommand(),O=>canShowDetail());
+            QueryAlarmListDump = new List<RestorationAlarmList>();
+            QueryDetailCommand = new RelayCommand(O=>OnQueryDetailCommand(),O=>canShowDetail());
 
             FirstPageCommand = new RelayCommand(O => onFirstPageCommand(), O => canPrePageCommand());
             PrePageCommand = new RelayCommand(O => onPrePageCommand(), O => canPrePageCommand());
@@ -62,12 +62,9 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
             LastPageCommand = new RelayCommand(O => onLastPageCommand(), O => canNextPageCommand());
             EnterPageCommand = new RelayCommand(O => onEnterPageCommand(), O => canEnterPageCommand());
 
-            RestAlarmsRepo.RestAlarmChanged += OnRestAlarmRepoChanged;
+            RestAlarmsRepo.RestAlarmChanged += OnQueryRepoChanged;
             pageIndex = 1;
             restAlarmCount = 0;
-
-            RestorationAlarms = new ObservableCollection<RestorationAlarmList>();
-
             //RestAlarmsRepo.pageIndex = pageIndex;
 
             //_timer.Elapsed += (s, e) => NotificationMessage = "This is Alarm bar 2 : " + DateTime.Now.ToLocalTime();
@@ -75,10 +72,28 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
         }
 
         //OnLoad Control
+        /*
         public async void LoadRestorationAlarmsAsync()
         {
-            await RestAlarmsRepo.GetInitDataRepositoryAsync();
+            try
+            {
+                RestEventArgs arg = new RestEventArgs();
+                await RestAlarmsRepo.GetInitDataRepositoryAsync();
+                RestorationAlarms = new ObservableCollection<RestorationAlarmList>(RestAlarmsRepo.RestAlarmListDump);
+                pageCount = RestAlarmsRepo.pageCount;
+                restAlarmCount = RestAlarmsRepo.restAlarmCount;
+                arg.message = "hasLoaded";
+                onRestAlarmChanged(arg);
+                Console.WriteLine("Load Success");
+            }
+            catch
+            {
+                Console.WriteLine("Load Fail");
+                NotificationMessage = "Can't connect to Database : " + DateTime.Now.ToLocalTime();
+            }
+
         }
+        */
 
         public RelayCommand FirstPageCommand { get; private set; }
         private bool canPrePageCommand()
@@ -149,38 +164,11 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
 
         
         //New alarm Process
-        private void OnRestAlarmRepoChanged(object source, RestEventArgs arg)
+        private void OnQueryRepoChanged(object source, RestEventArgs arg)
         {
-            RestEventArgs _arg = new RestEventArgs();
 
             switch (arg.message)
             {
-
-                case "Start Success":
-
-                    Console.WriteLine(DateTime.Now.ToString() + " : Main Alarm List" + arg.message);
-                    RestorationAlarms = new ObservableCollection<RestorationAlarmList>(RestAlarmsRepo.RestAlarmListDump);
-                    pageCount = RestAlarmsRepo.pageCount;
-                    restAlarmCount = RestAlarmsRepo.restAlarmCount;
-
-                    //Send to MainWindowVM
-                    _arg.message = "hasLoaded";
-                    onRestAlarmChanged(_arg);
-
-                    //Send to CustomAlarmListView
-                    //onRestAlarmChanged(arg);
-                    NotificationMessage = "Database has been Loaded : " + DateTime.Now.ToLocalTime();
-
-                    break;
-
-                case "Start Fail":
-
-                    Console.WriteLine(DateTime.Now.ToString() + " : Main Alarm List" + arg.message);
-                    NotificationMessage = "Can't Loaded Database : " + DateTime.Now.ToLocalTime();
-
-                    break;
-
-
                 case "hasNewAlarm":
                     Console.WriteLine(DateTime.Now.ToString() + " : Main Alarm List Recieved New Alarm");
                     if (RestAlarmsRepo.PreviousAlarmRecIndex < 0) break;
@@ -244,7 +232,7 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
             }
         }
 
-        public RelayCommand RestorationDetailCommand { get; private set; }
+        public RelayCommand QueryDetailCommand { get; private set; }
 
         public event Action<RestorationAlarmList> RestorationDetailRequested = delegate { };
 
@@ -252,7 +240,7 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
         {
             return (_selectedEvent != null);
         }
-        private void OnRestorationDetailCommand()
+        private void OnQueryDetailCommand()
         {
             RestorationDetailRequested(_selectedEvent);
         }

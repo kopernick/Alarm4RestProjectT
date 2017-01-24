@@ -67,7 +67,7 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
             LastPageCommand = new RelayCommand(O => onLastPageCommand(), O => canNextPageCommand());
             CustomAlarms = new ObservableCollection<RestorationAlarmList>();
 
-           RestAlarmsRepo.RestAlarmChanged += OnRestAlarmChanged;
+            RestAlarmsRepo.RestAlarmChanged += OnCustAlarmChanged;
             custPageIndex = 1;
             pageSize = 35;
             custAlarmCount = 0;
@@ -160,11 +160,31 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
         }
 
         //New alarm Process
-        private void OnRestAlarmChanged(object source, RestEventArgs arg)
+        private void OnCustAlarmChanged(object source, RestEventArgs arg)
         {
 
             switch (arg.message)
             {
+                case "Start Success":
+
+                    Console.WriteLine(DateTime.Now.ToString() + " : Main Alarm List" + arg.message);
+                    CustomAlarms = new ObservableCollection<RestorationAlarmList>(RestAlarmsRepo.CustAlarmListDump);
+                    custPageCount = RestAlarmsRepo.custPageCount;
+                    custAlarmCount = RestAlarmsRepo.custAlarmCount;
+
+                    //arg.message = "hasLoaded";
+                    //onRestAlarmChanged(arg);
+
+                    NotificationMessage = "Database has been Loaded : " + DateTime.Now.ToLocalTime();
+
+                    break;
+
+                case "Start Fail":
+
+                    Console.WriteLine(DateTime.Now.ToString() + " : Main Alarm List" + arg.message);
+                    NotificationMessage = "Can't Loaded Database : " + DateTime.Now.ToLocalTime();
+
+                    break;
                 case "hasNewAlarmCust":
                     Console.WriteLine(DateTime.Now.ToString() + " : Custom Alarm List Recieved New Alarm");
                     if (RestAlarmsRepo.PreviousAlarmRecIndex < 0) break;

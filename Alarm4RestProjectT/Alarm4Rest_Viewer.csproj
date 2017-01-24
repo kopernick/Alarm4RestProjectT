@@ -79,6 +79,10 @@
       <DependentUpon>searchToolBarView.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustControl\searchToolBarViewModel.cs" />
+    <Compile Include="QueryAlarmLists\QueryAlarmsListView.xaml.cs">
+      <DependentUpon>QueryAlarmsListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="QueryAlarmLists\QueryAlarmsListViewModel.cs" />
     <Compile Include="Services\SortExpression.cs" />
     <Compile Include="Services\SortItem.cs" />
     <Compile Include="Services\TimeCondItem.cs" />
@@ -135,6 +139,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="QueryAlarmLists\QueryAlarmsListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="RestorationAlarmLists\RestAlarmsListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -213,6 +221,7 @@
       <Name>Alarm4Rest.Data</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

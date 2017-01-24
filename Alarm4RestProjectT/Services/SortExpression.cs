@@ -12,9 +12,7 @@ namespace Alarm4Rest_Viewer.Services
 {
     public static class SortExpression
     {
-        public static IEnumerable<T> BuildOrderBys<T>(
-            this IEnumerable<T> source,
-            params SortDescription[] properties)
+        public static IEnumerable<T> BuildOrderBy<T>(this IEnumerable<T> source, params SortDescription[] properties)
         {
             if (properties == null || properties.Length == 0) return source;
 
@@ -96,30 +94,5 @@ namespace Alarm4Rest_Viewer.Services
         }
     }
 
-    //public static class Sample
-    //{
-    //    private static void Main()
-    //    {
-    //        var data = new List<Customer>
-    //    {
-    //      new Customer {ID = 3, Name = "a"},
-    //      new Customer {ID = 3, Name = "c"},
-    //      new Customer {ID = 4},
-    //      new Customer {ID = 3, Name = "b"},
-    //      new Customer {ID = 2}
-    //    };
-
-    //        var result = data.BuildOrderBys(
-    //          new SortDescription("ID", ListSortDirection.Ascending),
-    //          new SortDescription("Name", ListSortDirection.Ascending)
-    //          ).ToList();
-    //    }
-    //}
-
-    //public class Customer
-    //{
-    //    public int ID { get; set; }
-    //    public string Name { get; set; }
-    //}
 }
  

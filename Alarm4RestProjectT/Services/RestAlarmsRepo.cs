@@ -81,14 +81,30 @@ namespace Alarm4Rest_Viewer.Services
         //Get All Data from SQL
         public static async Task GetInitDataRepositoryAsync()
         {
+            RestEventArgs arg = new RestEventArgs();
 
-            RestAlarmListDump = await GetRestAlarmsAsync();
-            LastAlarmRecIndex = RestAlarmListDump[0].PkAlarmListID; //Set Last PkAlarmList initializing
-            LastMaxAlarmRecIndex = LastAlarmRecIndex;
-            StationsName = await GetStationNameAsync();
-            Priority = await GetPriorityAsync();
-            GroupDescription = await GetGroupAsync();
-            Message = await GetMessageAsync();
+            try
+            {
+                RestAlarmListDump = await GetRestAlarmsAsync();
+                LastAlarmRecIndex = RestAlarmListDump[0].PkAlarmListID; //Set Last PkAlarmList initializing
+                LastMaxAlarmRecIndex = LastAlarmRecIndex;
+                StationsName = await GetStationNameAsync();
+                Priority = await GetPriorityAsync();
+                GroupDescription = await GetGroupAsync();
+                Message = await GetMessageAsync();
+
+                //Send Message to Subscriber
+                arg.message = "Start Success";
+                onRestAlarmChanged(arg);//Raise Event
+                Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
+            }
+            catch
+            {
+                //Send Message to Subscriber
+                arg.message = "Start Fail";
+                onRestAlarmChanged(arg);//Raise Event
+                Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
+            }
         }
 
         private static void InitializeComponent()
@@ -293,9 +309,9 @@ namespace Alarm4Rest_Viewer.Services
                             .Where(filterParseDeleg)
                             .ToListAsync();
 
-            var resultList = Query.BuildOrderBys(
+            var resultList = Query.BuildOrderBy(
                                 new SortDescription(sortOreder[0], ListSortDirection.Ascending),
-                                new SortDescription(sortOreder[1], ListSortDirection.Ascending)).ToList();
+                                new SortDescription(sortOreder[1], ListSortDirection.Ascending));
 
             custAlarmCount = resultList.Count();
 

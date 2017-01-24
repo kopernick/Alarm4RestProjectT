@@ -21,6 +21,7 @@ namespace Alarm4Rest_Viewer
 
         //private filterToolBarViewModel _filterToolViewModel = new filterToolBarViewModel();
         //private searchToolBarViewModel _searchToolViewModel = new searchToolBarViewModel();
+        private CustomAlarmListViewModel _custAlarmViewModel = new CustomAlarmListViewModel();
 
         public RelayCommand EnableSearchCmd { get; private set; }
         public RelayCommand EnableFilterCmd { get; private set; }
@@ -238,9 +239,9 @@ namespace Alarm4Rest_Viewer
             //_filterToolViewModel = new filterToolBarViewModel();
             //_searchToolViewModel = new searchToolBarViewModel();
 
-            RestAlarmsRepo.InitializeRepository(); // Start define --> DBContext = new Alarm4RestorationContext();
-            //CustAlarmViewModel = new CustomAlarmListViewModel();
 
+            RestAlarmsRepo.InitializeRepository(); // Start define --> DBContext = new Alarm4RestorationContext();
+           
             EnableSearchCmd = new RelayCommand(o => onSearchAlarms(), o => canSearch());
             EnableFilterCmd = new RelayCommand(o => onFilterAlarms(), o => canFilter());
             EnableCustView = new RelayCommand(o => onCustView(), o => canViewMain());
@@ -283,7 +284,8 @@ namespace Alarm4Rest_Viewer
 
             RunSearchCmd = new RelayCommand(o => onSearchAlarms(), o => canSearch());
 
-        #endregion
+            //CustAlarmViewModel = new CustomAlarmListViewModel();
+            #endregion
         }
 
         #region Helper Function
@@ -349,6 +351,8 @@ namespace Alarm4Rest_Viewer
                 //mpfieldItems.Add(new Item("Priority", "FieldName"));
                 mfieldItems.Add(new Item("GroupPointName", "FieldName"));
                 mfieldItems.Add(new Item("GroupDescription", "FieldName"));
+
+                CustAlarmViewModel = _custAlarmViewModel;
             }
         }
         private void fltItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
