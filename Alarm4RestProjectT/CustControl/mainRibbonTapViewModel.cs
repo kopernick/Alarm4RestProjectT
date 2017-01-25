@@ -10,7 +10,7 @@ namespace Alarm4Rest_Viewer.CustControl
 {
     class mainRibbonTapViewModel : PropertyChangeEventBase
     {
-
+       
         public static List<SortItem> sortOrderList = new List<SortItem>();
         //public Expression<Func<RestorationAlarmList, object>> orderParseDeleg;
         public SortItem orderParseDeleg;
@@ -85,7 +85,7 @@ namespace Alarm4Rest_Viewer.CustControl
 
             Console.WriteLine(sortOrder.ID);
         }
-       
+
         #endregion
     }
 }
