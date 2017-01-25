@@ -10,9 +10,8 @@
             xmlns:Services="clr-namespace:Alarm4Rest_Viewer.Services"
             xmlns:CustControl="clr-namespace:Alarm4Rest_Viewer.CustControl" 
             xmlns:sys="clr-namespace:System;assembly=mscorlib">
-    
-    <RibbonTab.Resources>
 
+    <RibbonTab.Resources>
         <Services:MultiValueConverter x:Key="MultiValueConverter" />
     </RibbonTab.Resources>
 

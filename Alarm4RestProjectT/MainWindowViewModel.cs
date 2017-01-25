@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Input;
+using Alarm4Rest_Viewer.QueryAlarmLists;
 
 namespace Alarm4Rest_Viewer
 {
@@ -21,14 +22,16 @@ namespace Alarm4Rest_Viewer
 
         //private filterToolBarViewModel _filterToolViewModel = new filterToolBarViewModel();
         //private searchToolBarViewModel _searchToolViewModel = new searchToolBarViewModel();
-        private CustomAlarmListViewModel _custAlarmViewModel = new CustomAlarmListViewModel();
+        //private CustomAlarmListViewModel _custAlarmViewModel = new CustomAlarmListViewModel();
 
         public RelayCommand EnableSearchCmd { get; private set; }
         public RelayCommand EnableFilterCmd { get; private set; }
         public RelayCommand EnableCustView { get; private set; }
+     
 
         #region Sorting Templat
         public static List<SortItem> sortOrderList = new List<SortItem>();
+        public SortItem orderParseDeleg;
         #endregion
 
         #region Filter Properties
@@ -304,16 +307,76 @@ namespace Alarm4Rest_Viewer
         }
 
         #endregion
+
         #region Sort Template Helper function
         private void InitSortOrderTemplate()
         {
-            sortOrderList.Add(new SortItem("StationName", "DateTime", "Priority"));
-            sortOrderList.Add(new SortItem("StationName", "Priority", "DateTime"));
-            sortOrderList.Add(new SortItem("DateTime", "StationName", "Priority"));
+            sortOrderList.Add(new SortItem(1,"StationName", "DateTime", "Priority"));
+            sortOrderList.Add(new SortItem(2,"StationName", "Priority", "DateTime"));
+            sortOrderList.Add(new SortItem(3,"DateTime", "StationName", "Priority"));
         }
+        /* WPF call method with 2 parameter*/
+        RelayCommand _RunFilterTimeCondCmd;
+        public ICommand RunFilterTimeCondCmd
+        {
+            get
+            {
+                if (_RunFilterTimeCondCmd == null)
+                {
+                    _RunFilterTimeCondCmd = new RelayCommand(p => RunFilterTimeCond(p),
+                        p => true);
+                }
+                return _RunFilterTimeCondCmd;
+            }
+        }
+
+        // WPF Call with 2 parameter
+        private async void RunFilterTimeCond(object value)
+        {
+            //CustAlarmViewModel = new CustomAlarmListViewModel();
+
+            TimeCondItem DateTimeCond = (TimeCondItem)value;
+
+            DateTime exclusiveEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetCustAlarmAct(exclusiveEnd, DateTimeCond);
+
+            //Console.WriteLine(filterParseDeleg.Body);
+        }
+
+        /* WPF call method with 1 parameter*/
+
+        RelayCommand _RunStdSortQuery;
+        public ICommand RunStdSortQuery
+        {
+            get
+            {
+                if (_RunStdSortQuery == null)
+                {
+                    _RunStdSortQuery = new RelayCommand(p => RunStdSort(p),
+                        p => true);
+                }
+                return _RunStdSortQuery;
+            }
+        }
+
+        private async void RunStdSort(object txtSortTemplate)
+        {
+            //CustAlarmViewModel = null;
+            CustAlarmViewModel = new QueryAlarmsListViewModel();
+            int sortTemplate = Convert.ToInt32(txtSortTemplate);
+            SortItem sortOrder = sortOrderList.First(i => i.ID == sortTemplate);
+            RestAlarmsRepo.orderParseDeleg = sortOrder;
+            //orderParseDeleg = SortExpression.BuildOrderBys<RestorationAlarmList>(sortOrder);
+
+            //DateTime exclusiveEnd = DateTime.Now;
+            await RestAlarmsRepo.GetQueryAlarmAct();
+
+            Console.WriteLine(sortOrder.ID);
+        }
+
         #endregion
 
-            #region Filter Helper function
+        #region Filter Helper function
         private void OnRestAlarmChanged(object source, RestEventArgs arg)
         {
             if (arg.message == "hasLoaded")
@@ -352,7 +415,8 @@ namespace Alarm4Rest_Viewer
                 mfieldItems.Add(new Item("GroupPointName", "FieldName"));
                 mfieldItems.Add(new Item("GroupDescription", "FieldName"));
 
-                CustAlarmViewModel = _custAlarmViewModel;
+                //CustAlarmViewModel = _custAlarmViewModel;
+                CustAlarmViewModel =  new CustomAlarmListViewModel();
             }
         }
         private void fltItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -457,7 +521,7 @@ namespace Alarm4Rest_Viewer
         public async void onFilterAlarms()
         {
             //Implement for each query Group by PropertyName : StationName , Priority or Desc.
-
+            CustAlarmViewModel = new CustomAlarmListViewModel();
             //ExpressGen();
             Console.WriteLine("Run Filter cmd");
             //CustAlarmViewModel = _custAlarmViewModel;
@@ -570,7 +634,7 @@ namespace Alarm4Rest_Viewer
         public async void onSearchAlarms()
         {
             //Implement for each query Group by PropertyName : StationName , Priority or Desc.
-
+            CustAlarmViewModel = new CustomAlarmListViewModel();
             //ExpressGen();
             //CustAlarmViewModel = _custAlarmViewModel;
 

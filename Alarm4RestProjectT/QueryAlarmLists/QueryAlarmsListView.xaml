@@ -8,7 +8,7 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
              xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="500">
+             d:DesignHeight="300" d:DesignWidth="600">
     
     <!--
     <i:Interaction.Triggers>
@@ -17,12 +17,11 @@
                                  MethodName="LoadRestorationAlarmsAsync"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    -->
+    
     <UserControl.DataContext>
         <local:QueryAlarmsListViewModel/>
-        <!--<ViewModel:ViewModelEventAlarm/> -->
     </UserControl.DataContext>
-
+-->
 
     <DockPanel>
         <!--Style-->
@@ -64,7 +63,9 @@
                             <Image Source ="{StaticResource exportImage}" />
                         </Button>
                     </StackPanel>
-                    
+                    <TextBox Text="Standard Query">
+                        
+                    </TextBox>
                     <Button Margin="2" IsDefault="True" Height="32"
                                 Command="{Binding Path = FirstPageCommand}"
                                 ToolTip="หน้าแรก">
@@ -95,7 +96,7 @@
                         of
                     </Label>
                     <Label x:Name="totalPage" Width="Auto"
-                        Content ="{Binding pageCount}" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" FontWeight="Bold">
+                        Content ="{Binding pageCount, UpdateSourceTrigger=PropertyChanged}" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" FontWeight="Bold">
                     </Label>
 
                     <Button Margin="2" IsDefault="True" Height="32"
@@ -112,7 +113,7 @@
                     <Label Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14">
                         Total Record(s): 
                     </Label>
-                    <Label Content="{Binding restAlarmCount}" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" FontWeight="Bold">
+                    <Label Content="{Binding queryAlarmCount,UpdateSourceTrigger=PropertyChanged}" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" FontWeight="Bold">
                     </Label>
                 </ToolBar>
                 
@@ -153,7 +154,7 @@
 
         </Grid>
         <Grid >
-            <DataGrid ItemsSource="{Binding RestorationAlarms}" 
+            <DataGrid ItemsSource="{Binding QueryRestAlarms}" 
                       x:Name="MainAlarmGrid"  FontSize="13" 
                       SelectedItem ="{Binding SelectedEvent}"
                       Background="DarkGray" GridLinesVisibility="Horizontal" 

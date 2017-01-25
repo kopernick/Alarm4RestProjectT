@@ -17,36 +17,52 @@ namespace Alarm4Rest_Viewer.Services
         public static Alarm4RestorationContext DBContext;
         public static List<RestorationAlarmList> RestAlarmListDump { get; private set; }
         public static List<RestorationAlarmList> CustAlarmListDump { get; private set; }
+        public static List<RestorationAlarmList> QueryAlarmListDump { get; private set; }
         public static List<string> StationsName { get; private set; }
 
         //private static DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
         private static DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
         //private static Thread thrChkNewEvents;
         public static int MainPage { get; private set; }
+        public static int pageSize { get; set; }
         public static int LastAlarmRecIndex { get; set; }
         public static int LastMaxAlarmRecIndex { get; set; }
-        public static int LastCustomAlarmRecIndex { get; set; }
+
+        public static int RestPageCount { get; set; }
+        public static int RestPageIndex { get; set; }
         public static int PreviousAlarmRecIndex { get; private set; }
         public static int startNewRestItemArray { get; private set; }
-        public static int startNewCustItemArray { get; private set; }
-       
         public static RestorationAlarmList maxPkRecIndex { get; private set; }
-        public static int pageIndex { get; set; }
+        public static int restAlarmCount { get; private set; }
+
+        public static int startNewCustItemArray { get; private set; }
+        public static int LastCustAlarmRecIndex { get; set; }
         public static int custPageIndex { get; set; }
-        public static int pageSize { get; set; }
+        public static int custPageCount { get; set; }
+        public static int custAlarmCount { get; private set; }
+
+        public static int startNewQueryItemArray { get; private set; }
+        public static int LastQueryAlarmRecIndex { get; set; }
+        public static int queryPageIndex { get; set; }
+        public static int queryPageCount { get; set; }
+        public static int queryAlarmCount { get; private set; }
+
+
         public static TimeCondItem DateTimeCondItem { get; private set; }
 
-        public static int pageCount { get; set; }
-        public static int custPageCount { get; set; }
-        public static int restAlarmCount { get; private set; }
-        public static int custAlarmCount { get; private set; }
+        
         public static List<string> Priority { get; private set; }
         public static List<string> GroupDescription { get; private set; }
         public static List<string> Message { get; private set; }
 
+        
+
+
+        
+
         //Global Filter Keyword
         public static Expression<Func<RestorationAlarmList, bool>> filterParseDeleg;
-        public static Expression<Func<RestorationAlarmList, object>> orderParseDeleg;
+        public static SortItem orderParseDeleg;
 
         //public static List<string> filter_Parse { get; set; }
 
@@ -68,6 +84,7 @@ namespace Alarm4Rest_Viewer.Services
             DBContext = new Alarm4RestorationContext();
             RestAlarmListDump = new List<RestorationAlarmList>();
             CustAlarmListDump = new List<RestorationAlarmList>();
+            QueryAlarmListDump = new List<RestorationAlarmList>();
 
             DateTimeCondItem = new TimeCondItem("Day", 2);
             filterParseDeleg = null;
@@ -112,11 +129,13 @@ namespace Alarm4Rest_Viewer.Services
             MainPage = 1;
             LastAlarmRecIndex = -1;
             LastMaxAlarmRecIndex = -1;
-            LastCustomAlarmRecIndex = -1;
+            LastCustAlarmRecIndex = -1;
+            LastQueryAlarmRecIndex = -1;
             PreviousAlarmRecIndex = 0;
             maxPkRecIndex = null;
-            pageIndex = 1;
+            RestPageIndex = 1;
             custPageIndex = 1;
+            queryPageIndex = 1;
             pageSize = 35;
         }
 
@@ -167,16 +186,16 @@ namespace Alarm4Rest_Viewer.Services
 
             if (restAlarmCount % pageSize == 0)
             {
-                pageCount = (restAlarmCount / pageSize);
+                RestPageCount = (restAlarmCount / pageSize);
             }else
             { 
-                pageCount = (restAlarmCount / pageSize) + 1;
+                RestPageCount = (restAlarmCount / pageSize) + 1;
             }
             
             //Get one page
             return await DBContext.RestorationAlarmLists
                             .OrderByDescending(c => c.PkAlarmListID)
-                            .Skip((pageIndex - 1) * pageSize)
+                            .Skip((RestPageIndex - 1) * pageSize)
                             .Take(pageSize)
                             //.Take(pageSize)
                             .ToListAsync<RestorationAlarmList>();
@@ -192,11 +211,11 @@ namespace Alarm4Rest_Viewer.Services
 
             if (restAlarmCount % pageSize == 0)
             {
-                pageCount = (restAlarmCount / pageSize);
+                RestPageCount = (restAlarmCount / pageSize);
             }
             else
             {
-                pageCount = (restAlarmCount / pageSize) + 1;
+                RestPageCount = (restAlarmCount / pageSize) + 1;
             }
 
             //Get one page
@@ -298,7 +317,7 @@ namespace Alarm4Rest_Viewer.Services
                             .ToListAsync<RestorationAlarmList>();
         }
 
-        public static async Task<List<RestorationAlarmList>> SGetCustomRestAlarmsAsync(SortItem orderParseDeleg)
+        public static async Task<List<RestorationAlarmList>> GetQueryRestAlarmsAsync(SortItem orderParseDeleg)
         {
 
             string[] sortOreder = orderParseDeleg.ToArray();
@@ -306,25 +325,25 @@ namespace Alarm4Rest_Viewer.Services
             //Get one page
             IEnumerable<RestorationAlarmList> Query = await DBContext.RestorationAlarmLists
                             .OrderByDescending(c => c.PkAlarmListID)
-                            .Where(filterParseDeleg)
+                            //.Where(filterParseDeleg)
                             .ToListAsync();
 
             var resultList = Query.BuildOrderBy(
                                 new SortDescription(sortOreder[0], ListSortDirection.Ascending),
                                 new SortDescription(sortOreder[1], ListSortDirection.Ascending));
 
-            custAlarmCount = resultList.Count();
+            queryAlarmCount = resultList.Count();
 
-            if (custAlarmCount % pageSize == 0)
+            if (queryAlarmCount % pageSize == 0)
             {
-                custPageCount = (custAlarmCount / pageSize);
+                queryPageCount = (queryAlarmCount / pageSize);
             }
             else
             {
-                custPageCount = (custAlarmCount / pageSize) + 1;
+                queryPageCount = (queryAlarmCount / pageSize) + 1;
             }
             return resultList
-                            .Skip((custPageIndex - 1) * pageSize)
+                            .Skip((queryPageIndex - 1) * pageSize)
                             .Take(pageSize)
                             .ToList();
         }
@@ -366,9 +385,9 @@ namespace Alarm4Rest_Viewer.Services
             CustAlarmListDump = await GetCustomRestAlarmsAsync();
             if (CustAlarmListDump.Count != 0)
             {
-                LastCustomAlarmRecIndex = CustAlarmListDump[0].PkAlarmListID;
+                LastCustAlarmRecIndex = CustAlarmListDump[0].PkAlarmListID;
                 startNewCustItemArray = CustAlarmListDump.Count - 1;
-                arg.message = "filterAlarmCust";
+                arg.message = "GetFilterAlarmCust";
                 Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
                 onRestAlarmChanged(arg);//Raise Event
             }
@@ -376,7 +395,7 @@ namespace Alarm4Rest_Viewer.Services
             {
 
                 arg.message = "filterAlarmCustNoResult";
-                LastCustomAlarmRecIndex = -1;
+                LastCustAlarmRecIndex = -1;
                 startNewCustItemArray = -1;
                 Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
                 onRestAlarmChanged(arg);//Raise Event
@@ -393,7 +412,7 @@ namespace Alarm4Rest_Viewer.Services
             CustAlarmListDump = await TGetCustomRestAlarmsAsync(exclusiveEnd, DateTimeCondItem);
             if (CustAlarmListDump.Count != 0)
             {
-                LastCustomAlarmRecIndex = CustAlarmListDump[0].PkAlarmListID;
+                LastCustAlarmRecIndex = CustAlarmListDump[0].PkAlarmListID;
                 startNewCustItemArray = CustAlarmListDump.Count - 1;
                 arg.message = "filterAlarmCust";
                 Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
@@ -403,39 +422,65 @@ namespace Alarm4Rest_Viewer.Services
             {
 
                 arg.message = "filterAlarmCustNoResult";
-                LastCustomAlarmRecIndex = -1;
+                LastCustAlarmRecIndex = -1;
                 startNewCustItemArray = -1;
                 Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
                 onRestAlarmChanged(arg);//Raise Event
             }
         }
 
-        public static async Task SGetCustAlarmAct(SortItem orderParseDeleg)
+        public static async Task GetQueryAlarmAct(SortItem orderParseDeleg)
         {
             RestEventArgs arg = new RestEventArgs();
 
             //Test Raise read "LoadStationName"
             if (orderParseDeleg == null) return;
-            CustAlarmListDump = await SGetCustomRestAlarmsAsync(orderParseDeleg);
-            if (CustAlarmListDump.Count != 0)
+            QueryAlarmListDump = await GetQueryRestAlarmsAsync(orderParseDeleg);
+            if (QueryAlarmListDump.Count != 0)
             {
-                LastCustomAlarmRecIndex = CustAlarmListDump[0].PkAlarmListID;
-                startNewCustItemArray = CustAlarmListDump.Count - 1;
-                arg.message = "filterAlarmCust";
+                LastQueryAlarmRecIndex = QueryAlarmListDump[0].PkAlarmListID;
+                startNewQueryItemArray = QueryAlarmListDump.Count - 1;
+                arg.message = "QueryAlarmAct";
                 Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
                 onRestAlarmChanged(arg);//Raise Event
             }
             else //filter result no item
             {
 
-                arg.message = "filterAlarmCustNoResult";
-                LastCustomAlarmRecIndex = -1;
-                startNewCustItemArray = -1;
+                arg.message = "GetQueryAlarmNoResult";
+                LastQueryAlarmRecIndex = -1;
+                startNewQueryItemArray = -1;
                 Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
                 onRestAlarmChanged(arg);//Raise Event
             }
         }
-        
+
+        public static async Task GetQueryAlarmAct()
+        {
+            RestEventArgs arg = new RestEventArgs();
+
+            //Test Raise read "LoadStationName"
+            if (orderParseDeleg == null) return;
+            QueryAlarmListDump = await GetQueryRestAlarmsAsync(orderParseDeleg);
+            if (QueryAlarmListDump.Count != 0)
+            {
+                LastQueryAlarmRecIndex = QueryAlarmListDump[0].PkAlarmListID;
+                startNewQueryItemArray = QueryAlarmListDump.Count - 1;
+                arg.message = "QueryAlarmAct";
+                Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
+                onRestAlarmChanged(arg);//Raise Event
+            }
+            else //filter result no item
+            {
+
+                arg.message = "GetQueryAlarmNoResult";
+                LastQueryAlarmRecIndex = -1;
+                startNewQueryItemArray = -1;
+                Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
+                onRestAlarmChanged(arg);//Raise Event
+            }
+        }
+
         public static async Task GetRestAlarmAct()
         {
             RestEventArgs arg = new RestEventArgs();
@@ -533,13 +578,13 @@ namespace Alarm4Rest_Viewer.Services
 
             //Test using Predicate
             Predicate<List<RestorationAlarmList>> hasAllNew = (alarm) => alarm[alarm.Count-1].PkAlarmListID > LastAlarmRecIndex || LastAlarmRecIndex > alarm[0].PkAlarmListID;
-            Predicate<int> isEqualLastCust = (Index) => Index == LastCustomAlarmRecIndex;
+            Predicate<int> isEqualLastCust = (Index) => Index == LastCustAlarmRecIndex;
 
             if (isEqualLastCust(CustAlarmListDump[0].PkAlarmListID)) return; //No new custom filter alarm
 
             if (hasAllNew(CustAlarmListDump)) //All New alarm or DB has been reset
             {
-                LastCustomAlarmRecIndex = CustAlarmListDump[0].PkAlarmListID;
+                LastCustAlarmRecIndex = CustAlarmListDump[0].PkAlarmListID;
                 startNewCustItemArray = CustAlarmListDump.Count - 1;
                 arg.message = "hasAllNewAlarmCust";
                 Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
@@ -560,7 +605,7 @@ namespace Alarm4Rest_Viewer.Services
                     i++;
                 }
 
-                LastCustomAlarmRecIndex = CustAlarmListDump[0].PkAlarmListID;
+                LastCustAlarmRecIndex = CustAlarmListDump[0].PkAlarmListID;
                 arg.message = "hasNewAlarmCust";
                 Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
                 onRestAlarmChanged(arg);//Raise Event

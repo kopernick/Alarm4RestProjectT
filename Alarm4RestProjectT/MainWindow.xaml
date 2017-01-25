@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Alarm4Rest_Viewer"
         xmlns:RestorationAlarmLists="clr-namespace:Alarm4Rest_Viewer.RestorationAlarmLists" 
         xmlns:CustomAlarmLists="clr-namespace:Alarm4Rest_Viewer.CustomAlarmLists" 
+        xmlns:QueryAlarmLists="clr-namespace:Alarm4Rest_Viewer.QueryAlarmLists"
         xmlns:Services="clr-namespace:Alarm4Rest_Viewer.Services"
         xmlns:CustControl="clr-namespace:Alarm4Rest_Viewer.CustControl" 
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
@@ -15,8 +16,12 @@
     <Window.Resources>
 
         <Services:MultiValueConverter x:Key="MultiValueConverter" />
+
         <DataTemplate DataType="{x:Type CustomAlarmLists:CustomAlarmListViewModel}">
             <CustomAlarmLists:CustomAlarmsListView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type QueryAlarmLists:QueryAlarmsListViewModel}">
+            <QueryAlarmLists:QueryAlarmsListView />
         </DataTemplate>
         <DataTemplate DataType="{x:Type CustControl:filterToolBarViewModel}">
             <CustControl:filterToolBarView />
@@ -55,7 +60,7 @@
 
                     </TextBox>
                     <!--Set Records/Page-->
-                    <Button Grid.Column="2" Grid.Row="0"  Width="56" Content="Apply" Margin="10,2,10,2"
+                    <Button Grid.Column="2" Grid.Row="0"  Width="56" Content="Apply" Margin="10,2,20,2"
                                   Command="{Binding SetPageSize}" />
                 </Grid>
                 
@@ -69,11 +74,113 @@
                 </RibbonApplicationMenu>
             </Ribbon.ApplicationMenu>
 
-            <!-- Ribbon Tab #0: Home -->
+            <!-- _______________________Ribbon Tab #0: Home_______________________ -->
+            <RibbonTab Header="Main" x:Name="RibbonTabHome" Height="Auto">
+                <RibbonTab.Resources>
+                    <Services:MultiValueConverter x:Key="MultiValueConverter" />
+                </RibbonTab.Resources>
 
-            <CustControl:mainRibbonTapView Header="Main" x:Name="RibbonTabHome" Height="Auto"/>
+                <!-- Standard Query group-->
+                <RibbonGroup x:Name="StdQuery" Header="Standard Query">
+                    <Grid>
+                        <Grid.ColumnDefinitions >
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
 
-            <!-- Ribbon Tab #1: Search -->
+                        <Button  Content="Query 1" Grid.Row="0" Grid.Column="0" MinWidth="72" Width="Auto" Margin="5,2,5,2"
+                                  Command="{Binding RunStdSortQuery}"
+                                    CommandParameter="1">
+                        </Button>
+                        <Button  Content="Query 2" Grid.Row="0" Grid.Column="1" MinWidth="72" Width="Auto" Margin="5,2,5,2"
+                                  Command="{Binding RunStdSortQuery}"
+                                    CommandParameter="2">
+                        </Button>
+                        <Button  Content="Query 3" Grid.Row="0" Grid.Column="2" MinWidth="72" Width="Auto" Margin="5,2,5,2"
+                                  Command="{Binding RunStdSortQuery}"
+                                    CommandParameter="3">
+                        </Button>
+                    </Grid>
+
+                </RibbonGroup>
+
+                <RibbonGroup x:Name="TimeCondition" Header="Filter by Time" Grid.Column="1">
+                    <Grid DockPanel.Dock ="Top">
+                        <Grid.ColumnDefinitions >
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Button  Content="Today" Grid.Row="0" Grid.Column="0" MinWidth="72" Width="Auto" Margin="5,2,5,2"
+                                  Command="{Binding RunFilterTimeCondCmd}">
+                            <Button.Resources>
+                                <sys:String x:Key="fixedTimeType">Day</sys:String>
+                                <sys:String x:Key="fixedValue">1</sys:String>
+                            </Button.Resources>
+                            <Button.CommandParameter>
+                                <MultiBinding Converter="{StaticResource MultiValueConverter}">
+                                    <Binding Source="{StaticResource fixedTimeType}"/>
+                                    <Binding Source="{StaticResource fixedValue}"/>
+                                </MultiBinding>
+                            </Button.CommandParameter>
+                        </Button>
+                        <Button  Content="Last 2 Days" Grid.Row="0" Grid.Column="1" MinWidth="72" Width="Auto" Margin="5,2,5,2"
+                                  Command="{Binding RunFilterTimeCondCmd}">
+                            <Button.Resources>
+                                <sys:String x:Key="fixedTimeType">Day</sys:String>
+                                <sys:String x:Key="fixedValue">2</sys:String>
+                            </Button.Resources>
+                            <Button.CommandParameter>
+                                <MultiBinding Converter="{StaticResource MultiValueConverter}">
+                                    <Binding Source="{StaticResource fixedTimeType}"/>
+                                    <Binding Source="{StaticResource fixedValue}"/>
+                                </MultiBinding>
+                            </Button.CommandParameter>
+                        </Button>
+                        <Button  Content="This Week" Grid.Row="1" Grid.Column="0" MinWidth="72" Width="Auto" Margin="5,2,5,2"
+                                  Command="{Binding RunFilterTimeCondCmd}">
+                            <Button.Resources>
+                                <sys:String x:Key="fixedTimeType">Week</sys:String>
+                                <sys:String x:Key="fixedValue">1</sys:String>
+                            </Button.Resources>
+                            <Button.CommandParameter>
+                                <MultiBinding Converter="{StaticResource MultiValueConverter}">
+                                    <Binding Source="{StaticResource fixedTimeType}"/>
+                                    <Binding Source="{StaticResource fixedValue}"/>
+                                </MultiBinding>
+                            </Button.CommandParameter>
+                        </Button>
+                        <Button  Content="This Month" Grid.Row="1" Grid.Column="1" MinWidth="72" Width="Auto" Margin="5,2,5,2"
+                                  Command="{Binding RunFilterTimeCondCmd}">
+                            <Button.Resources>
+                                <sys:String x:Key="fixedTimeType">Month</sys:String>
+                                <sys:String x:Key="fixedValue">1</sys:String>
+                            </Button.Resources>
+                            <Button.CommandParameter>
+                                <MultiBinding Converter="{StaticResource MultiValueConverter}">
+                                    <Binding Source="{StaticResource fixedTimeType}"/>
+                                    <Binding Source="{StaticResource fixedValue}"/>
+                                </MultiBinding>
+                            </Button.CommandParameter>
+                        </Button>
+
+                    </Grid>
+                </RibbonGroup>
+
+            </RibbonTab>
+            <!-- <CustControl:mainRibbonTapView Header="Main" x:Name="RibbonTabHome" Height="Auto"/> -->
+
+            <!-- _______________________Ribbon Tab #1: Search_______________________ -->
             <RibbonTab Header="Advance Search" KeyTip="S" >
                 <!-- Keyword  group-->
                 <RibbonGroup x:Name="sMain">
@@ -187,7 +294,7 @@
 
             </RibbonTab>
 
-            <!-- Ribbon Tab #1: Filter -->
+            <!-- _______________________Ribbon Tab #2: Filter_______________________ -->
             <RibbonTab Header="Advance Filter" KeyTip="F" >
                 <!-- Filter  group-->
 
@@ -293,7 +400,7 @@
         </Ribbon>
 
         <DockPanel Grid.Row="1">
-            <!--Resources-->
+            <!--_______________________Table View_______________________-->
             <DockPanel.Resources>
                 <BitmapImage x:Key="MainImage" UriSource="/Alarm4Rest_Viewer;component/images/main.png" />
                 <BitmapImage x:Key="FilterImage" UriSource="/Alarm4Rest_Viewer;component/images/filter.png" />

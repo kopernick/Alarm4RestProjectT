@@ -221,6 +221,18 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
                     //NotificationMessage = "Filtering : " + DateTime.Now.ToLocalTime();
                     break;
 
+                case "GetFilterAlarmCust":
+                    Console.WriteLine(DateTime.Now.ToString() + " :  Custom Alarm List Execute Navigation");
+                    CustomAlarms.Clear();
+                    for (int i = RestAlarmsRepo.startNewCustItemArray; i >= 0; i--)
+                        CustomAlarms.Insert(0, RestAlarmsRepo.CustAlarmListDump[i]);
+
+                    custPageCount = RestAlarmsRepo.custPageCount;
+                    custAlarmCount = RestAlarmsRepo.custAlarmCount;
+                    //NotificationMessage = "Filtering : " + DateTime.Now.ToLocalTime();
+                    break;
+
+
                 case "filterAlarmCustNoResult":
                     Console.WriteLine(DateTime.Now.ToString() + " :  Custom Alarm List has been Filtered/Searched but no data");
                     CustomAlarms.Clear();
