@@ -37,13 +37,16 @@
             </Grid.RowDefinitions>
 
             <Button  Content="Query 1" Grid.Row="0" Grid.Column="0" MinWidth="72" Width="Auto" Margin="5,2,5,2"
-                                  Command="{Binding RunStdSortQuery1}">
+                                  Command="{Binding RunStdSortQuery}"
+                                    CommandParameter="1">
                 </Button>
             <Button  Content="Query 2" Grid.Row="0" Grid.Column="1" MinWidth="72" Width="Auto" Margin="5,2,5,2"
-                                  Command="{Binding RunStdSortQuery2}">
+                                  Command="{Binding RunStdSortQuery}"
+                                    CommandParameter="2">
             </Button>
             <Button  Content="Query 3" Grid.Row="0" Grid.Column="2" MinWidth="72" Width="Auto" Margin="5,2,5,2"
-                                  Command="{Binding RunStdSortQuery3}">
+                                  Command="{Binding RunStdSortQuery}"
+                                    CommandParameter="3">
             </Button>
         </Grid>
 

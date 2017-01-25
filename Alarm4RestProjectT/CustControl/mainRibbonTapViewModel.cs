@@ -19,9 +19,7 @@ namespace Alarm4Rest_Viewer.CustControl
         {
             InitSortOrderTemplate();
 
-            RunStdSortQuery1 = new RelayCommand(o => onRunStdSortQuery1(), o => canRunStdSortQuery());
-            RunStdSortQuery2 = new RelayCommand(o => onRunStdSortQuery2(), o => canRunStdSortQuery());
-            RunStdSortQuery3 = new RelayCommand(o => onRunStdSortQuery3(), o => canRunStdSortQuery());
+            //RunStdSortQuery1 = new RelayCommand(o => onRunStdSortQuery1(), o => canRunStdSortQuery());
         }
 
     #region Helper Function
@@ -33,7 +31,7 @@ namespace Alarm4Rest_Viewer.CustControl
             sortOrderList.Add(new SortItem(3,"DateTime", "StationName", "Priority"));
         }
 
-    /* WPF call method with parameter*/
+    /* WPF call method with 2 parameter*/
     RelayCommand _RunFilterTimeCondCmd;
         public ICommand RunFilterTimeCondCmd
         {
@@ -48,7 +46,7 @@ namespace Alarm4Rest_Viewer.CustControl
             }
         }
 
-        // WPF Call with parameter
+        // WPF Call with 2 parameter
         private async void RunFilterTimeCond(object value)
         {
             TimeCondItem DateTimeCond = (TimeCondItem)value;
@@ -59,17 +57,26 @@ namespace Alarm4Rest_Viewer.CustControl
             //Console.WriteLine(filterParseDeleg.Body);
         }
 
-        public RelayCommand RunStdSortQuery1 { get; private set; }
+        /* WPF call method with 1 parameter*/
 
-        public bool canRunStdSortQuery()
+        RelayCommand _RunStdSortQuery;
+        public ICommand RunStdSortQuery
         {
-            // return (RestAlarmsRepo.CustAlarmListDump.Count != 0);
-            return true;
+            get
+            {
+                if (_RunStdSortQuery == null)
+                {
+                    _RunStdSortQuery = new RelayCommand(p => RunStdSort(p),
+                        p => true);
+                }
+                return _RunStdSortQuery;
+            }
         }
-        public async void onRunStdSortQuery1()
-        {
 
-            SortItem sortOrder = sortOrderList.First(i => i.ID == 1);
+        private async void RunStdSort(object txtSortTemplate)
+        {
+            int sortTemplate = Convert.ToInt32(txtSortTemplate);
+            SortItem sortOrder = sortOrderList.First(i => i.ID == sortTemplate);
             orderParseDeleg = sortOrder;
             //orderParseDeleg = SortExpression.BuildOrderBys<RestorationAlarmList>(sortOrder);
 
@@ -78,37 +85,7 @@ namespace Alarm4Rest_Viewer.CustControl
 
             Console.WriteLine(sortOrder.ID);
         }
-
-        public RelayCommand RunStdSortQuery2 { get; private set; }
-
-
-        public async void onRunStdSortQuery2()
-        {
-
-            SortItem sortOrder = sortOrderList.First(i => i.ID == 2);
-            orderParseDeleg = sortOrder;
-            //orderParseDeleg = SortExpression.BuildOrderBys<RestorationAlarmList>(sortOrder);
-
-            //DateTime exclusiveEnd = DateTime.Now;
-            await RestAlarmsRepo.SGetCustAlarmAct(sortOrder);
-
-            Console.WriteLine(sortOrder.ID);
-        }
-
-        public RelayCommand RunStdSortQuery3 { get; private set; }
-
-        public async void onRunStdSortQuery3()
-        {
-
-            SortItem sortOrder = sortOrderList.First(i => i.ID == 3);
-            orderParseDeleg = sortOrder;
-            //orderParseDeleg = SortExpression.BuildOrderBys<RestorationAlarmList>(sortOrder);
-
-            //DateTime exclusiveEnd = DateTime.Now;
-            await RestAlarmsRepo.SGetCustAlarmAct(sortOrder);
-
-            Console.WriteLine(sortOrder.ID);
-        }
+       
         #endregion
     }
 }

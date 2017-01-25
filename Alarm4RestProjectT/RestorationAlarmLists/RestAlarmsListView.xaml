@@ -37,7 +37,7 @@
             <Style x:Key="RowPriority" TargetType="{x:Type DataGridRow}">
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Priority}" Value="High           ">
-                        <Setter Property="Background" Value="Crimson"/>
+                        <Setter Property="Background" Value="DarkRed"/>
                         <Setter Property="Foreground" Value="White"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Priority}" Value="Medium         ">
