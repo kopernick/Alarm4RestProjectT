@@ -294,37 +294,59 @@ namespace Alarm4Rest_Viewer.Services
                             .Take(pageSize)
                             .ToList();
         }
+
+        public static async Task<List<RestorationAlarmList>> TGetQueryAlarmsAsync(DateTime exclusiveEnd, TimeCondItem timeCondition)
+        {
+
+            DateTime inclusiveStart = GetTimeCond(ref exclusiveEnd, ref timeCondition);
+
+            string[] sortOreder = orderParseDeleg.ToArray();
+            IEnumerable<RestorationAlarmList> Query;
+
+            //Get one page
+            if (filterParseDeleg == null)
+            {
+                Query = await DBContext.RestorationAlarmLists
+                            .OrderByDescending(c => c.PkAlarmListID)
+                            .Where(c => c.DateTime >= inclusiveStart
+                                        && c.DateTime < exclusiveEnd)
+                            .ToListAsync();
+            }
+            else
+            {
+                Query = await DBContext.RestorationAlarmLists
+                            .OrderByDescending(c => c.PkAlarmListID)
+                            .Where(filterParseDeleg)
+                            .Where(c => c.DateTime >= inclusiveStart
+                                        && c.DateTime < exclusiveEnd)
+                            .ToListAsync();
+            }
+
+
+            var resultList = Query.BuildOrderBy(
+                                new SortDescription(sortOreder[0], ListSortDirection.Ascending),
+                                new SortDescription(sortOreder[1], ListSortDirection.Ascending));
+
+            queryAlarmCount = resultList.Count();
+
+            if (queryAlarmCount % pageSize == 0)
+            {
+                queryPageCount = (queryAlarmCount / pageSize);
+            }
+            else
+            {
+                queryPageCount = (queryAlarmCount / pageSize) + 1;
+            }
+            return resultList
+                            .Skip((queryPageIndex - 1) * pageSize)
+                            .Take(pageSize)
+                            .ToList();
+        }
+
         public static async Task<List<RestorationAlarmList>> TGetCustomRestAlarmsAsync(DateTime exclusiveEnd, TimeCondItem timeCondition)
         {
 
-            //exclusiveEnd = DateTime.ParseExact(exclusiveEnd.ToString(), "dd/MM/yyyy HH:mm:ss.000", System.Globalization.CultureInfo.InvariantCulture);
-            DateTime inclusiveStart = new DateTime();
-            TimeSpan ts = new TimeSpan(0, 0, 0);
-            switch (timeCondition.TimeType)
-            {
-                case "Day":
-                    inclusiveStart = exclusiveEnd.AddDays((-1) * (timeCondition.Value-1));
-                    inclusiveStart = inclusiveStart.Date + ts; // Reset time to HH: mm: ss.000" -> 0000:00.000
-                    break;
-                case "Week":
-                    int diff = exclusiveEnd.DayOfWeek - DayOfWeek.Monday;
-                    if (diff < 0)
-                    {
-                        diff += 7;
-                    }
-                    inclusiveStart= exclusiveEnd.AddDays(-1 * diff).Date;
-                    inclusiveStart = inclusiveStart.Date + ts; // Reset time to HH: mm: ss.000" -> 0000:00.000
-                    break;
-                case "Month":
-                    inclusiveStart = exclusiveEnd.AddMonths((-1) * (timeCondition.Value - 1));
-                    inclusiveStart = new DateTime(inclusiveStart.Year, inclusiveStart.Month, 1);
-                    break;
-                default: //All one year
-                    inclusiveStart = exclusiveEnd.AddYears(-1);
-                    inclusiveStart = new DateTime(inclusiveStart.Year, 1, 1);
-                    break;
-
-            }       
+            DateTime inclusiveStart = GetTimeCond(ref exclusiveEnd, ref timeCondition);
 
             //To Do ปรับปรุงให้มีการ Query ครั้งเดียว
             //Get CustRestAlarm count
@@ -469,7 +491,7 @@ namespace Alarm4Rest_Viewer.Services
             DateTimeCondItem = DatetimeCond;
             //Test Raise read "LoadStationName"
             if (orderParseDeleg == null) return;
-            QueryAlarmListDump = await GetQueryAlarmsAsync();
+            QueryAlarmListDump = await TGetQueryAlarmsAsync(exclusiveEnd, DateTimeCondItem);
             if (QueryAlarmListDump.Count != 0)
             {
                 LastQueryAlarmRecIndex = QueryAlarmListDump[0].PkAlarmListID;
@@ -539,7 +561,44 @@ namespace Alarm4Rest_Viewer.Services
                 onRestAlarmChanged(arg);//Raise Event
             }
         }
-        private static async void dispatcherTimer_Tick(object sender, EventArgs e)
+
+        private static DateTime GetTimeCond(ref DateTime exclusiveEnd, ref TimeCondItem timeCondition)
+                { 
+                //exclusiveEnd = DateTime.ParseExact(exclusiveEnd.ToString(), "dd/MM/yyyy HH:mm:ss.000", System.Globalization.CultureInfo.InvariantCulture);
+                DateTime inclusiveStart = new DateTime();
+                TimeSpan ts = new TimeSpan(0, 0, 0);
+                    switch (timeCondition.TimeType)
+                    {
+                        case "Day":
+                            inclusiveStart = exclusiveEnd.AddDays((-1) * (timeCondition.Value-1));
+                            inclusiveStart = inclusiveStart.Date + ts; // Reset time to HH: mm: ss.000" -> 0000:00.000
+                            break;
+
+                        case "Week":
+                            int diff = exclusiveEnd.DayOfWeek - DayOfWeek.Monday;
+                            if (diff< 0)
+                            {
+                                diff += 7;
+                            }
+                            inclusiveStart= exclusiveEnd.AddDays(-1 * diff).Date;
+                            inclusiveStart = inclusiveStart.Date + ts; // Reset time to HH: mm: ss.000" -> 0000:00.000
+                            break;
+
+                        case "Month":
+                            inclusiveStart = exclusiveEnd.AddMonths((-1) * (timeCondition.Value - 1));
+                            inclusiveStart = new DateTime(inclusiveStart.Year, inclusiveStart.Month, 1);
+                            break;
+
+                        default: //All one year
+                            inclusiveStart = exclusiveEnd.AddYears(-1);
+                            inclusiveStart = new DateTime(inclusiveStart.Year, 1, 1);
+                            break;
+        
+                    }
+
+            return inclusiveStart;
+        }
+    private static async void dispatcherTimer_Tick(object sender, EventArgs e)
         {
             Predicate<int> isEqualLast = (newIndex) => LastMaxAlarmRecIndex == newIndex;
             try

@@ -14,7 +14,9 @@ namespace Alarm4Rest_Viewer.Services
     {
         public string TimeType { get; private set; }
         public int Value { get; private set; }
-
+        public TimeCondItem()
+        {
+        }
         public TimeCondItem(int value)
         {
             Value = value;

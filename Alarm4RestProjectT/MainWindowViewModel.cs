@@ -25,6 +25,10 @@ namespace Alarm4Rest_Viewer
         private CustomAlarmListViewModel _custAlarmViewModel = new CustomAlarmListViewModel();
         private QueryAlarmsListViewModel _queryAlarmViewModel = new QueryAlarmsListViewModel();
 
+        TimeCondItem DateTimeCond = new TimeCondItem();
+
+        DateTime exclusiveEnd = new DateTime();
+
         public RelayCommand EnableSearchCmd { get; private set; }
         public RelayCommand EnableFilterCmd { get; private set; }
         public RelayCommand EnableCustView { get; private set; }
@@ -253,6 +257,9 @@ namespace Alarm4Rest_Viewer
             RestAlarmsListViewModel.RestAlarmChanged += OnRestAlarmChanged;
 
             pageSize = RestAlarmsRepo.pageSize;
+            DateTimeCond = new TimeCondItem("Day", 2);
+            exclusiveEnd = DateTime.Now;
+
             SetPageSize = new RelayCommand(o => onSetPageSize(), o => canSetPageSize());
 
             #region Initialize Sort Template menu
@@ -260,7 +267,7 @@ namespace Alarm4Rest_Viewer
             RestAlarmsRepo.orderParseDeleg = sortOrderList.First(i => i.ID == 1);
             #endregion
 
-            #region Initialize filter menu
+      #region Initialize filter menu
             mfltStationItems = new ObservableCollection<Item>();
             mfltPriorityItems = new ObservableCollection<Item>();
             mfltGroupDescItems = new ObservableCollection<Item>();
@@ -338,9 +345,9 @@ namespace Alarm4Rest_Viewer
         {
             CustAlarmViewModel = _custAlarmViewModel;
 
-            TimeCondItem DateTimeCond = (TimeCondItem)value;
+            DateTimeCond = (TimeCondItem)value;
 
-            DateTime exclusiveEnd = DateTime.Now;
+            exclusiveEnd = DateTime.Now;
             await RestAlarmsRepo.TGetCustAlarmAct(exclusiveEnd, DateTimeCond);
 
             //Console.WriteLine(filterParseDeleg.Body);
@@ -383,10 +390,10 @@ namespace Alarm4Rest_Viewer
         {
             CustAlarmViewModel = _queryAlarmViewModel;
 
-            TimeCondItem DateTimeCond = (TimeCondItem)value;
+            DateTimeCond = (TimeCondItem)value;
 
-            DateTime exclusiveEnd = DateTime.Now;
-            await RestAlarmsRepo.TGetCustAlarmAct(exclusiveEnd, DateTimeCond);
+            exclusiveEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetQueryAlarmAct(exclusiveEnd, DateTimeCond);
 
             //Console.WriteLine(filterParseDeleg.Body);
         }

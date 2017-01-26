@@ -63,9 +63,7 @@
                             <Image Source ="{StaticResource exportImage}" />
                         </Button>
                     </StackPanel>
-                    <TextBox Text="Standard Query">
-                        
-                    </TextBox>
+                    
                     <Button Margin="2" IsDefault="True" Height="32"
                                 Command="{Binding Path = FirstPageCommand}"
                                 ToolTip="หน้าแรก">
