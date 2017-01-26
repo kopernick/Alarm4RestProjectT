@@ -184,7 +184,7 @@ namespace Alarm4Rest_Viewer.QueryAlarmLists
                 //    break;
                 case "Start Success":
 
-                    Console.WriteLine(DateTime.Now.ToString() + " : Main Alarm List" + arg.message);
+                    Console.WriteLine(DateTime.Now.ToString() + " : Query Alarm List" + arg.message);
                     QueryRestAlarms = new ObservableCollection<RestorationAlarmList>(RestAlarmsRepo.QueryAlarmListDump);
                     pageCount = RestAlarmsRepo.queryPageCount;
                     queryAlarmCount = RestAlarmsRepo.queryAlarmCount;
@@ -195,12 +195,12 @@ namespace Alarm4Rest_Viewer.QueryAlarmLists
 
                 case "Start Fail":
 
-                    Console.WriteLine(DateTime.Now.ToString() + " : Main Alarm List" + arg.message);
+                    Console.WriteLine(DateTime.Now.ToString() + " : Query Alarm List" + arg.message);
                     NotificationMessage = "Can't Loaded Database : " + DateTime.Now.ToLocalTime();
 
                     break;
                 case "Reset":
-                    Console.WriteLine(DateTime.Now.ToString() + " : Qeury Alarm List Recieved Reset");
+                    Console.WriteLine(DateTime.Now.ToString() + " : Query Alarm List Recieved Reset");
                     QueryRestAlarms.Clear();
                     for (int i = RestAlarmsRepo.startNewQueryItemArray; i >= 0; i--)
                     {
@@ -211,8 +211,8 @@ namespace Alarm4Rest_Viewer.QueryAlarmLists
                     NotificationMessage = "Database has been reset : " + DateTime.Now.ToLocalTime();
                     break;
 
-                case "QueryAlarmAct":
-                    Console.WriteLine(DateTime.Now.ToString() + " : Qeury Alarm List has been Query");
+                case "GetQueryAlarm":
+                    Console.WriteLine(DateTime.Now.ToString() + " : Query Alarm List Execute Navigation");
                     QueryRestAlarms.Clear();
                     for (int i = RestAlarmsRepo.startNewQueryItemArray; i >= 0; i--)
                     {
@@ -223,20 +223,8 @@ namespace Alarm4Rest_Viewer.QueryAlarmLists
 
                     break;
 
-                case "GetQueryAlarm":
-                    Console.WriteLine(DateTime.Now.ToString() + " : Qeury Alarm List Execute Navigation");
-                    QueryRestAlarms.Clear();
-                    for (int i = RestAlarmsRepo.startNewRestItemArray; i >= 0; i--)
-                    {
-                        QueryRestAlarms.Insert(0, RestAlarmsRepo.QueryAlarmListDump[i]);
-                    }
-                    pageCount = RestAlarmsRepo.queryPageCount;
-                    queryAlarmCount = RestAlarmsRepo.queryAlarmCount;
-
-                    break;
-
                 case "GetQueryAlarmNoResult":
-                    Console.WriteLine(DateTime.Now.ToString() + " :  Qeury Alarm List has been filtered but no data");
+                    Console.WriteLine(DateTime.Now.ToString() + " : Query Alarm List has been Executed but no data");
                     QueryRestAlarms.Clear();
                     pageCount = RestAlarmsRepo.queryPageCount;
                     queryAlarmCount = RestAlarmsRepo.queryAlarmCount;
@@ -244,7 +232,7 @@ namespace Alarm4Rest_Viewer.QueryAlarmLists
                     break;
 
                 default:
-                    Console.WriteLine(DateTime.Now.ToString() + " :  Qeury Alarm List Default");
+                    Console.WriteLine(DateTime.Now.ToString() + " : Query Alarm List no Msg. match");
 
                     break;
             }

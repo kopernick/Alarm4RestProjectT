@@ -167,7 +167,7 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
             {
                 case "Start Success":
 
-                    Console.WriteLine(DateTime.Now.ToString() + " : Main Alarm List" + arg.message);
+                    Console.WriteLine(DateTime.Now.ToString() + " : Custom Alarm List" + arg.message);
                     CustomAlarms = new ObservableCollection<RestorationAlarmList>(RestAlarmsRepo.CustAlarmListDump);
                     custPageCount = RestAlarmsRepo.custPageCount;
                     custAlarmCount = RestAlarmsRepo.custAlarmCount;
@@ -181,7 +181,7 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
 
                 case "Start Fail":
 
-                    Console.WriteLine(DateTime.Now.ToString() + " : Main Alarm List" + arg.message);
+                    Console.WriteLine(DateTime.Now.ToString() + " : Custom Alarm List" + arg.message);
                     NotificationMessage = "Can't Loaded Database : " + DateTime.Now.ToLocalTime();
 
                     break;
@@ -200,7 +200,7 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
                     break;
 
                 case "hasAllNewAlarmCust":
-                    Console.WriteLine(DateTime.Now.ToString() + " :  Custom Alarm List Recieved All new or Reset");
+                    Console.WriteLine(DateTime.Now.ToString() + " : Custom Alarm List Recieved All new or Reset");
                     CustomAlarms.Clear();
                     for (int i = RestAlarmsRepo.startNewCustItemArray; i >= 0; i--)
                         CustomAlarms.Insert(0,RestAlarmsRepo.CustAlarmListDump[i]);
@@ -211,7 +211,7 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
                     break;
 
                 case "filterAlarmCust":
-                    Console.WriteLine(DateTime.Now.ToString() + " :  Custom Alarm List has been Filtered/Searched");
+                    Console.WriteLine(DateTime.Now.ToString() + " : Custom Alarm List has been Filtered/Searched");
                     CustomAlarms.Clear();
                     for (int i = RestAlarmsRepo.startNewCustItemArray; i >= 0; i--)
                         CustomAlarms.Insert(0, RestAlarmsRepo.CustAlarmListDump[i]);
@@ -222,7 +222,7 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
                     break;
 
                 case "GetFilterAlarmCust":
-                    Console.WriteLine(DateTime.Now.ToString() + " :  Custom Alarm List Execute Navigation");
+                    Console.WriteLine(DateTime.Now.ToString() + " : Custom Alarm List Execute Navigation");
                     CustomAlarms.Clear();
                     for (int i = RestAlarmsRepo.startNewCustItemArray; i >= 0; i--)
                         CustomAlarms.Insert(0, RestAlarmsRepo.CustAlarmListDump[i]);
@@ -234,7 +234,7 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
 
 
                 case "filterAlarmCustNoResult":
-                    Console.WriteLine(DateTime.Now.ToString() + " :  Custom Alarm List has been Filtered/Searched but no data");
+                    Console.WriteLine(DateTime.Now.ToString() + " : Custom Alarm List has been Filtered/Searched but no data");
                     CustomAlarms.Clear();
 
                     custPageCount = RestAlarmsRepo.custPageCount;
@@ -243,7 +243,7 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
                     break;
 
                 default:
-                    Console.WriteLine(DateTime.Now.ToString() + " :  Custom Alarm List Default");
+                    Console.WriteLine(DateTime.Now.ToString() + " : Custom Alarm List no Msg. match");
                     break;
             }
         }

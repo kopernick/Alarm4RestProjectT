@@ -81,7 +81,7 @@ namespace Alarm4Rest_Viewer.CustControl
             //orderParseDeleg = SortExpression.BuildOrderBys<RestorationAlarmList>(sortOrder);
 
             //DateTime exclusiveEnd = DateTime.Now;
-            await RestAlarmsRepo.GetQueryAlarmAct(sortOrder);
+            await RestAlarmsRepo.GetQueryAlarmAct();
 
             Console.WriteLine(sortOrder.ID);
         }

@@ -74,7 +74,7 @@
                 </RibbonApplicationMenu>
             </Ribbon.ApplicationMenu>
 
-            <!-- _______________________Ribbon Tab #0: Home_______________________ -->
+            <!-- _______________________Ribbon Tab #0: Main_______________________ -->
             <RibbonTab Header="Main" x:Name="RibbonTabHome" Height="Auto">
                 <RibbonTab.Resources>
                     <Services:MultiValueConverter x:Key="MultiValueConverter" />
@@ -110,7 +110,7 @@
 
                 </RibbonGroup>
 
-                <RibbonGroup x:Name="TimeCondition" Header="Filter by Time" Grid.Column="1">
+                <RibbonGroup x:Name="qTimeCondition" Header="Filter by Time" Grid.Column="1">
                     <Grid DockPanel.Dock ="Top">
                         <Grid.ColumnDefinitions >
                             <ColumnDefinition Width="Auto"/>
@@ -122,7 +122,7 @@
                         </Grid.RowDefinitions>
 
                         <Button  Content="Today" Grid.Row="0" Grid.Column="0" MinWidth="72" Width="Auto" Margin="5,2,5,2"
-                                  Command="{Binding RunFilterTimeCondCmd}">
+                                  Command="{Binding RunQueryTimeCondCmd}">
                             <Button.Resources>
                                 <sys:String x:Key="fixedTimeType">Day</sys:String>
                                 <sys:String x:Key="fixedValue">1</sys:String>
@@ -135,7 +135,7 @@
                             </Button.CommandParameter>
                         </Button>
                         <Button  Content="Last 2 Days" Grid.Row="0" Grid.Column="1" MinWidth="72" Width="Auto" Margin="5,2,5,2"
-                                  Command="{Binding RunFilterTimeCondCmd}">
+                                  Command="{Binding RunQueryTimeCondCmd}">
                             <Button.Resources>
                                 <sys:String x:Key="fixedTimeType">Day</sys:String>
                                 <sys:String x:Key="fixedValue">2</sys:String>
@@ -148,7 +148,7 @@
                             </Button.CommandParameter>
                         </Button>
                         <Button  Content="This Week" Grid.Row="1" Grid.Column="0" MinWidth="72" Width="Auto" Margin="5,2,5,2"
-                                  Command="{Binding RunFilterTimeCondCmd}">
+                                  Command="{Binding RunQueryTimeCondCmd}">
                             <Button.Resources>
                                 <sys:String x:Key="fixedTimeType">Week</sys:String>
                                 <sys:String x:Key="fixedValue">1</sys:String>
@@ -161,7 +161,7 @@
                             </Button.CommandParameter>
                         </Button>
                         <Button  Content="This Month" Grid.Row="1" Grid.Column="1" MinWidth="72" Width="Auto" Margin="5,2,5,2"
-                                  Command="{Binding RunFilterTimeCondCmd}">
+                                  Command="{Binding RunQueryTimeCondCmd}">
                             <Button.Resources>
                                 <sys:String x:Key="fixedTimeType">Month</sys:String>
                                 <sys:String x:Key="fixedValue">1</sys:String>
@@ -291,6 +291,72 @@
                     <RibbonButton LargeImageSource="Images\search.png" Label="Apply" KeyTip="S" 
                                   Command="{Binding RunSearchCmd}" />
                 </RibbonGroup>
+                <RibbonGroup x:Name="sTimeCondition" Header="Filter by Time" Grid.Column="1">
+                    <Grid DockPanel.Dock ="Top">
+                        <Grid.ColumnDefinitions >
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Button  Content="Today" Grid.Row="0" Grid.Column="0" MinWidth="72" Width="Auto" Margin="5,2,5,2"
+                                  Command="{Binding RunFilterTimeCondCmd}">
+                            <Button.Resources>
+                                <sys:String x:Key="fixedTimeType">Day</sys:String>
+                                <sys:String x:Key="fixedValue">1</sys:String>
+                            </Button.Resources>
+                            <Button.CommandParameter>
+                                <MultiBinding Converter="{StaticResource MultiValueConverter}">
+                                    <Binding Source="{StaticResource fixedTimeType}"/>
+                                    <Binding Source="{StaticResource fixedValue}"/>
+                                </MultiBinding>
+                            </Button.CommandParameter>
+                        </Button>
+                        <Button  Content="Last 2 Days" Grid.Row="0" Grid.Column="1" MinWidth="72" Width="Auto" Margin="5,2,5,2"
+                                  Command="{Binding RunFilterTimeCondCmd}">
+                            <Button.Resources>
+                                <sys:String x:Key="fixedTimeType">Day</sys:String>
+                                <sys:String x:Key="fixedValue">2</sys:String>
+                            </Button.Resources>
+                            <Button.CommandParameter>
+                                <MultiBinding Converter="{StaticResource MultiValueConverter}">
+                                    <Binding Source="{StaticResource fixedTimeType}"/>
+                                    <Binding Source="{StaticResource fixedValue}"/>
+                                </MultiBinding>
+                            </Button.CommandParameter>
+                        </Button>
+                        <Button  Content="This Week" Grid.Row="1" Grid.Column="0" MinWidth="72" Width="Auto" Margin="5,2,5,2"
+                                  Command="{Binding RunFilterTimeCondCmd}">
+                            <Button.Resources>
+                                <sys:String x:Key="fixedTimeType">Week</sys:String>
+                                <sys:String x:Key="fixedValue">1</sys:String>
+                            </Button.Resources>
+                            <Button.CommandParameter>
+                                <MultiBinding Converter="{StaticResource MultiValueConverter}">
+                                    <Binding Source="{StaticResource fixedTimeType}"/>
+                                    <Binding Source="{StaticResource fixedValue}"/>
+                                </MultiBinding>
+                            </Button.CommandParameter>
+                        </Button>
+                        <Button  Content="This Month" Grid.Row="1" Grid.Column="1" MinWidth="72" Width="Auto" Margin="5,2,5,2"
+                                  Command="{Binding RunFilterTimeCondCmd}">
+                            <Button.Resources>
+                                <sys:String x:Key="fixedTimeType">Month</sys:String>
+                                <sys:String x:Key="fixedValue">1</sys:String>
+                            </Button.Resources>
+                            <Button.CommandParameter>
+                                <MultiBinding Converter="{StaticResource MultiValueConverter}">
+                                    <Binding Source="{StaticResource fixedTimeType}"/>
+                                    <Binding Source="{StaticResource fixedValue}"/>
+                                </MultiBinding>
+                            </Button.CommandParameter>
+                        </Button>
+
+                    </Grid>
+                </RibbonGroup>
 
             </RibbonTab>
 
@@ -393,6 +459,72 @@
                 <RibbonGroup x:Name="FilterCommand" Header="Command">
                     <RibbonButton LargeImageSource="Images\filter.png" Label="Apply" KeyTip="F" 
                                   Command="{Binding RunFilterCmd}" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="fTimeCondition" Header="Filter by Time" Grid.Column="1">
+                    <Grid DockPanel.Dock ="Top">
+                        <Grid.ColumnDefinitions >
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Button  Content="Today" Grid.Row="0" Grid.Column="0" MinWidth="72" Width="Auto" Margin="5,2,5,2"
+                                  Command="{Binding RunFilterTimeCondCmd}">
+                            <Button.Resources>
+                                <sys:String x:Key="fixedTimeType">Day</sys:String>
+                                <sys:String x:Key="fixedValue">1</sys:String>
+                            </Button.Resources>
+                            <Button.CommandParameter>
+                                <MultiBinding Converter="{StaticResource MultiValueConverter}">
+                                    <Binding Source="{StaticResource fixedTimeType}"/>
+                                    <Binding Source="{StaticResource fixedValue}"/>
+                                </MultiBinding>
+                            </Button.CommandParameter>
+                        </Button>
+                        <Button  Content="Last 2 Days" Grid.Row="0" Grid.Column="1" MinWidth="72" Width="Auto" Margin="5,2,5,2"
+                                  Command="{Binding RunFilterTimeCondCmd}">
+                            <Button.Resources>
+                                <sys:String x:Key="fixedTimeType">Day</sys:String>
+                                <sys:String x:Key="fixedValue">2</sys:String>
+                            </Button.Resources>
+                            <Button.CommandParameter>
+                                <MultiBinding Converter="{StaticResource MultiValueConverter}">
+                                    <Binding Source="{StaticResource fixedTimeType}"/>
+                                    <Binding Source="{StaticResource fixedValue}"/>
+                                </MultiBinding>
+                            </Button.CommandParameter>
+                        </Button>
+                        <Button  Content="This Week" Grid.Row="1" Grid.Column="0" MinWidth="72" Width="Auto" Margin="5,2,5,2"
+                                  Command="{Binding RunFilterTimeCondCmd}">
+                            <Button.Resources>
+                                <sys:String x:Key="fixedTimeType">Week</sys:String>
+                                <sys:String x:Key="fixedValue">1</sys:String>
+                            </Button.Resources>
+                            <Button.CommandParameter>
+                                <MultiBinding Converter="{StaticResource MultiValueConverter}">
+                                    <Binding Source="{StaticResource fixedTimeType}"/>
+                                    <Binding Source="{StaticResource fixedValue}"/>
+                                </MultiBinding>
+                            </Button.CommandParameter>
+                        </Button>
+                        <Button  Content="This Month" Grid.Row="1" Grid.Column="1" MinWidth="72" Width="Auto" Margin="5,2,5,2"
+                                  Command="{Binding RunFilterTimeCondCmd}">
+                            <Button.Resources>
+                                <sys:String x:Key="fixedTimeType">Month</sys:String>
+                                <sys:String x:Key="fixedValue">1</sys:String>
+                            </Button.Resources>
+                            <Button.CommandParameter>
+                                <MultiBinding Converter="{StaticResource MultiValueConverter}">
+                                    <Binding Source="{StaticResource fixedTimeType}"/>
+                                    <Binding Source="{StaticResource fixedValue}"/>
+                                </MultiBinding>
+                            </Button.CommandParameter>
+                        </Button>
+
+                    </Grid>
                 </RibbonGroup>
 
             </RibbonTab>

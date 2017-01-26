@@ -218,7 +218,7 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
 
                     break;
                 case "GetRestAlarmNoResult":
-                    Console.WriteLine(DateTime.Now.ToString() + " :  Main Alarm List has been filtered but no data");
+                    Console.WriteLine(DateTime.Now.ToString() + " : Main Alarm List has been filtered but no data");
                     RestorationAlarms.Clear();
                     pageCount = RestAlarmsRepo.RestPageCount;
                     restAlarmCount = RestAlarmsRepo.restAlarmCount;
@@ -226,7 +226,7 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
                     break;
 
                 default:
-                    Console.WriteLine(DateTime.Now.ToString() + " :  Main Alarm List Default");
+                    Console.WriteLine(DateTime.Now.ToString() + " : Main Alarm List No Msg. match");
 
                     break;
             }

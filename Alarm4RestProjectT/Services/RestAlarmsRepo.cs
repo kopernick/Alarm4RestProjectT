@@ -47,18 +47,12 @@ namespace Alarm4Rest_Viewer.Services
         public static int queryPageCount { get; set; }
         public static int queryAlarmCount { get; private set; }
 
-
         public static TimeCondItem DateTimeCondItem { get; private set; }
-
         
         public static List<string> Priority { get; private set; }
         public static List<string> GroupDescription { get; private set; }
         public static List<string> Message { get; private set; }
 
-        
-
-
-        
 
         //Global Filter Keyword
         public static Expression<Func<RestorationAlarmList, bool>> filterParseDeleg;
@@ -105,6 +99,10 @@ namespace Alarm4Rest_Viewer.Services
                 RestAlarmListDump = await GetRestAlarmsAsync();
                 LastAlarmRecIndex = RestAlarmListDump[0].PkAlarmListID; //Set Last PkAlarmList initializing
                 LastMaxAlarmRecIndex = LastAlarmRecIndex;
+
+                QueryAlarmListDump = await GetQueryAlarmsAsync();
+                LastQueryAlarmRecIndex = QueryAlarmListDump[0].PkAlarmListID;
+
                 StationsName = await GetStationNameAsync();
                 Priority = await GetPriorityAsync();
                 GroupDescription = await GetGroupAsync();
@@ -255,6 +253,47 @@ namespace Alarm4Rest_Viewer.Services
                             .Take(pageSize)
                             .ToListAsync<RestorationAlarmList>();
         }
+
+        public static async Task<List<RestorationAlarmList>> GetQueryAlarmsAsync()
+        {
+            string[] sortOreder = orderParseDeleg.ToArray();
+            IEnumerable<RestorationAlarmList> Query;
+
+            //Get one page
+            if (filterParseDeleg == null)
+            {
+                Query = await DBContext.RestorationAlarmLists
+                            .OrderByDescending(c => c.PkAlarmListID)
+                            .ToListAsync();
+            }
+            else
+            {
+                Query = await DBContext.RestorationAlarmLists
+                            .OrderByDescending(c => c.PkAlarmListID)
+                            .Where(filterParseDeleg)
+                            .ToListAsync();
+            }
+
+
+            var resultList = Query.BuildOrderBy(
+                                new SortDescription(sortOreder[0], ListSortDirection.Ascending),
+                                new SortDescription(sortOreder[1], ListSortDirection.Ascending));
+
+            queryAlarmCount = resultList.Count();
+
+            if (queryAlarmCount % pageSize == 0)
+            {
+                queryPageCount = (queryAlarmCount / pageSize);
+            }
+            else
+            {
+                queryPageCount = (queryAlarmCount / pageSize) + 1;
+            }
+            return resultList
+                            .Skip((queryPageIndex - 1) * pageSize)
+                            .Take(pageSize)
+                            .ToList();
+        }
         public static async Task<List<RestorationAlarmList>> TGetCustomRestAlarmsAsync(DateTime exclusiveEnd, TimeCondItem timeCondition)
         {
 
@@ -315,37 +354,6 @@ namespace Alarm4Rest_Viewer.Services
                             .Skip((custPageIndex - 1) * pageSize)
                             .Take(pageSize)
                             .ToListAsync<RestorationAlarmList>();
-        }
-
-        public static async Task<List<RestorationAlarmList>> GetQueryRestAlarmsAsync(SortItem orderParseDeleg)
-        {
-
-            string[] sortOreder = orderParseDeleg.ToArray();
-
-            //Get one page
-            IEnumerable<RestorationAlarmList> Query = await DBContext.RestorationAlarmLists
-                            .OrderByDescending(c => c.PkAlarmListID)
-                            //.Where(filterParseDeleg)
-                            .ToListAsync();
-
-            var resultList = Query.BuildOrderBy(
-                                new SortDescription(sortOreder[0], ListSortDirection.Ascending),
-                                new SortDescription(sortOreder[1], ListSortDirection.Ascending));
-
-            queryAlarmCount = resultList.Count();
-
-            if (queryAlarmCount % pageSize == 0)
-            {
-                queryPageCount = (queryAlarmCount / pageSize);
-            }
-            else
-            {
-                queryPageCount = (queryAlarmCount / pageSize) + 1;
-            }
-            return resultList
-                            .Skip((queryPageIndex - 1) * pageSize)
-                            .Take(pageSize)
-                            .ToList();
         }
 
 
@@ -435,12 +443,38 @@ namespace Alarm4Rest_Viewer.Services
 
             //Test Raise read "LoadStationName"
             if (orderParseDeleg == null) return;
-            QueryAlarmListDump = await GetQueryRestAlarmsAsync(orderParseDeleg);
+            QueryAlarmListDump = await GetQueryAlarmsAsync();
             if (QueryAlarmListDump.Count != 0)
             {
                 LastQueryAlarmRecIndex = QueryAlarmListDump[0].PkAlarmListID;
                 startNewQueryItemArray = QueryAlarmListDump.Count - 1;
-                arg.message = "QueryAlarmAct";
+                arg.message = "GetQueryAlarm";
+                Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
+                onRestAlarmChanged(arg);//Raise Event
+            }
+            else //filter result no item
+            {
+
+                arg.message = "GetQueryAlarmNoResult";
+                LastQueryAlarmRecIndex = -1;
+                startNewQueryItemArray = -1;
+                Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
+                onRestAlarmChanged(arg);//Raise Event
+            }
+        }
+        public static async Task TGetQueryAlarmAct(DateTime exclusiveEnd, TimeCondItem DatetimeCond)
+        {
+            RestEventArgs arg = new RestEventArgs();
+
+            DateTimeCondItem = DatetimeCond;
+            //Test Raise read "LoadStationName"
+            if (orderParseDeleg == null) return;
+            QueryAlarmListDump = await GetQueryAlarmsAsync();
+            if (QueryAlarmListDump.Count != 0)
+            {
+                LastQueryAlarmRecIndex = QueryAlarmListDump[0].PkAlarmListID;
+                startNewQueryItemArray = QueryAlarmListDump.Count - 1;
+                arg.message = "GetQueryAlarm";
                 Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
                 onRestAlarmChanged(arg);//Raise Event
             }
@@ -461,12 +495,12 @@ namespace Alarm4Rest_Viewer.Services
 
             //Test Raise read "LoadStationName"
             if (orderParseDeleg == null) return;
-            QueryAlarmListDump = await GetQueryRestAlarmsAsync(orderParseDeleg);
+            QueryAlarmListDump = await GetQueryAlarmsAsync();
             if (QueryAlarmListDump.Count != 0)
             {
                 LastQueryAlarmRecIndex = QueryAlarmListDump[0].PkAlarmListID;
                 startNewQueryItemArray = QueryAlarmListDump.Count - 1;
-                arg.message = "QueryAlarmAct";
+                arg.message = "GetQueryAlarm";
                 Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
                 onRestAlarmChanged(arg);//Raise Event
             }
