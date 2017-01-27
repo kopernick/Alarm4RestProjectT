@@ -49,10 +49,9 @@ namespace Alarm4Rest_Viewer.CustControl
         // WPF Call with 2 parameter
         private async void RunFilterTimeCond(object value)
         {
-            TimeCondItem DateTimeCond = (TimeCondItem)value;
-            
-            DateTime exclusiveEnd = DateTime.Now;
-            await RestAlarmsRepo.TGetCustAlarmAct(exclusiveEnd, DateTimeCond);
+            RestAlarmsRepo.fDateTimeCondItem = (TimeCondItem)value;
+            RestAlarmsRepo.fDateTimeCondEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetCustAlarmAct();
 
             //Console.WriteLine(filterParseDeleg.Body);
         }

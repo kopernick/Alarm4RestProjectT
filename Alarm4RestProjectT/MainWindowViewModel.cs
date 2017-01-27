@@ -257,7 +257,7 @@ namespace Alarm4Rest_Viewer
             RestAlarmsListViewModel.RestAlarmChanged += OnRestAlarmChanged;
 
             pageSize = RestAlarmsRepo.pageSize;
-            DateTimeCond = new TimeCondItem("Day", 2);
+            DateTimeCond = new TimeCondItem("Week", 1);
             exclusiveEnd = DateTime.Now;
 
             SetPageSize = new RelayCommand(o => onSetPageSize(), o => canSetPageSize());
@@ -312,7 +312,9 @@ namespace Alarm4Rest_Viewer
             RestAlarmsRepo.pageSize = pageSize;
             await RestAlarmsRepo.GetRestAlarmAct();
             await RestAlarmsRepo.GetCustAlarmAct();
-            await RestAlarmsRepo.GetQueryAlarmAct();
+            //await RestAlarmsRepo.GetQueryAlarmAct();
+            //RestAlarmsRepo.exclusiveEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetQueryAlarmAct();
         }
 
         #endregion
@@ -345,10 +347,9 @@ namespace Alarm4Rest_Viewer
         {
             CustAlarmViewModel = _custAlarmViewModel;
 
-            DateTimeCond = (TimeCondItem)value;
-
-            exclusiveEnd = DateTime.Now;
-            await RestAlarmsRepo.TGetCustAlarmAct(exclusiveEnd, DateTimeCond);
+            RestAlarmsRepo.fDateTimeCondItem = (TimeCondItem)value;
+            RestAlarmsRepo.fDateTimeCondEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetCustAlarmAct();
 
             //Console.WriteLine(filterParseDeleg.Body);
         }
@@ -368,8 +369,23 @@ namespace Alarm4Rest_Viewer
             }
         }
 
+        private async void onRunStdSort(object txtSortTemplate)
+        {
+            //CustAlarmViewModel = null;
+            CustAlarmViewModel = _queryAlarmViewModel;
 
-        
+            int sortTemplate = Convert.ToInt32(txtSortTemplate);
+            RestAlarmsRepo.orderParseDeleg = sortOrderList.First(i => i.ID == sortTemplate);
+            //orderParseDeleg = SortExpression.BuildOrderBys<RestorationAlarmList>(sortOrder);
+
+            RestAlarmsRepo.qDateTimeCondEnd = DateTime.Now;
+
+            //await RestAlarmsRepo.GetQueryAlarmAct();
+            await RestAlarmsRepo.TGetQueryAlarmAct();
+
+            Console.WriteLine(RestAlarmsRepo.orderParseDeleg.ID);
+        }
+
         /* WPF call method with 2 parameter*/
         RelayCommand _RunQueryTimeCondCmd;
         public ICommand RunQueryTimeCondCmd
@@ -378,8 +394,7 @@ namespace Alarm4Rest_Viewer
             {
                 if (_RunQueryTimeCondCmd == null)
                 {
-                    _RunQueryTimeCondCmd = new RelayCommand(p => RunQueryTimeCond(p),
-                        p => true);
+                    _RunQueryTimeCondCmd = new RelayCommand(p => RunQueryTimeCond(p), p => true);
                 }
                 return _RunQueryTimeCondCmd;
             }
@@ -390,28 +405,13 @@ namespace Alarm4Rest_Viewer
         {
             CustAlarmViewModel = _queryAlarmViewModel;
 
-            DateTimeCond = (TimeCondItem)value;
-
-            exclusiveEnd = DateTime.Now;
-            await RestAlarmsRepo.TGetQueryAlarmAct(exclusiveEnd, DateTimeCond);
+            RestAlarmsRepo.qDateTimeCondItem = (TimeCondItem)value;
+            RestAlarmsRepo.qDateTimeCondEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetQueryAlarmAct();
 
             //Console.WriteLine(filterParseDeleg.Body);
         }
         
-        private async void onRunStdSort(object txtSortTemplate)
-        {
-            //CustAlarmViewModel = null;
-            CustAlarmViewModel = _queryAlarmViewModel;
-
-            int sortTemplate = Convert.ToInt32(txtSortTemplate);
-            RestAlarmsRepo.orderParseDeleg = sortOrderList.First(i => i.ID == sortTemplate);
-            //orderParseDeleg = SortExpression.BuildOrderBys<RestorationAlarmList>(sortOrder);
-
-            //DateTime exclusiveEnd = DateTime.Now;
-            await RestAlarmsRepo.GetQueryAlarmAct();
-
-            Console.WriteLine(RestAlarmsRepo.orderParseDeleg.ID);
-        }
 
         #endregion
 
@@ -575,7 +575,8 @@ namespace Alarm4Rest_Viewer
             filterParseDeleg = FilterExpressionBuilder.GetExpression<RestorationAlarmList>(groupFields);
 
             RestAlarmsRepo.filterParseDeleg = filterParseDeleg;
-            await RestAlarmsRepo.GetCustAlarmAct();
+            RestAlarmsRepo.fDateTimeCondEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetCustAlarmAct();
 
             Console.WriteLine(filterParseDeleg.Body);
 
@@ -697,7 +698,8 @@ namespace Alarm4Rest_Viewer
             {
                 RestAlarmsRepo.custPageIndex = 1;
                 RestAlarmsRepo.filterParseDeleg = searchParseDeleg;
-                await RestAlarmsRepo.GetCustAlarmAct();
+                RestAlarmsRepo.fDateTimeCondEnd = DateTime.Now;
+                await RestAlarmsRepo.TGetCustAlarmAct();
                 Console.WriteLine(searchParseDeleg.Body);
             }
 

@@ -22,6 +22,12 @@
             Value = value;
             FieldName = fieldName;
         }
+        public Item(string name, string value, string fieldName)
+        {
+            Name = name;
+            Value = value;
+            FieldName = fieldName;
+        }
 
         public override string ToString()
         {

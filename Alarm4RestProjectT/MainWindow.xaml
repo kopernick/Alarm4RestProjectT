@@ -73,13 +73,17 @@
                     <RibbonApplicationMenuItem Header="Exit" ImageSource="Images\export.png" />
                 </RibbonApplicationMenu>
             </Ribbon.ApplicationMenu>
-
+            <!-- _______________________Ribbon Tab #0: Select_______________________ -->
+            <CustControl:selectTapView Header="Select" x:Name="Select" Height="Auto"/>
+            
             <!-- _______________________Ribbon Tab #0: Main_______________________ -->
             <RibbonTab Header="Main" x:Name="RibbonTabHome" Height="Auto">
                 <RibbonTab.Resources>
                     <Services:MultiValueConverter x:Key="MultiValueConverter" />
                 </RibbonTab.Resources>
 
+                <!-- Standard Select group-->
+                
                 <!-- Standard Query group-->
                 <RibbonGroup x:Name="StdQuery" Header="Standard Query">
                     <Grid>

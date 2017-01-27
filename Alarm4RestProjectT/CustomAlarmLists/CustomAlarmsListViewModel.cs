@@ -101,7 +101,8 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
 
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _custPageIndex);
             RestAlarmsRepo.custPageIndex = custPageIndex;
-            await RestAlarmsRepo.GetCustAlarmAct();
+            //RestAlarmsRepo.fDateTimeCondEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetCustAlarmAct();
 
             //To Do function Update RestAlarmsRepo.RestAlarmListDump 
             //CustRestAlarmListDump = await RestAlarmsRepo.GetCustomRestAlarmsAsync(RestAlarmsRepo.filterParseDeleg, custPageIndex, pageSize);
@@ -119,7 +120,8 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
             custPageIndex = 1;
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _custPageIndex);
             RestAlarmsRepo.custPageIndex = custPageIndex;
-            await RestAlarmsRepo.GetCustAlarmAct();
+            //RestAlarmsRepo.fDateTimeCondEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetCustAlarmAct();
 
         }
 
@@ -130,7 +132,8 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
             custPageIndex -= 1;
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _custPageIndex);
             RestAlarmsRepo.custPageIndex = custPageIndex;
-            await RestAlarmsRepo.GetCustAlarmAct();
+            //RestAlarmsRepo.fDateTimeCondEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetCustAlarmAct();
 
         }
         public RelayCommand NextPageCommand { get; private set; }
@@ -140,7 +143,8 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
             custPageIndex += 1;
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _custPageIndex);
             RestAlarmsRepo.custPageIndex = custPageIndex;
-            await RestAlarmsRepo.GetCustAlarmAct();
+            //RestAlarmsRepo.fDateTimeCondEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetCustAlarmAct();
 
         }
 
@@ -155,7 +159,9 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
             custPageIndex = RestAlarmsRepo.custPageCount;
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _custPageIndex);
             RestAlarmsRepo.custPageIndex = custPageIndex;
-            await RestAlarmsRepo.GetCustAlarmAct();
+
+            //RestAlarmsRepo.fDateTimeCondEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetCustAlarmAct();
 
         }
 

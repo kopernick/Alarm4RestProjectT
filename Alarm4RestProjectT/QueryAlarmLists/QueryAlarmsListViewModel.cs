@@ -107,7 +107,8 @@ namespace Alarm4Rest_Viewer.QueryAlarmLists
             pageIndex = 1;
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _pageIndex);
             RestAlarmsRepo.queryPageIndex = pageIndex;
-            await RestAlarmsRepo.GetQueryAlarmAct();
+            //RestAlarmsRepo.exclusiveEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetQueryAlarmAct();
 
         }
         public RelayCommand EnterPageCommand { get; private set; }
@@ -123,7 +124,8 @@ namespace Alarm4Rest_Viewer.QueryAlarmLists
 
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _pageIndex);
             RestAlarmsRepo.queryPageIndex = pageIndex;
-            await RestAlarmsRepo.GetQueryAlarmAct();
+            //RestAlarmsRepo.exclusiveEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetQueryAlarmAct();
         }
 
         public RelayCommand PrePageCommand { get; private set; }
@@ -133,7 +135,8 @@ namespace Alarm4Rest_Viewer.QueryAlarmLists
             pageIndex -= 1;
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _pageIndex);
             RestAlarmsRepo.queryPageIndex = pageIndex;
-            await RestAlarmsRepo.GetQueryAlarmAct();
+            //RestAlarmsRepo.exclusiveEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetQueryAlarmAct();
 
             //To Do function Update RestAlarmsRepo.RestAlarmListDump 
             //RestAlarmListDump = await RestAlarmsRepo.GetRestAlarmsAsync(pageIndex, pageSize);
@@ -146,7 +149,8 @@ namespace Alarm4Rest_Viewer.QueryAlarmLists
             pageIndex += 1;
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _pageIndex);
             RestAlarmsRepo.queryPageIndex = pageIndex;
-            await RestAlarmsRepo.GetQueryAlarmAct();
+            //RestAlarmsRepo.exclusiveEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetQueryAlarmAct();
         }
 
         public RelayCommand LastPageCommand { get; private set; }
@@ -160,7 +164,8 @@ namespace Alarm4Rest_Viewer.QueryAlarmLists
             pageIndex = RestAlarmsRepo.queryPageCount;
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _pageIndex);
             RestAlarmsRepo.queryPageIndex = pageIndex;
-            await RestAlarmsRepo.GetQueryAlarmAct();
+            //RestAlarmsRepo.exclusiveEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetQueryAlarmAct();
         }
 
         

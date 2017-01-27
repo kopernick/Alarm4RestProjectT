@@ -79,6 +79,10 @@
       <DependentUpon>searchToolBarView.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustControl\searchToolBarViewModel.cs" />
+    <Compile Include="CustControl\selectTapView.xaml.cs">
+      <DependentUpon>selectTapView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustControl\selectTapViewModel.cs" />
     <Compile Include="QueryAlarmLists\QueryAlarmsListView.xaml.cs">
       <DependentUpon>QueryAlarmsListView.xaml</DependentUpon>
     </Compile>
@@ -120,6 +124,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustControl\searchToolBarView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustControl\selectTapView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
