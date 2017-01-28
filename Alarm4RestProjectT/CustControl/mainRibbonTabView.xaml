@@ -59,11 +59,6 @@
             </StackPanel>
 
         </GroupBox>
-        <!--
-                <CheckBox Grid.Row="0" Grid.Column="0" Margin="2" Content="{Binding SelectGroupDescItem1, 
-                UpdateSourceTrigger=PropertyChanged}" 
-                      IsChecked="{Binding IsChecked}" />
-            -->
 
     </RibbonGroup>
 

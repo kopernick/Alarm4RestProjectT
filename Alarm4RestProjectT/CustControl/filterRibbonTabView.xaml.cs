@@ -17,11 +17,11 @@ using System.Windows.Shapes;
 namespace Alarm4Rest_Viewer.CustControl
 {
     /// <summary>
-    /// Interaction logic for selectTapView.xaml
+    /// Interaction logic for filterRibbonTabView.xaml
     /// </summary>
-    public partial class selectTapView : RibbonTab
+    public partial class filterRibbonTabView : RibbonTab
     {
-        public selectTapView()
+        public filterRibbonTabView()
         {
             InitializeComponent();
         }

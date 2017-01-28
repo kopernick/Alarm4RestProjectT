@@ -71,6 +71,10 @@
     <Compile Include="CustControl\ComboWithCheckboxes.xaml.cs">
       <DependentUpon>ComboWithCheckboxes.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustControl\filterRibbonTabView.xaml.cs">
+      <DependentUpon>filterRibbonTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustControl\filterRibbonTabViewModel.cs" />
     <Compile Include="CustControl\mainRibbonTabView.xaml.cs">
       <DependentUpon>mainRibbonTabView.xaml</DependentUpon>
     </Compile>
@@ -83,10 +87,6 @@
       <DependentUpon>searchToolBarView.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustControl\searchToolBarViewModel.cs" />
-    <Compile Include="CustControl\selectTapView.xaml.cs">
-      <DependentUpon>selectTapView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustControl\selectTapViewModel.cs" />
     <Compile Include="QueryAlarmLists\QueryAlarmsListView.xaml.cs">
       <DependentUpon>QueryAlarmsListView.xaml</DependentUpon>
     </Compile>
@@ -119,6 +119,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CustControl\filterRibbonTabView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustControl\filterToolBarView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -132,10 +136,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustControl\searchToolBarView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CustControl\selectTapView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -242,6 +242,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Note\RibbonTab_Main.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Note\RibbonTab_Search.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Note\RibbonTab_Filter.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
