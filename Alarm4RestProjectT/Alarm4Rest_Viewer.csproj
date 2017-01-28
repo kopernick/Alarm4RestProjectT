@@ -75,6 +75,10 @@
       <DependentUpon>mainRibbonTabView.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustControl\mainRibbonTapViewModel.cs" />
+    <Compile Include="CustControl\searchRibbonTabView.xaml.cs">
+      <DependentUpon>searchRibbonTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustControl\searchRibbonTabViewModel.cs" />
     <Compile Include="CustControl\searchToolBarView.xaml.cs">
       <DependentUpon>searchToolBarView.xaml</DependentUpon>
     </Compile>
@@ -120,6 +124,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustControl\mainRibbonTabView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustControl\searchRibbonTabView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -231,6 +239,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Note\PassOneCmdParameterMVVM-ICommand.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Note\RibbonTab_Main.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

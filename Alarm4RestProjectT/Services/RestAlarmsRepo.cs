@@ -91,6 +91,12 @@ namespace Alarm4Rest_Viewer.Services
             fDateTimeCondEnd = DateTime.Now;
 
             filterParseDeleg = null;
+            orderParseDeleg = null;
+
+            LastAlarmRecIndex = 0;
+            LastMaxAlarmRecIndex = 0;
+            LastQueryAlarmRecIndex = 0;
+
             //StationsName = new List<string>();
 
             dispatcherTimer.Tick += dispatcherTimer_Tick;
@@ -103,7 +109,7 @@ namespace Alarm4Rest_Viewer.Services
         {
             RestEventArgs arg = new RestEventArgs();
 
-            try
+           // try
             {
                 RestAlarmListDump = await GetRestAlarmsAsync();
                 LastAlarmRecIndex = RestAlarmListDump[0].PkAlarmListID; //Set Last PkAlarmList initializing
@@ -123,13 +129,13 @@ namespace Alarm4Rest_Viewer.Services
                 onRestAlarmChanged(arg);//Raise Event
                 Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
             }
-            catch
-            {
-                //Send Message to Subscriber
-                arg.message = "Start Fail";
-                onRestAlarmChanged(arg);//Raise Event
-                Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
-            }
+            //catch
+            //{
+            //    //Send Message to Subscriber
+            //    arg.message = "Start Fail";
+            //    onRestAlarmChanged(arg);//Raise Event
+            //    Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
+            //}
         }
 
         private static void InitializeComponent()
@@ -318,8 +324,7 @@ namespace Alarm4Rest_Viewer.Services
             {
                 Query = await DBContext.RestorationAlarmLists
                             .OrderByDescending(c => c.PkAlarmListID)
-                            .Where(c => c.DateTime >= inclusiveStart
-                                        && c.DateTime < qDateTimeCondEnd)
+                            .Where(c => c.DateTime >= inclusiveStart && c.DateTime < qDateTimeCondEnd)
                             .ToListAsync();
             }
             else
@@ -327,8 +332,7 @@ namespace Alarm4Rest_Viewer.Services
                 Query = await DBContext.RestorationAlarmLists
                             .OrderByDescending(c => c.PkAlarmListID)
                             .Where(filterParseDeleg)
-                            .Where(c => c.DateTime >= inclusiveStart
-                                        && c.DateTime < qDateTimeCondEnd)
+                            .Where(c => c.DateTime >= inclusiveStart && c.DateTime < qDateTimeCondEnd)
                             .ToListAsync();
             }
 
@@ -665,7 +669,10 @@ namespace Alarm4Rest_Viewer.Services
                     if (CustAlarmListDump.Count != 0)
                         CheckNewCustomRestAlarm();
                 }
-            }catch
+
+                Console.WriteLine("Timer Tick Success");
+            }
+            catch
             {
                 Console.WriteLine("Timer Tick Load Fail");
             }

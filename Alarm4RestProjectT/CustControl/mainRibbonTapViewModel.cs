@@ -12,12 +12,12 @@ namespace Alarm4Rest_Viewer.CustControl
     {
        
         public static List<SortItem> sortOrderList = new List<SortItem>();
-        //public Expression<Func<RestorationAlarmList, object>> orderParseDeleg;
-        public SortItem orderParseDeleg;
 
         public mainRibbonTapViewModel()
         {
+            //To Do ต้องประการที่เดียว
             InitSortOrderTemplate();
+            RestAlarmsRepo.orderParseDeleg = sortOrderList.First(i => i.ID == 1);
 
             //RunStdSortQuery1 = new RelayCommand(o => onRunStdSortQuery1(), o => canRunStdSortQuery());
         }
@@ -25,35 +25,9 @@ namespace Alarm4Rest_Viewer.CustControl
     #region Helper Function
         private void InitSortOrderTemplate()
         {
-            sortOrderList.Add(new SortItem(1,"StationName", "DateTime", "Priority"));
-            //sortOrderList.Add(new SortItem(1, "", "", ""));
-            sortOrderList.Add(new SortItem(2,"StationName", "Priority", "DateTime"));
-            sortOrderList.Add(new SortItem(3,"DateTime", "StationName", "Priority"));
-        }
-
-    /* WPF call method with 2 parameter*/
-    RelayCommand _RunFilterTimeCondCmd;
-        public ICommand RunFilterTimeCondCmd
-        {
-            get
-            {
-                if (_RunFilterTimeCondCmd == null)
-                {
-                    _RunFilterTimeCondCmd = new RelayCommand(p => RunFilterTimeCond(p),
-                        p => true);
-                }
-                return _RunFilterTimeCondCmd;
-            }
-        }
-
-        // WPF Call with 2 parameter
-        private async void RunFilterTimeCond(object value)
-        {
-            RestAlarmsRepo.fDateTimeCondItem = (TimeCondItem)value;
-            RestAlarmsRepo.fDateTimeCondEnd = DateTime.Now;
-            await RestAlarmsRepo.TGetCustAlarmAct();
-
-            //Console.WriteLine(filterParseDeleg.Body);
+            sortOrderList.Add(new SortItem(1, "StationName", "DateTime", "Priority"));
+            sortOrderList.Add(new SortItem(2, "StationName", "Priority", "DateTime"));
+            sortOrderList.Add(new SortItem(3, "DateTime", "StationName", "Priority"));
         }
 
         /* WPF call method with 1 parameter*/
@@ -65,24 +39,51 @@ namespace Alarm4Rest_Viewer.CustControl
             {
                 if (_RunStdSortQuery == null)
                 {
-                    _RunStdSortQuery = new RelayCommand(p => RunStdSort(p),
-                        p => true);
+                    _RunStdSortQuery = new RelayCommand(p => onRunStdSort(p), p => true);
                 }
                 return _RunStdSortQuery;
             }
         }
 
-        private async void RunStdSort(object txtSortTemplate)
+        private async void onRunStdSort(object txtSortTemplate)
         {
+            //CustAlarmViewModel = null;
+
             int sortTemplate = Convert.ToInt32(txtSortTemplate);
-            SortItem sortOrder = sortOrderList.First(i => i.ID == sortTemplate);
-            orderParseDeleg = sortOrder;
+            RestAlarmsRepo.orderParseDeleg = sortOrderList.First(i => i.ID == sortTemplate);
             //orderParseDeleg = SortExpression.BuildOrderBys<RestorationAlarmList>(sortOrder);
 
-            //DateTime exclusiveEnd = DateTime.Now;
-            await RestAlarmsRepo.GetQueryAlarmAct();
+            RestAlarmsRepo.qDateTimeCondEnd = DateTime.Now;
 
-            Console.WriteLine(sortOrder.ID);
+            //await RestAlarmsRepo.GetQueryAlarmAct();
+            await RestAlarmsRepo.TGetQueryAlarmAct();
+
+            Console.WriteLine(RestAlarmsRepo.orderParseDeleg.ID);
+        }
+
+        /* WPF call method with 2 parameter*/
+        RelayCommand _RunQueryTimeCondCmd;
+        public ICommand RunQueryTimeCondCmd
+        {
+            get
+            {
+                if (_RunQueryTimeCondCmd == null)
+                {
+                    _RunQueryTimeCondCmd = new RelayCommand(p => RunQueryTimeCond(p), p => true);
+                }
+                return _RunQueryTimeCondCmd;
+            }
+        }
+
+        // WPF Call with 2 parameter
+        private async void RunQueryTimeCond(object value)
+        {
+
+            RestAlarmsRepo.qDateTimeCondItem = (TimeCondItem)value;
+            RestAlarmsRepo.qDateTimeCondEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetQueryAlarmAct();
+
+            //Console.WriteLine(filterParseDeleg.Body);
         }
 
         #endregion

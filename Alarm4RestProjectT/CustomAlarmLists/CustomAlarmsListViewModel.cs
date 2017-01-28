@@ -97,7 +97,7 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
 
             custPageIndex = Convert.ToInt32(txtPage);
             if (_custPageIndex <= 0) custPageIndex = 1;
-            if (_custPageIndex > RestAlarmsRepo.custPageIndex) custPageIndex = RestAlarmsRepo.custPageCount;
+            if (_custPageIndex > RestAlarmsRepo.custPageCount) custPageIndex = RestAlarmsRepo.custPageCount;
 
             Console.WriteLine(DateTime.Now.ToString() + " : goto page : " + _custPageIndex);
             RestAlarmsRepo.custPageIndex = custPageIndex;

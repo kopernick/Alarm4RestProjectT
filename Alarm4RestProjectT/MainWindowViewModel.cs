@@ -14,6 +14,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Input;
 using Alarm4Rest_Viewer.QueryAlarmLists;
+using System.Windows.Controls.Ribbon;
 
 namespace Alarm4Rest_Viewer
 {
@@ -32,7 +33,7 @@ namespace Alarm4Rest_Viewer
         public RelayCommand EnableSearchCmd { get; private set; }
         public RelayCommand EnableFilterCmd { get; private set; }
         public RelayCommand EnableCustView { get; private set; }
-     
+
 
         #region Sorting Templat
         public static List<SortItem> sortOrderList = new List<SortItem>();
@@ -110,7 +111,7 @@ namespace Alarm4Rest_Viewer
                 OnPropertyChanged("fltSelectedMessageView");
             }
         }
-        
+
         private string _fltSelectedStationsView;
         private string _fltSelectedPriorityView;
         private string _fltSelectedGroupDescriptionView;
@@ -141,106 +142,7 @@ namespace Alarm4Rest_Viewer
         #endregion
 
         #region Search Properties
-        public static List<string> selectedStations = new List<string>();
-        public static List<string> selectedField = new List<string>();
-        public static List<string> selectedGroupDescription = new List<string>();
-        public Expression<Func<RestorationAlarmList, bool>> searchParseDeleg;
-
-        public static List<Item> searchList = new List<Item>();
-
-        private HashSet<Item> mCheckedItems;
-
-        private ObservableCollection<Item> mfieldItems;
-        public IEnumerable<Item> fieldItems { get { return mfieldItems; } }
-
-
-        private ObservableCollection<Item> mpriorityItems;
-        public IEnumerable<Item> priorityItems { get { return mpriorityItems; } }
-
-
-        private ObservableCollection<Item> mstationItems;
-        public IEnumerable<Item> stationItems { get { return mstationItems; } }
-
-        private ObservableCollection<string> _Stations;
-        public ObservableCollection<string> Stations
-        {
-            get { return _Stations; }
-            set
-            {
-                _Stations = value;
-                OnPropertyChanged("Stations");
-            }
-        }
-        public string selectedStationsView
-        {
-            get { return _selectedStationsView; }
-            set
-            {
-                Set(ref _selectedStationsView, value);
-                OnPropertyChanged("selectedStationsView");
-            }
-        }
-        public string selectedFieldView
-        {
-            get { return _selectedFieldView; }
-            set
-            {
-                Set(ref _selectedFieldView, value);
-                OnPropertyChanged("selectedFieldView");
-            }
-        }
-        public string selectedPriorityView
-        {
-            get { return _selectedPriorityView; }
-            set
-            {
-                Set(ref _selectedPriorityView, value);
-                OnPropertyChanged("selectedPriorityView");
-            }
-        }
-
-        public string _selectedStationsView;
-        public string _selectedFieldView;
-        public string _selectedPriorityView;
-
-        public string searchText
-        {
-            get { return _searchText; }
-            set
-            {
-                Set(ref _searchText, value);
-                OnPropertyChanged("Text");
-            }
-
-        }
-
-        private string _searchText;
-        //Default Search Keyword
-        private string _search_Parse_Pri;
-        public string search_Parse_Pri
-        {
-            get { return _search_Parse_Pri; }
-            set
-            {
-                _search_Parse_Pri = value;
-                OnPropertyChanged("search_Parse_Pri");
-                // RestAlarmsRepo.filter_Parse = value;
-            }
-        }
-
-        //Option Search Keyword
-        private string _search_Parse_Sec;
-        public string search_Parse_Sec
-        {
-            get { return _search_Parse_Sec; }
-            set
-            {
-                _search_Parse_Sec = value;
-                OnPropertyChanged("search_Parse_Sec");
-                // RestAlarmsRepo.filter_Parse = value;
-            }
-        }
-
+        
         #endregion
         public MainWindowViewModel()
         {
@@ -249,8 +151,8 @@ namespace Alarm4Rest_Viewer
 
 
             RestAlarmsRepo.InitializeRepository(); // Start define --> DBContext = new Alarm4RestorationContext();
-           
-            EnableSearchCmd = new RelayCommand(o => onSearchAlarms(), o => canSearch());
+
+            //EnableSearchCmd = new RelayCommand(o => onSearchAlarms(), o => canSearch());
             EnableFilterCmd = new RelayCommand(o => onFilterAlarms(), o => canFilter());
             EnableCustView = new RelayCommand(o => onCustView(), o => canViewMain());
 
@@ -267,7 +169,7 @@ namespace Alarm4Rest_Viewer
             RestAlarmsRepo.orderParseDeleg = sortOrderList.First(i => i.ID == 1);
             #endregion
 
-      #region Initialize filter menu
+            #region Initialize filter menu
             mfltStationItems = new ObservableCollection<Item>();
             mfltPriorityItems = new ObservableCollection<Item>();
             mfltGroupDescItems = new ObservableCollection<Item>();
@@ -280,22 +182,10 @@ namespace Alarm4Rest_Viewer
             mfltMessageItems.CollectionChanged += fltItems_CollectionChanged;
 
             RunFilterCmd = new RelayCommand(o => onFilterAlarms(), o => canFilter());
-       #endregion
+            #endregion
 
-      #region Initialize Search menu
-            mstationItems = new ObservableCollection<Item>();
-            mfieldItems = new ObservableCollection<Item>();
-            mpriorityItems = new ObservableCollection<Item>();
-            mCheckedItems = new HashSet<Item>();
-
-            mstationItems.CollectionChanged += Items_CollectionChanged;
-            mfieldItems.CollectionChanged += Items_CollectionChanged;
-            mpriorityItems.CollectionChanged += Items_CollectionChanged;
-            search_Parse_Pri = "";
-            search_Parse_Sec = "";
-
-            RunSearchCmd = new RelayCommand(o => onSearchAlarms(), o => canSearch());
-
+            #region Initialize Search menu
+            
             #endregion
         }
 
@@ -320,11 +210,11 @@ namespace Alarm4Rest_Viewer
         #endregion
 
         #region Sort Template Helper function
-        private void InitSortOrderTemplate()
+        public static void InitSortOrderTemplate()
         {
-            sortOrderList.Add(new SortItem(1,"StationName", "DateTime", "Priority"));
-            sortOrderList.Add(new SortItem(2,"StationName", "Priority", "DateTime"));
-            sortOrderList.Add(new SortItem(3,"DateTime", "StationName", "Priority"));
+            sortOrderList.Add(new SortItem(1, "StationName", "DateTime", "Priority"));
+            sortOrderList.Add(new SortItem(2, "StationName", "Priority", "DateTime"));
+            sortOrderList.Add(new SortItem(3, "DateTime", "StationName", "Priority"));
         }
 
         /* WPF call method with 2 parameter*/
@@ -354,69 +244,11 @@ namespace Alarm4Rest_Viewer
             //Console.WriteLine(filterParseDeleg.Body);
         }
 
-        /* WPF call method with 1 parameter*/
-
-        RelayCommand _RunStdSortQuery;
-        public ICommand RunStdSortQuery
-        {
-            get
-            {
-                if (_RunStdSortQuery == null)
-                {
-                    _RunStdSortQuery = new RelayCommand(p => onRunStdSort(p), p => true);
-                }
-                return _RunStdSortQuery;
-            }
-        }
-
-        private async void onRunStdSort(object txtSortTemplate)
-        {
-            //CustAlarmViewModel = null;
-            CustAlarmViewModel = _queryAlarmViewModel;
-
-            int sortTemplate = Convert.ToInt32(txtSortTemplate);
-            RestAlarmsRepo.orderParseDeleg = sortOrderList.First(i => i.ID == sortTemplate);
-            //orderParseDeleg = SortExpression.BuildOrderBys<RestorationAlarmList>(sortOrder);
-
-            RestAlarmsRepo.qDateTimeCondEnd = DateTime.Now;
-
-            //await RestAlarmsRepo.GetQueryAlarmAct();
-            await RestAlarmsRepo.TGetQueryAlarmAct();
-
-            Console.WriteLine(RestAlarmsRepo.orderParseDeleg.ID);
-        }
-
-        /* WPF call method with 2 parameter*/
-        RelayCommand _RunQueryTimeCondCmd;
-        public ICommand RunQueryTimeCondCmd
-        {
-            get
-            {
-                if (_RunQueryTimeCondCmd == null)
-                {
-                    _RunQueryTimeCondCmd = new RelayCommand(p => RunQueryTimeCond(p), p => true);
-                }
-                return _RunQueryTimeCondCmd;
-            }
-        }
-
-        // WPF Call with 2 parameter
-        private async void RunQueryTimeCond(object value)
-        {
-            CustAlarmViewModel = _queryAlarmViewModel;
-
-            RestAlarmsRepo.qDateTimeCondItem = (TimeCondItem)value;
-            RestAlarmsRepo.qDateTimeCondEnd = DateTime.Now;
-            await RestAlarmsRepo.TGetQueryAlarmAct();
-
-            //Console.WriteLine(filterParseDeleg.Body);
-        }
-        
 
         #endregion
 
         #region Filter Helper function
-        
+
 
         /* Load DB สำเร็จ สร้าง ต้องกำหนด CustAlarmViewModel = ViewModel ที่ต้องการแสดง */
         private void OnRestAlarmChanged(object source, RestEventArgs arg)
@@ -428,14 +260,14 @@ namespace Alarm4Rest_Viewer
                 foreach (var Station in RestAlarmsRepo.StationsName)
                 {
                     mfltStationItems.Add(new Item(Station.ToString(), "StationName"));
-                    mstationItems.Add(new Item(Station.ToString(), "StationName"));
+                    
                 }
 
                 // Adding Priority ComboBox items
                 foreach (var Priority in RestAlarmsRepo.Priority)
                 {
                     mfltPriorityItems.Add(new Item(Priority.ToString(), "Priority"));
-                    mpriorityItems.Add(new Item(Priority.ToString(), "Priority"));
+                   
                 }
 
                 // Adding GoupDescription ComboBox items
@@ -449,13 +281,6 @@ namespace Alarm4Rest_Viewer
                 {
                     mfltMessageItems.Add(new Item(Message.ToString(), "Message"));
                 }
-                             
-                // Adding Search field items
-                mfieldItems.Add(new Item("PointName", "FieldName"));
-                mfieldItems.Add(new Item("Message", "FieldName"));
-                //mpfieldItems.Add(new Item("Priority", "FieldName"));
-                mfieldItems.Add(new Item("GroupPointName", "FieldName"));
-                mfieldItems.Add(new Item("GroupDescription", "FieldName"));
 
                 CustAlarmViewModel = _queryAlarmViewModel;
 
@@ -585,137 +410,62 @@ namespace Alarm4Rest_Viewer
         #endregion
 
         #region Search Helper function
-        private void Items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.OldItems != null)
-            {
-                foreach (Item item in e.OldItems)
-                {
-                    item.PropertyChanged -= Item_PropertyChanged;
-                    mCheckedItems.Remove(item);
-                }
-            }
-            if (e.NewItems != null)
-            {
-                foreach (Item item in e.NewItems)
-                {
-                    item.PropertyChanged += Item_PropertyChanged;
-                    if (item.IsChecked) mCheckedItems.Add(item);
-                }
-            }
-
-            //UpdateFilterParseTxt();
-        }
-        private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "IsChecked")
-            {
-                Item item = (Item)sender;
-                if (item.IsChecked)
-                {
-                    mCheckedItems.Add(item);
-                    switch (item.FieldName)
-                    {
-                        case "StationName":
-                            selectedStations.Add(item.Value.TrimEnd());
-                            break;
-                        case "FieldName":
-                            selectedField.Add(item.Value.TrimEnd());
-                            break;
-                        case "Priority":
-                            selectedGroupDescription.Add(item.Value.TrimEnd());
-                            break;
-                    }
-
-                    //selectedStations.Add(item.Value.TrimEnd());
-                    searchList.Add(item); //Add to filter parse
-                }
-                else
-                {
-                    mCheckedItems.Remove(item);
-                    switch (item.FieldName)
-                    {
-                        case "StationName":
-                            selectedStations.Remove(item.Value.TrimEnd());
-                            break;
-                        case "FieldName":
-                            selectedField.Remove(item.Value.TrimEnd());
-                            break;
-                        case "Priority":
-                            selectedGroupDescription.Remove(item.Value.TrimEnd());
-                            break;
-                    }
-                    //selectedStations.Remove(item.Value.TrimEnd());
-                    searchList.Remove(item); //Remove from filter parse
-                }
-                UpdateSeachParseTxt();
-            }
-        }
-        private void UpdateSeachParseTxt()
-        {
-            selectedStationsView = string.Join(" | ", selectedStations.ToArray());
-            selectedFieldView = string.Join(" | ", selectedField.ToArray());
-            selectedPriorityView = string.Join(" | ", selectedGroupDescription.ToArray());
-
-            //To Do
-            List<string> filterTextList = new List<string>();
-            if (selectedFieldView.Count() > 0) filterTextList.Add("Search " + searchText + "in field(s)" + "(" + selectedFieldView + ")");
-            if (selectedStationsView.Count() > 0) filterTextList.Add(" @ station :" + "(" + selectedStationsView + ")");
-            if (filterTextList.Count() > 0)
-            {
-                searchText = string.Join(" & ", filterTextList.ToArray());
-                Console.WriteLine(searchText);
-            }
-        }
-
-        public RelayCommand RunSearchCmd { get; private set; }
-
-        public bool canSearch()
-        {
-            return (_search_Parse_Pri != "" || _search_Parse_Sec != "");
-        }
-        public async void onSearchAlarms()
-        {
-            //Implement for each query Group by PropertyName : StationName , Priority or Desc.
-            CustAlarmViewModel = _custAlarmViewModel;
-            //ExpressGen();
-
-            IEnumerable<IGrouping<string, Item>> groupFields =
-                    from item in searchList
-                    group item by item.FieldName;
-
-            string[] search_Parse_Pri_List = search_Parse_Pri.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-            Console.WriteLine(search_Parse_Pri_List.Length);
-
-            //searchParseDeleg = SearchingExpressionBuilder.GetExpression<RestorationAlarmList>(groupFields, search_Parse_Pri);
-            searchParseDeleg = SearchingExpressionBuilder.GetExpression<RestorationAlarmList>(groupFields, search_Parse_Pri_List, _search_Parse_Sec);
-
-            if (searchParseDeleg == null)
-            {
-                Console.WriteLine("Expression Building Error");
-            }
-            else
-            {
-                RestAlarmsRepo.custPageIndex = 1;
-                RestAlarmsRepo.filterParseDeleg = searchParseDeleg;
-                RestAlarmsRepo.fDateTimeCondEnd = DateTime.Now;
-                await RestAlarmsRepo.TGetCustAlarmAct();
-                Console.WriteLine(searchParseDeleg.Body);
-            }
-
-        }
+       
         #endregion
 
+
+        RelayCommand _RibbonTabSelectionChangedCommand;
+        public ICommand RibbonTabSelectionChangedCommand
+        {
+            get
+            {
+                if (_RibbonTabSelectionChangedCommand == null)
+                {
+                    _RibbonTabSelectionChangedCommand = new RelayCommand(p => OnRibbonTabSelectionChanged(p), p => true);
+                }
+                return _RibbonTabSelectionChangedCommand;
+            }
+        }
+
+        private void OnRibbonTabSelectionChanged(object e)
+        {
+            //ExpressGen();
+            Ribbon ribbon = (Ribbon)e;
+            //MyRibbon.SelectedItem.
+            if (ribbon == null) return;
+            var ribbonTab = ribbon.SelectedItem;                //Get the default container and using the container get the singleton region manager
+            //var container = ServiceLocator.Current.GetInstance<IUnityContainer>();
+            //var regionManager = container.Resolve<IRegionManager>();
+            string header = (ribbonTab as RibbonTab).Header.ToString();
+
+            switch (header)
+            {
+                case "Main":
+                    Console.WriteLine(header);
+                    CustAlarmViewModel = _queryAlarmViewModel;
+                    break;
+                case "Advance Search":
+                    Console.WriteLine(header);
+                    CustAlarmViewModel = _custAlarmViewModel;
+                    break;
+
+                case "Advance Filter":
+                    Console.WriteLine(header);
+                    CustAlarmViewModel = _custAlarmViewModel;
+                    break;
+            }
+        }
         private PropertyChangeEventBase _CustAlarmViewModel;
         public PropertyChangeEventBase CustAlarmViewModel
         {
             get { return _CustAlarmViewModel; }
-            set {
+            set
+            {
                 SetProperty(ref _CustAlarmViewModel, value);
             }
         }
 
-       
+
         public void onCustView()
         {
             //ExpressGen();
