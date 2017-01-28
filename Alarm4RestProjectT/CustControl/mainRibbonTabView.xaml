@@ -21,9 +21,60 @@
     </RibbonTab.DataContext>
 
     <!-- Standard Select group-->
+    <RibbonGroup x:Name="GroupSel" Header="Select Category">
+        <GroupBox Header="Category">
+            <StackPanel>
 
-        <!-- Standard Query group-->
-        <RibbonGroup x:Name="StdQuery" Header="Standard Query">
+                <Grid>
+                    <Grid.ColumnDefinitions >
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <CheckBox x:Name="CheckBox87X" Grid.Row="0" Grid.Column="0" MinWidth="65" Margin="1" 
+                              Content="{Binding CatDesc87X.Name}"
+                              IsChecked="{Binding IsChecked87X,Mode=TwoWay}"
+                              Command="{Binding CheckCommand}"
+                              CommandParameter="{Binding CatDesc87X.Name}">
+
+                    </CheckBox>
+
+                    <CheckBox x:Name="CheckBox56N" Grid.Row="0" Grid.Column="1" MinWidth="65" Margin="1" 
+                              Content="{Binding CatDesc56N.Name}"
+                              IsChecked="{Binding IsChecked56N,Mode=TwoWay}"
+                              Command="{Binding CheckCommand}"
+                              CommandParameter="{Binding CatDesc56N.Name}">
+                    </CheckBox>
+
+                    <CheckBox Grid.Row="1" Grid.Column="0" Margin="1" >
+                        Etc.</CheckBox>
+                </Grid>
+
+            </StackPanel>
+
+        </GroupBox>
+        <!--
+                <CheckBox Grid.Row="0" Grid.Column="0" Margin="2" Content="{Binding SelectGroupDescItem1, 
+                UpdateSourceTrigger=PropertyChanged}" 
+                      IsChecked="{Binding IsChecked}" />
+            -->
+
+    </RibbonGroup>
+
+    <!-- Filter cmd group-->
+    <RibbonGroup x:Name="FilterCommand" Header="Command">
+        <Button Content="GO" Width="40" Height="40" VerticalAlignment="Center" HorizontalAlignment="Center" 
+                    Command="{Binding RunUserQueryCmd}" />
+    </RibbonGroup>
+
+    <!-- Standard Query group-->
+        <RibbonGroup x:Name="SortQuery" Header="Sort Order">
             <Grid>
                 <Grid.ColumnDefinitions >
                     <ColumnDefinition Width="Auto"/>

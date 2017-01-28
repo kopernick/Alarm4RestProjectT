@@ -46,7 +46,7 @@ namespace Alarm4Rest_Viewer.CustControl
             _CatDesc56N = new Item("Group56N", "56N", "GroupDescription");
             if (isChecked56N) qFilters.Add(_CatDesc56N);
 
-            RunStdQueryCmd = new RelayCommand(o => onStdQuery(), o => canStdQuery());
+            RunUserQueryCmd = new RelayCommand(o => onUserQuery(), o => canUserQuery());
         }
 
         RelayCommand _CheckCommand;
@@ -123,13 +123,13 @@ namespace Alarm4Rest_Viewer.CustControl
             }
         }
         
-        public RelayCommand RunStdQueryCmd { get; private set; }
+        public RelayCommand RunUserQueryCmd { get; private set; }
 
-        public bool canStdQuery()
+        public bool canUserQuery()
         {
             return qFilters.Count != 0;
         }
-        public async void onStdQuery()
+        public async void onUserQuery()
         {
             //Implement for each query Group by PropertyName : StationName , Priority or Desc.
             //ExpressGen();

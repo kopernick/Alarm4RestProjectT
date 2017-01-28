@@ -433,7 +433,7 @@ namespace Alarm4Rest_Viewer
             Ribbon ribbon = (Ribbon)e;
             //MyRibbon.SelectedItem.
             if (ribbon == null) return;
-            var ribbonTab = ribbon.SelectedItem;                //Get the default container and using the container get the singleton region manager
+            var ribbonTab = ribbon.SelectedItem;   //Get the default container and using the container get the singleton region manager
             //var container = ServiceLocator.Current.GetInstance<IUnityContainer>();
             //var regionManager = container.Resolve<IRegionManager>();
             string header = (ribbonTab as RibbonTab).Header.ToString();
