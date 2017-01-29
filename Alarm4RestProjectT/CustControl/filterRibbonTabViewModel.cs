@@ -119,7 +119,8 @@ namespace Alarm4Rest_Viewer.CustControl
         {
             #region Initialize filter menu
 
-            RestAlarmsListViewModel.RestAlarmChanged += OnRestAlarmChanged;
+            //RestAlarmsListViewModel.RestAlarmChanged += OnRestAlarmChanged;
+            RestAlarmsRepo.RestAlarmChanged += OnRestAlarmChanged;
             mfltStationItems = new ObservableCollection<Item>();
             mfltPriorityItems = new ObservableCollection<Item>();
             mfltGroupDescItems = new ObservableCollection<Item>();
@@ -167,7 +168,7 @@ namespace Alarm4Rest_Viewer.CustControl
 
         private void OnRestAlarmChanged(object source, RestEventArgs arg)
         {
-            if (arg.message == "hasLoaded")
+            if (arg.message == "Start Success")
             {
 
                 // Adding Station ComboBox items

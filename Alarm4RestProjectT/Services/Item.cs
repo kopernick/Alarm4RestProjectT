@@ -29,6 +29,13 @@
             FieldName = fieldName;
         }
 
+        public Item(bool isChecked, string value, string fieldName)
+        {
+            IsChecked = isChecked;
+            Value = value;
+            FieldName = fieldName;
+        }
+
         public override string ToString()
         {
             return Value;

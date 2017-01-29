@@ -13,7 +13,7 @@
         xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" 
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Smart Infomation for Restoration " Height="750" Width="1024">
+        Title="Smart Infomation for Restoration " Height="750" Width="1280">
 
     
 

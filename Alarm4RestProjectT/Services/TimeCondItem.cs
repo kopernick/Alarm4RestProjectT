@@ -1,7 +1,7 @@
 ﻿/* ********************************************
- * TimeCondItem |TimeType|Count|
+ * TimeCondItem |TimeType|Count|IsCheched|
  * 
- * Sample Item : |"Day"|2|, |Month|3|, |Day|5|, etc
+ * Sample Item : |"Day"|2|True|, |Month|3|False|, |Day|5|False|, etc
  * 
  * ********************************************/
 using System;
@@ -10,12 +10,24 @@ using System.Windows.Data;
 
 namespace Alarm4Rest_Viewer.Services
 {
-    public class TimeCondItem
+    public class TimeCondItem : PropertyChangeEventBase
     {
         public string TimeType { get; private set; }
         public int Value { get; private set; }
+
+        private bool _isChecked;
+        public bool IsChecked
+        {
+            get { return _isChecked; }
+            set { Set(ref _isChecked, value); }
+        }
         public TimeCondItem()
         {
+        }
+        public  TimeCondItem Clone()
+        {
+            TimeCondItem obj = this;
+            return obj;
         }
         public TimeCondItem(int value)
         {
@@ -27,10 +39,15 @@ namespace Alarm4Rest_Viewer.Services
             Value = value;
             TimeType = timeType;
         }
-
+        public TimeCondItem(string timeType, int value, bool isChecked)
+        {
+            Value = value;
+            TimeType = timeType;
+            Set(ref _isChecked, isChecked);
+        }
         public override string ToString()
         {
-            return TimeType;
+            return Value+" "+TimeType;
         }
     }
     public class MultiValueConverter : IMultiValueConverter

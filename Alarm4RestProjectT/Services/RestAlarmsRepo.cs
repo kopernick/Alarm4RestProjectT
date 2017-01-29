@@ -49,6 +49,7 @@ namespace Alarm4Rest_Viewer.Services
 
         public static TimeCondItem qDateTimeCondItem { get; set; }
         public static DateTime qDateTimeCondEnd { get; set; }
+        public static DateTime qDateTimeCondStart { get; set; }
 
         public static TimeCondItem fDateTimeCondItem { get; set; }
         public static DateTime fDateTimeCondEnd { get; set; }
@@ -84,8 +85,11 @@ namespace Alarm4Rest_Viewer.Services
             CustAlarmListDump = new List<RestorationAlarmList>();
             QueryAlarmListDump = new List<RestorationAlarmList>();
 
-            qDateTimeCondItem = new TimeCondItem("Week", 1);
-            qDateTimeCondEnd = DateTime.Now;
+            // MainRibbonTapVM เป็นผู้ Initailize
+
+            //qDateTimeCondItem = new TimeCondItem();
+            //qDateTimeCondEnd = DateTime.Now;
+            //qDateTimeCondStart = qDateTimeCondEnd.AddDays((-1) * 5);
 
             fDateTimeCondItem = new TimeCondItem("Week", 1);
             fDateTimeCondEnd = DateTime.Now;
@@ -109,12 +113,11 @@ namespace Alarm4Rest_Viewer.Services
         {
             RestEventArgs arg = new RestEventArgs();
 
-           // try
+           try
             {
                 RestAlarmListDump = await GetRestAlarmsAsync();
                 LastAlarmRecIndex = RestAlarmListDump[0].PkAlarmListID; //Set Last PkAlarmList initializing
                 LastMaxAlarmRecIndex = LastAlarmRecIndex;
-                qDateTimeCondEnd = DateTime.Now;
                 QueryAlarmListDump = await TGetQueryAlarmsAsync();
                 //QueryAlarmListDump = await GetQueryAlarmsAsync();
                 LastQueryAlarmRecIndex = QueryAlarmListDump[0].PkAlarmListID;
@@ -129,13 +132,13 @@ namespace Alarm4Rest_Viewer.Services
                 onRestAlarmChanged(arg);//Raise Event
                 Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
             }
-            //catch
-            //{
-            //    //Send Message to Subscriber
-            //    arg.message = "Start Fail";
-            //    onRestAlarmChanged(arg);//Raise Event
-            //    Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
-            //}
+            catch
+            {
+                //Send Message to Subscriber
+                arg.message = "Start Fail";
+                onRestAlarmChanged(arg);//Raise Event
+                Console.WriteLine(DateTime.Now.ToString() + " : Raise Event " + arg.message);
+            }
         }
 
         private static void InitializeComponent()
@@ -575,34 +578,48 @@ namespace Alarm4Rest_Viewer.Services
         }
 
         private static DateTime GetQueryTimeCond()
-                { 
-                //exclusiveEnd = DateTime.ParseExact(exclusiveEnd.ToString(), "dd/MM/yyyy HH:mm:ss.000", System.Globalization.CultureInfo.InvariantCulture);
-                DateTime inclusiveStart = new DateTime();
+                {
+            //exclusiveEnd = DateTime.ParseExact(exclusiveEnd.ToString(), "dd/MM/yyyy HH:mm:ss.000", System.Globalization.CultureInfo.InvariantCulture);
+            
+            DateTime inclusiveStart = new DateTime();
                 TimeSpan ts = new TimeSpan(0, 0, 0);
                     switch (qDateTimeCondItem.TimeType)
                     {
                         case "Day":
+                            qDateTimeCondEnd = DateTime.Now;
                             inclusiveStart = qDateTimeCondEnd.AddDays((-1) * (qDateTimeCondItem.Value-1));
                             inclusiveStart = inclusiveStart.Date + ts; // Reset time to HH: mm: ss.000" -> 0000:00.000
                             break;
 
                         case "Week":
+                            qDateTimeCondEnd = DateTime.Now;
                             int diff = qDateTimeCondEnd.DayOfWeek - DayOfWeek.Monday;
                             if (diff< 0)
                             {
                                 diff += 7;
                             }
-                            inclusiveStart= qDateTimeCondEnd.AddDays(-1 * diff).Date;
+                            inclusiveStart= qDateTimeCondEnd.AddDays((-1 * diff)+((-7) * (qDateTimeCondItem.Value - 1)));
                             inclusiveStart = inclusiveStart.Date + ts; // Reset time to HH: mm: ss.000" -> 0000:00.000
                             break;
 
                         case "Month":
+                            qDateTimeCondEnd = DateTime.Now;
                             inclusiveStart = qDateTimeCondEnd.AddMonths((-1) * (qDateTimeCondItem.Value - 1));
                             inclusiveStart = new DateTime(inclusiveStart.Year, inclusiveStart.Month, 1);
                             break;
 
-                        default: //All one year
-                            inclusiveStart = qDateTimeCondEnd.AddYears(-1);
+                        case "All":
+                            qDateTimeCondEnd = DateTime.Now;
+                            inclusiveStart = DateTime.Now.AddYears((-1)*2);
+                            inclusiveStart = new DateTime(inclusiveStart.Year, 1, 1);
+                            break;
+
+                        case "User":
+                            inclusiveStart = qDateTimeCondStart;
+                            //qDateTimeCondEnd = qDateTimeCondEnd.AddDays(1);
+                            break;
+                default: //All two year
+                            inclusiveStart = qDateTimeCondEnd.AddYears(-2);
                             inclusiveStart = new DateTime(inclusiveStart.Year, 1, 1);
                             break;
         

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Alarm4Rest.Data;
 using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace Alarm4Rest_Viewer.CustControl
 {
@@ -17,17 +18,77 @@ namespace Alarm4Rest_Viewer.CustControl
         public static List<string> fltSelectedPriority = new List<string>();
 
         public Expression<Func<RestorationAlarmList, bool>> queryParseDeleg;
-
         public static List<Item> qFilters = new List<Item>();
 
-        private HashSet<Item> mQCheckedItems;
+        private HashSet<Item> mQCheckedItems;        
+        
+        //-----------------------------------SortFiel Items----------------------------------//
+        private ObservableCollection<Item> mfieldItems1;
+        public IEnumerable<Item> fieldItems1 { get { return mfieldItems1; } }
 
+        private ObservableCollection<Item> mfieldItems2;
+        public IEnumerable<Item> fieldItems2 { get { return mfieldItems2; } }
+
+        private ObservableCollection<Item> mfieldItems3;
+        public IEnumerable<Item> fieldItems3 { get { return mfieldItems3; } }
+
+
+        //-----------------------------------Category----------------------------------//
         private Item _CatDesc87X;
         private Item _CatDesc56N;
+        private TimeCondItem _Today;
+        private TimeCondItem _Last2Days;
+        private TimeCondItem _ThisWeek;
+        private TimeCondItem _Last2Weeks;
+        private TimeCondItem _ThisMonth;
+        private TimeCondItem _EveryDays;
+        private TimeCondItem _UserSel;
 
         public Item CatDesc87X { get { return _CatDesc87X; } }
         public Item CatDesc56N { get { return _CatDesc56N; } }
 
+
+        //---------------------------------Time Filtering-----------------------------------//
+        public TimeCondItem Today { get { return _Today; } }
+        public TimeCondItem Last2Days { get { return _Last2Days; } }
+        public TimeCondItem ThisWeek { get { return _ThisWeek; } }
+        public TimeCondItem Last2Weeks { get { return _Last2Weeks; } }
+        public TimeCondItem ThisMonth { get { return _ThisMonth; } }
+        public TimeCondItem EveryDays { get { return _EveryDays; } }
+        public TimeCondItem UserSel { get { return _UserSel; } }
+
+        private DateTime _exclusiveEnd = new DateTime();
+        private DateTime _exclusiveStart = new DateTime();
+
+        public DateTime ExclusiveEnd
+        {
+            get
+            {
+                return _exclusiveEnd;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    RestAlarmsRepo.qDateTimeCondEnd = value.AddDays(1);
+                    _exclusiveEnd = value;
+                }
+            }
+        }
+
+        public DateTime ExclusiveStart
+        {
+            get
+            {
+
+                return _exclusiveStart;
+            }
+            set
+            {
+                RestAlarmsRepo.qDateTimeCondStart = value;
+                _exclusiveStart = value;
+            }
+        }
         #endregion
 
         //------------------------------Class Construction--------------------------------------//
@@ -35,29 +96,69 @@ namespace Alarm4Rest_Viewer.CustControl
         {
             //To Do ต้องประการที่เดียว
             InitSortOrderTemplate();
+            InitCategoryFiltering();
+            InitTimeFiltering();
+            InitSortOrderField();
+
+            RestAlarmsRepo.qDateTimeCondItem = _Last2Weeks;
+
             RestAlarmsRepo.orderParseDeleg = sortOrderList.First(i => i.ID == 1);
 
-            isChecked87X = true;
-            isChecked56N = false;
-
-            _CatDesc87X = new Item("Group87X", "87X", "GroupDescription");
-            if (isChecked87X) qFilters.Add(_CatDesc87X);
-
-            _CatDesc56N = new Item("Group56N", "56N", "GroupDescription");
-            if (isChecked56N) qFilters.Add(_CatDesc56N);
-
             RunUserQueryCmd = new RelayCommand(o => onUserQuery(), o => canUserQuery());
-
-            //RunStdSortQuery1 = new RelayCommand(o => onRunStdSortQuery1(), o => canRunStdSortQuery());
         }
 
-    //------------------------------Helper Function--------------------------------------//
+        //------------------------------Helper Function--------------------------------------//
+        private void InitSortOrderField()
+        {
+            mfieldItems1 = new ObservableCollection<Item>();
+            mfieldItems1.Add(new Item("first", "DateTime"));
+            mfieldItems1.Add(new Item("first", "StationName"));
+            mfieldItems1.Add(new Item("first", "Priority"));
+
+            mfieldItems2 = new ObservableCollection<Item>();
+            mfieldItems2.Add(new Item("second", "DateTime"));
+            mfieldItems2.Add(new Item("second", "StationName"));
+            mfieldItems2.Add(new Item("second", "Priority"));
+
+            mfieldItems3 = new ObservableCollection<Item>();
+            mfieldItems3.Add(new Item("third", "DateTime"));
+            mfieldItems3.Add(new Item("third", "StationName"));
+            mfieldItems3.Add(new Item("third", "Priority"));
+
+        }
         private void InitSortOrderTemplate()
         {
             sortOrderList.Add(new SortItem(1, "StationName", "DateTime", "Priority"));
             sortOrderList.Add(new SortItem(2, "StationName", "Priority", "DateTime"));
             sortOrderList.Add(new SortItem(3, "DateTime", "StationName", "Priority"));
         }
+
+        private void InitCategoryFiltering()
+        {
+            //isChecked87X = true;
+
+            _CatDesc87X = new Item("Group87X", "87X", "GroupDescription");
+            _CatDesc87X.IsChecked = true;
+            if (_CatDesc87X.IsChecked) qFilters.Add(_CatDesc87X);
+
+            _CatDesc56N = new Item("Group56N", "56N", "GroupDescription");
+            _CatDesc56N.IsChecked = false;
+            if (_CatDesc56N.IsChecked) qFilters.Add(_CatDesc56N);
+        }
+
+        private void InitTimeFiltering()
+        {
+            _Today = new TimeCondItem("Day", 1, false);
+            _Last2Days = new TimeCondItem("Day", 2, false);
+            _ThisWeek = new TimeCondItem("Week", 1, false);
+            _Last2Weeks = new TimeCondItem("Week", 2, true); //Default
+            _ThisMonth = new TimeCondItem("Month", 1, false);
+            _EveryDays = new TimeCondItem("All", 1, false);
+            _UserSel = new TimeCondItem("User", 1, false);
+
+            _exclusiveEnd = DateTime.Now;
+            _exclusiveStart = _exclusiveEnd.AddDays((-1) * 5);
+    }
 
 
         #region Sort Function
@@ -82,11 +183,9 @@ namespace Alarm4Rest_Viewer.CustControl
 
             int sortTemplate = Convert.ToInt32(txtSortTemplate);
             RestAlarmsRepo.orderParseDeleg = sortOrderList.First(i => i.ID == sortTemplate);
-            //orderParseDeleg = SortExpression.BuildOrderBys<RestorationAlarmList>(sortOrder);
 
             RestAlarmsRepo.qDateTimeCondEnd = DateTime.Now;
 
-            //await RestAlarmsRepo.GetQueryAlarmAct();
             await RestAlarmsRepo.TGetQueryAlarmAct();
 
             Console.WriteLine(RestAlarmsRepo.orderParseDeleg.ID);
@@ -100,21 +199,50 @@ namespace Alarm4Rest_Viewer.CustControl
             {
                 if (_RunQueryTimeCondCmd == null)
                 {
-                    _RunQueryTimeCondCmd = new RelayCommand(p => RunQueryTimeCond(p), p => true);
+                    _RunQueryTimeCondCmd = new RelayCommand(p => RunQueryTimeCond(), p => true);
                 }
                 return _RunQueryTimeCondCmd;
             }
         }
 
         // WPF Call with 2 parameter
-        private async void RunQueryTimeCond(object value)
+        private void RunQueryTimeCond()
         {
+            TimeCondItem Dummy = new TimeCondItem();
 
-            RestAlarmsRepo.qDateTimeCondItem = (TimeCondItem)value;
-            RestAlarmsRepo.qDateTimeCondEnd = DateTime.Now;
-            await RestAlarmsRepo.TGetQueryAlarmAct();
+            if (_Today.IsChecked)
+            {
+                Dummy = _Today.Clone();
+            }
+            else if (_Last2Days.IsChecked)
+            {
+                Dummy = _Last2Days.Clone();
+            }
+            else if(_ThisWeek.IsChecked)
+            {
+                Dummy = _ThisWeek.Clone();
+            }
+            else if (_Last2Weeks.IsChecked)
+            {
+                Dummy = _Last2Weeks.Clone();
+            }
+            else if (_ThisMonth.IsChecked)
+            {
+                Dummy = _ThisMonth.Clone();
+            }
+            else if (_EveryDays.IsChecked)
+            {
+                Dummy = _EveryDays.Clone();
+            }
+            else if(_UserSel.IsChecked)
+            {
+                Dummy = _UserSel.Clone();
+            }
 
-            //Console.WriteLine(filterParseDeleg.Body);
+            RestAlarmsRepo.qDateTimeCondItem = Dummy;
+            //RestAlarmsRepo.qDateTimeCondEnd = DateTime.Now;
+            //await RestAlarmsRepo.TGetQueryAlarmAct();
+
         }
 
         #endregion Sort Function
@@ -129,22 +257,19 @@ namespace Alarm4Rest_Viewer.CustControl
         }
         public async void onUserQuery()
         {
-            //Implement for each query Group by PropertyName : StationName , Priority or Desc.
-            //ExpressGen();
+
             Console.WriteLine("Run Standard Query cmd");
-            //CustAlarmViewModel = _custAlarmViewModel;
 
             IEnumerable<IGrouping<string, Item>> groupFields =
                     from item in qFilters
                     group item by item.FieldName;
 
-            queryParseDeleg = FilterExpressionBuilder.GetExpression<RestorationAlarmList>(groupFields);
+            // Preparing for New Database
+            //queryParseDeleg = FilterExpressionBuilder.GetExpression<RestorationAlarmList>(groupFields);
 
             RestAlarmsRepo.filterParseDeleg = queryParseDeleg;
-            RestAlarmsRepo.qDateTimeCondEnd = DateTime.Now;
+            //RestAlarmsRepo.qDateTimeCondEnd = DateTime.Now;
             await RestAlarmsRepo.TGetQueryAlarmAct();
-
-            Console.WriteLine(queryParseDeleg.Body);
 
         }
 
@@ -166,11 +291,11 @@ namespace Alarm4Rest_Viewer.CustControl
 
             if ((string)Category == _CatDesc87X.Name)
             {
-                AddRemoveProcess(ref _CatDesc87X, ref isChecked87X);
+                AddRemoveProcess(ref _CatDesc87X);
             }
             if ((string)Category == _CatDesc56N.Name)
             {
-                AddRemoveProcess(ref _CatDesc56N, ref isChecked56N);
+                AddRemoveProcess(ref _CatDesc56N);
             }
             else
             {
@@ -178,14 +303,14 @@ namespace Alarm4Rest_Viewer.CustControl
             }
 
         }
-        private void AddRemoveProcess(ref Item _CatDescX, ref bool isChecked)
+        private void AddRemoveProcess(ref Item _CatDescX)
         {
             Item CatTemp = _CatDescX;
 
             var qf = qFilters
                     .Where(i => i.Value == CatTemp.Value && i.FieldName == CatTemp.FieldName).ToList();
 
-            if (isChecked)
+            if (CatTemp.IsChecked)
             {
                 if (qf.Count == 0) qFilters.Add(CatTemp);
             }
@@ -199,29 +324,19 @@ namespace Alarm4Rest_Viewer.CustControl
             }
         }
 
-        /* WPF call method with 1 parameter*/
-        private bool isChecked87X;
-        public bool IsChecked87X
-        {
-            get { return isChecked87X; }
-            set
-            {
-                isChecked87X = value;
-                OnPropertyChanged("IsChecked87X");
-            }
-        }
+        ///* WPF call method with 1 parameter*/
+        //private bool isChecked87X;
+        //public bool IsChecked87X
+        //{
+        //    get { return isChecked87X; }
+        //    set
+        //    {
+        //        isChecked87X = value;
+        //       // OnPropertyChanged("IsChecked87X");
+        //    }
+        //}
 
-        /* WPF call method with 1 parameter*/
-        private bool isChecked56N;
-        public bool IsChecked56N
-        {
-            get { return isChecked56N; }
-            set
-            {
-                isChecked56N = value;
-                OnPropertyChanged("IsChecked56N");
-            }
-        }
+
         #endregion User Query Function
 
     }

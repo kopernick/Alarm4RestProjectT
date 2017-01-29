@@ -151,7 +151,7 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
         //New alarm Process
         private void OnRestAlarmRepoChanged(object source, RestEventArgs arg)
         {
-            RestEventArgs _arg = new RestEventArgs();
+            //RestEventArgs _arg = new RestEventArgs();
 
             switch (arg.message)
             {
@@ -163,12 +163,6 @@ namespace Alarm4Rest_Viewer.RestorationAlarmLists
                     pageCount = RestAlarmsRepo.RestPageCount;
                     restAlarmCount = RestAlarmsRepo.restAlarmCount;
 
-                    //Send to MainWindowVM
-                    _arg.message = "hasLoaded";
-                    onRestAlarmChanged(_arg);
-
-                    //Send to CustomAlarmListView
-                    //onRestAlarmChanged(arg);
                     NotificationMessage = "Database has been Loaded : " + DateTime.Now.ToLocalTime();
 
                     break;

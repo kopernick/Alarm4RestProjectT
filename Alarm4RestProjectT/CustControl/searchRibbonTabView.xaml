@@ -149,7 +149,7 @@
                 </Grid.RowDefinitions>
 
                 <Button  Content="Today" Grid.Row="0" Grid.Column="0" MinWidth="72" Width="Auto" Margin="5,2,5,2"
-                                  Command="{Binding RunFilterTimeCondCmd}">
+                                  Command="{Binding RunSearchTimeCondCmd}">
                     <Button.Resources>
                         <sys:String x:Key="fixedTimeType">Day</sys:String>
                         <sys:String x:Key="fixedValue">1</sys:String>
@@ -162,7 +162,7 @@
                     </Button.CommandParameter>
                 </Button>
                 <Button  Content="Last 2 Days" Grid.Row="0" Grid.Column="1" MinWidth="72" Width="Auto" Margin="5,2,5,2"
-                                  Command="{Binding RunFilterTimeCondCmd}">
+                                  Command="{Binding RunSearchTimeCondCmd}">
                     <Button.Resources>
                         <sys:String x:Key="fixedTimeType">Day</sys:String>
                         <sys:String x:Key="fixedValue">2</sys:String>
@@ -175,7 +175,7 @@
                     </Button.CommandParameter>
                 </Button>
                 <Button  Content="This Week" Grid.Row="1" Grid.Column="0" MinWidth="72" Width="Auto" Margin="5,2,5,2"
-                                  Command="{Binding RunFilterTimeCondCmd}">
+                                  Command="{Binding RunSearchTimeCondCmd}">
                     <Button.Resources>
                         <sys:String x:Key="fixedTimeType">Week</sys:String>
                         <sys:String x:Key="fixedValue">1</sys:String>
@@ -188,7 +188,7 @@
                     </Button.CommandParameter>
                 </Button>
                 <Button  Content="This Month" Grid.Row="1" Grid.Column="1" MinWidth="72" Width="Auto" Margin="5,2,5,2"
-                                  Command="{Binding RunFilterTimeCondCmd}">
+                                  Command="{Binding RunSearchTimeCondCmd}">
                     <Button.Resources>
                         <sys:String x:Key="fixedTimeType">Month</sys:String>
                         <sys:String x:Key="fixedValue">1</sys:String>

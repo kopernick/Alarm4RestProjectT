@@ -10,6 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Alarm4Rest_Viewer.CustControl
 {
@@ -123,7 +124,8 @@ namespace Alarm4Rest_Viewer.CustControl
         {
             #region Initialize Search menu
 
-            RestAlarmsListViewModel.RestAlarmChanged += OnRestAlarmChanged;
+            //RestAlarmsListViewModel.RestAlarmChanged += OnRestAlarmChanged;
+            RestAlarmsRepo.RestAlarmChanged += OnRestAlarmChanged;
 
             mstationItems = new ObservableCollection<Item>();
             mfieldItems = new ObservableCollection<Item>();
@@ -143,10 +145,33 @@ namespace Alarm4Rest_Viewer.CustControl
 
         #region Search Helper function
 
+        /* WPF call method with 2 parameter*/
+        RelayCommand _RunSearchTimeCondCmd;
+        public ICommand RunSearchTimeCondCmd
+        {
+            get
+            {
+                if (_RunSearchTimeCondCmd == null)
+                {
+                    _RunSearchTimeCondCmd = new RelayCommand(p => RunSearchTimeCond(p),
+                        p => true);
+                }
+                return _RunSearchTimeCondCmd;
+            }
+        }
+
+        private async void RunSearchTimeCond(object value)
+        {
+            RestAlarmsRepo.fDateTimeCondItem = (TimeCondItem)value;
+            RestAlarmsRepo.fDateTimeCondEnd = DateTime.Now;
+            await RestAlarmsRepo.TGetCustAlarmAct();
+
+        }
+
         //Auto Get Station Name when DB has been loaded.
         private void OnRestAlarmChanged(object source, RestEventArgs arg)
         {
-            if (arg.message == "hasLoaded")
+            if (arg.message == "Start Success")
             {
 
                 // Adding Station ComboBox items

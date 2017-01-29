@@ -13,7 +13,17 @@
 
         <RibbonTab.Resources>
             <Services:MultiValueConverter x:Key="MultiValueConverter" />
-        </RibbonTab.Resources>
+
+            <BitmapImage x:Key="MainImage" UriSource="/Alarm4Rest_Viewer;component/images/main.png" />
+            <BitmapImage x:Key="FilterImage" UriSource="/Alarm4Rest_Viewer;component/images/filter.png" />
+            <BitmapImage x:Key="SearchImage" UriSource="/Alarm4Rest_Viewer;component/images/search.png" />
+            <BitmapImage x:Key="firstPageImage" UriSource = "/Alarm4Rest_Viewer;component/images/firstPage.png" />
+            <BitmapImage x:Key="prePageImage" UriSource = "/Alarm4Rest_Viewer;component/images/prePage.png" />
+            <BitmapImage x:Key="nextPageImage" UriSource = "/Alarm4Rest_Viewer;component/images/nextPage.png" />
+            <BitmapImage x:Key="lastPageImage" UriSource = "/Alarm4Rest_Viewer;component/images/lastPage.png" />
+
+
+    </RibbonTab.Resources>
     
     <RibbonTab.DataContext>
         <local:mainRibbonTapViewModel/>
@@ -39,7 +49,7 @@
 
                     <CheckBox x:Name="CheckBox87X" Grid.Row="0" Grid.Column="0" MinWidth="65" Margin="1" 
                               Content="{Binding CatDesc87X.Name}"
-                              IsChecked="{Binding IsChecked87X,Mode=TwoWay}"
+                              IsChecked="{Binding CatDesc87X.IsChecked,Mode=TwoWay}"
                               Command="{Binding CheckCommand}"
                               CommandParameter="{Binding CatDesc87X.Name}">
 
@@ -47,7 +57,7 @@
 
                     <CheckBox x:Name="CheckBox56N" Grid.Row="0" Grid.Column="1" MinWidth="65" Margin="1" 
                               Content="{Binding CatDesc56N.Name}"
-                              IsChecked="{Binding IsChecked56N,Mode=TwoWay}"
+                              IsChecked="{Binding CatDesc56N.IsChecked,Mode=TwoWay}"
                               Command="{Binding CheckCommand}"
                               CommandParameter="{Binding CatDesc56N.Name}">
                     </CheckBox>
@@ -62,13 +72,8 @@
 
     </RibbonGroup>
 
-    <!-- Filter cmd group-->
-    <RibbonGroup x:Name="FilterCommand" Header="Command">
-        <Button Content="GO" Width="40" Height="40" VerticalAlignment="Center" HorizontalAlignment="Center" 
-                    Command="{Binding RunUserQueryCmd}" />
-    </RibbonGroup>
-
     <!-- Standard Query group-->
+    <!--
         <RibbonGroup x:Name="SortQuery" Header="Sort Order">
             <Grid>
                 <Grid.ColumnDefinitions >
@@ -97,8 +102,62 @@
             </Grid>
 
         </RibbonGroup>
+    -->
 
-        <RibbonGroup x:Name="qTimeCondition" Header="Filter by Time" Grid.Column="1">
+    <RibbonGroup x:Name="SortOrder" Header="Sort Order Setting">
+        <Grid>
+            <Grid.ColumnDefinitions >
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+
+            <TextBlock Text="First Order" Grid.Row="0" Grid.Column="0"/>
+
+            <ComboBox Grid.Row="1" Grid.Column="0" MinWidth="80" Width="Auto"
+                                IsEditable="True"
+                                IsReadOnly="True"
+                                ItemsSource="{Binding fieldItems1}"
+                                DisplayMemberPath="FieldName"
+                                SelectedValuePath="FieldName"
+                                
+                                Margin="2">
+        </ComboBox>
+
+            <TextBlock Text="Second Order" Grid.Row="0" Grid.Column="1"/>
+
+            <ComboBox Grid.Row="1" Grid.Column="1" MinWidth="80" Width="Auto"
+                                IsEditable="True"
+                                IsReadOnly="True"
+                                ItemsSource="{Binding fieldItems1}"
+                                DisplayMemberPath="FieldName"
+                                SelectedValuePath="FieldName"
+                                
+                                Margin="2">
+        </ComboBox>
+
+            <TextBlock Text="Third Order" Grid.Row="0" Grid.Column="2"/>
+
+            <ComboBox Grid.Row="1" Grid.Column="2" MinWidth="80" Width="Auto"
+                                IsEditable="True"
+                                IsReadOnly="True"
+                                ItemsSource="{Binding fieldItems1}"
+                                DisplayMemberPath="FieldName"
+                                SelectedValuePath="FieldName"
+                                
+                                Margin="2">
+        </ComboBox>
+        </Grid>
+    </RibbonGroup>
+    
+    <RibbonGroup x:Name="TimeScope" Header="Time Filtering" >
+        <StackPanel>
             <Grid DockPanel.Dock ="Top">
                 <Grid.ColumnDefinitions >
                     <ColumnDefinition Width="Auto"/>
@@ -109,60 +168,120 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
 
-                <Button  Content="Today" Grid.Row="0" Grid.Column="0" MinWidth="72" Width="Auto" Margin="5,2,5,2"
-                                  Command="{Binding RunQueryTimeCondCmd}">
-                    <Button.Resources>
-                        <sys:String x:Key="fixedTimeType">Day</sys:String>
-                        <sys:String x:Key="fixedValue">1</sys:String>
-                    </Button.Resources>
-                    <Button.CommandParameter>
-                        <MultiBinding Converter="{StaticResource MultiValueConverter}">
-                            <Binding Source="{StaticResource fixedTimeType}"/>
-                            <Binding Source="{StaticResource fixedValue}"/>
-                        </MultiBinding>
-                    </Button.CommandParameter>
-                </Button>
-                <Button  Content="Last 2 Days" Grid.Row="0" Grid.Column="1" MinWidth="72" Width="Auto" Margin="5,2,5,2"
-                                  Command="{Binding RunQueryTimeCondCmd}">
-                    <Button.Resources>
-                        <sys:String x:Key="fixedTimeType">Day</sys:String>
-                        <sys:String x:Key="fixedValue">2</sys:String>
-                    </Button.Resources>
-                    <Button.CommandParameter>
-                        <MultiBinding Converter="{StaticResource MultiValueConverter}">
-                            <Binding Source="{StaticResource fixedTimeType}"/>
-                            <Binding Source="{StaticResource fixedValue}"/>
-                        </MultiBinding>
-                    </Button.CommandParameter>
-                </Button>
-                <Button  Content="This Week" Grid.Row="1" Grid.Column="0" MinWidth="72" Width="Auto" Margin="5,2,5,2"
-                                  Command="{Binding RunQueryTimeCondCmd}">
-                    <Button.Resources>
-                        <sys:String x:Key="fixedTimeType">Week</sys:String>
-                        <sys:String x:Key="fixedValue">1</sys:String>
-                    </Button.Resources>
-                    <Button.CommandParameter>
-                        <MultiBinding Converter="{StaticResource MultiValueConverter}">
-                            <Binding Source="{StaticResource fixedTimeType}"/>
-                            <Binding Source="{StaticResource fixedValue}"/>
-                        </MultiBinding>
-                    </Button.CommandParameter>
-                </Button>
-                <Button  Content="This Month" Grid.Row="1" Grid.Column="1" MinWidth="72" Width="Auto" Margin="5,2,5,2"
-                                  Command="{Binding RunQueryTimeCondCmd}">
-                    <Button.Resources>
-                        <sys:String x:Key="fixedTimeType">Month</sys:String>
-                        <sys:String x:Key="fixedValue">1</sys:String>
-                    </Button.Resources>
-                    <Button.CommandParameter>
-                        <MultiBinding Converter="{StaticResource MultiValueConverter}">
-                            <Binding Source="{StaticResource fixedTimeType}"/>
-                            <Binding Source="{StaticResource fixedValue}"/>
-                        </MultiBinding>
-                    </Button.CommandParameter>
-                </Button>
+                <GroupBox x:Name="GstdTime" Header="Stadard" Grid.Row="0" Grid.Column="0" Margin="5,1,5,1">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions >
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
 
+                            <RadioButton GroupName="stdTime" Content="Today" Grid.Row="0" Grid.Column="0" Margin="5,1,5,1"
+                                    Command="{Binding RunQueryTimeCondCmd}"
+                                    IsChecked="{Binding Today.IsChecked, Mode=TwoWay}">
+                                
+                                <!--
+                                <RadioButton.Resources>
+                                    <sys:String x:Key="fixedTimeType">Day</sys:String>
+                                    <sys:String x:Key="fixedValue">1</sys:String>
+                                </RadioButton.Resources>
+                                <RadioButton.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource MultiValueConverter}">
+                                        <Binding Source="{StaticResource fixedTimeType}"/>
+                                        <Binding Source="{StaticResource fixedValue}"/>
+                                    </MultiBinding>
+                                </RadioButton.CommandParameter>
+                                -->
+                                
+                            </RadioButton>
+
+                            <RadioButton GroupName="stdTime" Content="Last 2 Days" Grid.Row="1" Grid.Column="0" Margin="5,1,5,1"
+                                         Command="{Binding RunQueryTimeCondCmd}"
+                                         IsChecked="{Binding Last2Days.IsChecked, Mode=TwoWay}">
+                                
+                            </RadioButton>
+
+                            <RadioButton GroupName="stdTime" Content="This Week" Grid.Row="0" Grid.Column="1" Margin="5,1,5,1"
+                                        Command="{Binding RunQueryTimeCondCmd}"
+                                         IsChecked="{Binding ThisWeek.IsChecked, Mode=TwoWay}">
+                                
+                            </RadioButton>
+
+                            <RadioButton GroupName="stdTime" Content="Last 2 Weeks" Grid.Row="1" Grid.Column="1" Margin="5,1,5,1"
+                                Command="{Binding RunQueryTimeCondCmd}"
+                                         IsChecked="{Binding Last2Weeks.IsChecked, Mode=TwoWay}">
+                                
+                            </RadioButton>
+
+                            <RadioButton GroupName="stdTime" Content="This Month" Grid.Row="0" Grid.Column="2" Margin="5,1,5,1"
+                                Command="{Binding RunQueryTimeCondCmd}"
+                                         IsChecked="{Binding ThisMonth.IsChecked, Mode=TwoWay}">
+                                
+                            </RadioButton>
+
+                            <RadioButton GroupName="stdTime" Content="All" Grid.Row="1" Grid.Column="2" Margin="5,1,5,1"
+                                Command="{Binding RunQueryTimeCondCmd}"
+                                         IsChecked="{Binding EveryDays.IsChecke, Mode=TwoWay}">
+                                
+                            </RadioButton>
+                        </Grid>
+
+                    </StackPanel>
+                </GroupBox>
+
+
+                <GroupBox x:Name="GCustTime" Header="User Select" Grid.Row="0" Grid.Column="1" Margin="5,1,5,1">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions >
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+
+                            <RadioButton GroupName="stdTime" x:Name="userSelected" Content="กำหนดเอง" Grid.Row="1" Grid.Column="0" Margin="5" 
+                                         VerticalAlignment="Center"
+                                         Command="{Binding RunQueryTimeCondCmd}"
+                                         IsChecked="{Binding UserSel.IsChecked, Mode=TwoWay}">
+
+                            </RadioButton>
+                            <TextBlock Text="วันเริ่มต้น:" Grid.Row="0" Grid.Column="1" Margin="5,1,5,1"/>
+                            <DatePicker x:Name="DateStart" MinWidth="80" Grid.Row="1" Grid.Column="1" Margin="5,1,5,1"
+                                        IsEnabled="{Binding UserSel.IsChecked}"
+                                        Text="{Binding ExclusiveStart, Mode=TwoWay}">
+
+                            </DatePicker>
+
+                            <TextBlock Text="วันสิ้นสุด:" Grid.Row="0" Grid.Column="2" Margin="5,1,5,1"/>
+
+                            <DatePicker x:Name="DateEnd" MinWidth="80" Grid.Row="1" Grid.Column="2" Margin="5,1,5,1"
+                                        IsEnabled="{Binding UserSel.IsChecked}"
+                                        Text="{Binding ExclusiveEnd, Mode=TwoWay}">
+
+                            </DatePicker>
+                        </Grid>
+                    </StackPanel>
+
+                </GroupBox>
             </Grid>
-        </RibbonGroup>
+        </StackPanel>
 
-    </RibbonTab>
+    </RibbonGroup>
+    <!--  cmd group-->
+
+    <RibbonGroup x:Name="QueryCommand" Header="Command">
+        <RibbonButton LargeImageSource="{StaticResource SearchImage}" Label="Apply" KeyTip="S" 
+                                  Command="{Binding RunUserQueryCmd}" />
+    </RibbonGroup>
+
+</RibbonTab>

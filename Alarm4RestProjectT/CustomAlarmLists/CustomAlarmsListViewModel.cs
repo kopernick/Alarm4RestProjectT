@@ -178,9 +178,6 @@ namespace Alarm4Rest_Viewer.CustomAlarmLists
                     custPageCount = RestAlarmsRepo.custPageCount;
                     custAlarmCount = RestAlarmsRepo.custAlarmCount;
 
-                    //arg.message = "hasLoaded";
-                    //onRestAlarmChanged(arg);
-
                     NotificationMessage = "Database has been Loaded : " + DateTime.Now.ToLocalTime();
 
                     break;

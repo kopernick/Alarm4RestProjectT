@@ -61,7 +61,8 @@ namespace Alarm4Rest_Viewer
             //EnableFilterCmd = new RelayCommand(o => onFilterAlarms(), o => canFilter());
             EnableCustView = new RelayCommand(o => onCustView(), o => canViewMain());
 
-            RestAlarmsListViewModel.RestAlarmChanged += OnRestAlarmChanged;
+            //RestAlarmsListViewModel.RestAlarmChanged += OnRestAlarmChanged;
+            RestAlarmsRepo.RestAlarmChanged += OnRestAlarmChanged;
 
             pageSize = RestAlarmsRepo.pageSize;
             DateTimeCond = new TimeCondItem("Week", 1);
@@ -87,7 +88,7 @@ namespace Alarm4Rest_Viewer
         private void OnRestAlarmChanged(object source, RestEventArgs arg)
         {
 
-            if (arg.message == "hasLoaded")
+            if (arg.message == "Start Success")
             {
                 CustAlarmViewModel = _queryAlarmViewModel;
             }
@@ -104,8 +105,6 @@ namespace Alarm4Rest_Viewer
             RestAlarmsRepo.pageSize = pageSize;
             await RestAlarmsRepo.GetRestAlarmAct();
             await RestAlarmsRepo.GetCustAlarmAct();
-            //await RestAlarmsRepo.GetQueryAlarmAct();
-            //RestAlarmsRepo.exclusiveEnd = DateTime.Now;
             await RestAlarmsRepo.TGetQueryAlarmAct();
         }
 
