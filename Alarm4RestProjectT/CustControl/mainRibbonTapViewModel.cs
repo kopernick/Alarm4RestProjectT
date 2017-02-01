@@ -34,8 +34,15 @@ namespace Alarm4Rest_Viewer.CustControl
 
 
         //-----------------------------------Category----------------------------------//
-        private Item _CatDesc87X;
-        private Item _CatDesc56N;
+        private Item _CatDesc1;
+        private Item _CatDesc2;
+        private Item _CatDesc3;
+        private Item _CatDesc4;
+        private Item _CatDesc5;
+        private Item _CatDesc6;
+        private Item _CatDesc7;
+        private Item _CatDesc8;
+
         private TimeCondItem _Today;
         private TimeCondItem _Last2Days;
         private TimeCondItem _ThisWeek;
@@ -44,8 +51,14 @@ namespace Alarm4Rest_Viewer.CustControl
         private TimeCondItem _EveryDays;
         private TimeCondItem _UserSel;
 
-        public Item CatDesc87X { get { return _CatDesc87X; } }
-        public Item CatDesc56N { get { return _CatDesc56N; } }
+        public Item CatDesc1 { get { return _CatDesc1; } }
+        public Item CatDesc2 { get { return _CatDesc2; } }
+        public Item CatDesc3 { get { return _CatDesc3; } }
+        public Item CatDesc4 { get { return _CatDesc4; } }
+        public Item CatDesc5 { get { return _CatDesc5; } }
+        public Item CatDesc6 { get { return _CatDesc6; } }
+        public Item CatDesc7 { get { return _CatDesc7; } }
+        public Item CatDesc8 { get { return _CatDesc8; } }
 
 
         //---------------------------------Time Filtering-----------------------------------//
@@ -137,13 +150,38 @@ namespace Alarm4Rest_Viewer.CustControl
         {
             //isChecked87X = true;
 
-            _CatDesc87X = new Item("Group87X", "87X", "GroupDescription");
-            _CatDesc87X.IsChecked = true;
-            if (_CatDesc87X.IsChecked) qFilters.Add(_CatDesc87X);
+            //Item(name (show at UI), value (contain), Field Name);
+            _CatDesc1 = new Item("Tx Protection", "Tx Relay", "GroupDescription");
+            _CatDesc1.IsChecked = true;
+            if (_CatDesc1.IsChecked) qFilters.Add(_CatDesc1);
 
-            _CatDesc56N = new Item("Group56N", "56N", "GroupDescription");
-            _CatDesc56N.IsChecked = false;
-            if (_CatDesc56N.IsChecked) qFilters.Add(_CatDesc56N);
+            _CatDesc2 = new Item("Bus Protection", "Bus Relay", "GroupDescription");
+            _CatDesc2.IsChecked = true;
+            if (_CatDesc2.IsChecked) qFilters.Add(_CatDesc2);
+
+            _CatDesc3 = new Item("Bkr Protection", "Bkr Relay", "GroupDescription");
+            _CatDesc3.IsChecked = true;
+            if (_CatDesc3.IsChecked) qFilters.Add(_CatDesc3);
+
+            _CatDesc4 = new Item("Line Protection", "Line Relay", "GroupDescription");
+            _CatDesc4.IsChecked = true;
+            if (_CatDesc4.IsChecked) qFilters.Add(_CatDesc4);
+
+            _CatDesc5 = new Item("Shunt Reactor Protection", "Reactor Relay", "GroupDescription");
+            _CatDesc5.IsChecked = true;
+            if (_CatDesc5.IsChecked) qFilters.Add(_CatDesc5);
+
+            _CatDesc6 = new Item("C-Bank Protection", "C-Bank Relay", "GroupDescription");
+            _CatDesc6.IsChecked = true;
+            if (_CatDesc6.IsChecked) qFilters.Add(_CatDesc6);
+
+            _CatDesc7 = new Item("Bkr Status", "Bkr Status", "GroupDescription");
+            _CatDesc7.IsChecked = true;
+            if (_CatDesc3.IsChecked) qFilters.Add(_CatDesc7);
+
+            _CatDesc8 = new Item("Etc. Protection", "Etc. Relay", "GroupDescription");
+            _CatDesc8.IsChecked = false;
+            if (_CatDesc3.IsChecked) qFilters.Add(_CatDesc8);
         }
 
         private void InitTimeFiltering()
@@ -270,6 +308,7 @@ namespace Alarm4Rest_Viewer.CustControl
             RestAlarmsRepo.filterParseDeleg = queryParseDeleg;
             //RestAlarmsRepo.qDateTimeCondEnd = DateTime.Now;
             await RestAlarmsRepo.TGetQueryAlarmAct();
+            //Console.WriteLine(queryParseDeleg.Body);
 
         }
 
@@ -289,13 +328,13 @@ namespace Alarm4Rest_Viewer.CustControl
         private void onCheckCommand(object Category)
         {
 
-            if ((string)Category == _CatDesc87X.Name)
+            if ((string)Category == _CatDesc1.Name)
             {
-                AddRemoveProcess(ref _CatDesc87X);
+                AddRemoveProcess(ref _CatDesc1);
             }
-            if ((string)Category == _CatDesc56N.Name)
+            if ((string)Category == _CatDesc2.Name)
             {
-                AddRemoveProcess(ref _CatDesc56N);
+                AddRemoveProcess(ref _CatDesc2);
             }
             else
             {

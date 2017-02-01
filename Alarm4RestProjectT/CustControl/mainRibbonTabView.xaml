@@ -47,23 +47,63 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
 
-                    <CheckBox x:Name="CheckBox87X" Grid.Row="0" Grid.Column="0" MinWidth="65" Margin="1" 
-                              Content="{Binding CatDesc87X.Name}"
-                              IsChecked="{Binding CatDesc87X.IsChecked,Mode=TwoWay}"
+                    <CheckBox x:Name="CheckBox1" Grid.Row="0" Grid.Column="0" MinWidth="65" Margin="1" 
+                              Content="{Binding CatDesc1.Name}"
+                              IsChecked="{Binding CatDesc1.IsChecked,Mode=TwoWay}"
                               Command="{Binding CheckCommand}"
-                              CommandParameter="{Binding CatDesc87X.Name}">
+                              CommandParameter="{Binding CatDesc1.Name}">
 
                     </CheckBox>
 
-                    <CheckBox x:Name="CheckBox56N" Grid.Row="0" Grid.Column="1" MinWidth="65" Margin="1" 
-                              Content="{Binding CatDesc56N.Name}"
-                              IsChecked="{Binding CatDesc56N.IsChecked,Mode=TwoWay}"
+                    <CheckBox x:Name="CheckBox2" Grid.Row="0" Grid.Column="1" MinWidth="65" Margin="1" 
+                              Content="{Binding CatDesc2.Name}"
+                              IsChecked="{Binding CatDesc2.IsChecked,Mode=TwoWay}"
                               Command="{Binding CheckCommand}"
-                              CommandParameter="{Binding CatDesc56N.Name}">
+                              CommandParameter="{Binding CatDesc2.Name}">
                     </CheckBox>
 
-                    <CheckBox Grid.Row="1" Grid.Column="0" Margin="1" >
-                        Etc.</CheckBox>
+                    <CheckBox x:Name="CheckBox3" Grid.Row="0" Grid.Column="2" MinWidth="65" Margin="1" 
+                              Content="{Binding CatDesc3.Name}"
+                              IsChecked="{Binding CatDesc3.IsChecked,Mode=TwoWay}"
+                              Command="{Binding CheckCommand}"
+                              CommandParameter="{Binding CatDesc3.Name}">
+                    </CheckBox>
+                    
+                    <CheckBox x:Name="CheckBox4" Grid.Row="0" Grid.Column="3" MinWidth="65" Margin="1" 
+                              Content="{Binding CatDesc4.Name}"
+                              IsChecked="{Binding CatDesc4.IsChecked,Mode=TwoWay}"
+                              Command="{Binding CheckCommand}"
+                              CommandParameter="{Binding CatDesc4.Name}">
+                    </CheckBox>
+
+                    <CheckBox x:Name="CheckBox5" Grid.Row="1" Grid.Column="0" MinWidth="65" Margin="1" 
+                              Content="{Binding CatDesc5.Name}"
+                              IsChecked="{Binding CatDesc5.IsChecked,Mode=TwoWay}"
+                              Command="{Binding CheckCommand}"
+                              CommandParameter="{Binding CatDesc5.Name}">
+                    </CheckBox>
+
+                    <CheckBox x:Name="CheckBox6" Grid.Row="1" Grid.Column="1" MinWidth="65" Margin="1" 
+                              Content="{Binding CatDesc6.Name}"
+                              IsChecked="{Binding CatDesc6.IsChecked,Mode=TwoWay}"
+                              Command="{Binding CheckCommand}"
+                              CommandParameter="{Binding CatDesc6.Name}">
+                    </CheckBox>
+
+                    <CheckBox x:Name="CheckBox7" Grid.Row="1" Grid.Column="2" MinWidth="65" Margin="1" 
+                              Content="{Binding CatDesc7.Name}"
+                              IsChecked="{Binding CatDesc7.IsChecked,Mode=TwoWay}"
+                              Command="{Binding CheckCommand}"
+                              CommandParameter="{Binding CatDesc7.Name}">
+                    </CheckBox>
+
+                    <CheckBox x:Name="CheckBox8" Grid.Row="1" Grid.Column="3" MinWidth="65" Margin="1" 
+                              Content="{Binding CatDesc8.Name}"
+                              IsChecked="{Binding CatDesc8.IsChecked,Mode=TwoWay}"
+                              Command="{Binding CheckCommand}"
+                              CommandParameter="{Binding CatDesc8.Name}">
+                    </CheckBox>
+
                 </Grid>
 
             </StackPanel>
@@ -102,7 +142,7 @@
             </Grid>
 
         </RibbonGroup>
-    -->
+    
 
     <RibbonGroup x:Name="SortOrder" Header="Sort Order Setting">
         <Grid>
@@ -155,6 +195,7 @@
         </ComboBox>
         </Grid>
     </RibbonGroup>
+    -->
     
     <RibbonGroup x:Name="TimeScope" Header="Time Filtering" >
         <StackPanel>
@@ -256,7 +297,7 @@
 
                             </RadioButton>
                             <TextBlock Text="วันเริ่มต้น:" Grid.Row="0" Grid.Column="1" Margin="5,1,5,1"/>
-                            <DatePicker x:Name="DateStart" MinWidth="80" Grid.Row="1" Grid.Column="1" Margin="5,1,5,1"
+                            <DatePicker x:Name="DateStart" MinWidth="64" Grid.Row="1" Grid.Column="1" Margin="5,1,5,1"
                                         IsEnabled="{Binding UserSel.IsChecked}"
                                         Text="{Binding ExclusiveStart, Mode=TwoWay}">
 
@@ -264,7 +305,7 @@
 
                             <TextBlock Text="วันสิ้นสุด:" Grid.Row="0" Grid.Column="2" Margin="5,1,5,1"/>
 
-                            <DatePicker x:Name="DateEnd" MinWidth="80" Grid.Row="1" Grid.Column="2" Margin="5,1,5,1"
+                            <DatePicker x:Name="DateEnd" MinWidth="64" Grid.Row="1" Grid.Column="2" Margin="5,1,5,1"
                                         IsEnabled="{Binding UserSel.IsChecked}"
                                         Text="{Binding ExclusiveEnd, Mode=TwoWay}">
 
