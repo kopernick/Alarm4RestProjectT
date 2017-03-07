@@ -119,8 +119,9 @@ namespace Alarm4Rest_Viewer.Services
                 LastAlarmRecIndex = RestAlarmListDump[0].PkAlarmListID; //Set Last PkAlarmList initializing
                 LastMaxAlarmRecIndex = LastAlarmRecIndex;
                 QueryAlarmListDump = await TGetQueryAlarmsAsync();
-                //QueryAlarmListDump = await GetQueryAlarmsAsync();
-                LastQueryAlarmRecIndex = QueryAlarmListDump[0].PkAlarmListID;
+
+                if (QueryAlarmListDump.Count != 0)
+                    LastQueryAlarmRecIndex = QueryAlarmListDump[0].PkAlarmListID;
 
                 StationsName = await GetStationNameAsync();
                 Priority = await GetPriorityAsync();
